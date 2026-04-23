@@ -9,7 +9,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
 ![Platforms macOS and Linux](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey)
 
-**A lightweight, high-performance CLI built in Rust** — a single **~20 MB** (release/stripped) binary, statically linked, with no Node or Python required to run the tool. The same **FINCLAW** wordmark above appears when you start an interactive `finclaw chat` session.
+**A lightweight, high-performance CLI built in Rust** — a single **~20 MB** (release/stripped) binary, statically linked, with no Node or Python required to run the tool. The header above uses the same CLI theme colors you see in `finclaw chat` on a color terminal.
 
 **What it does:** terminal-native work on the **Claw** agent runtime (public wire contract: [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)) — interactive REPL, slash commands, per-machine **profiles**, and optional **daemon** mode (`finclaw serve`).
 

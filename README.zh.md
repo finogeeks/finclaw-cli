@@ -9,7 +9,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
 ![支持平台 macOS 与 Linux](https://img.shields.io/badge/平台-macOS%20%7C%20Linux-lightgrey)
 
-**以 Rust 实现、体积极小、追求高性能的终端 CLI**：默认发布为经过 strip 的**单个二进制，约 20 MB 量级**，静态链接，运行**不依赖 Node / Python**。上方 **FINCLAW** 字样与进入交互式 `finclaw chat` 时终端内展示的标识一致。
+**以 Rust 实现、体积极小、追求高性能的终端 CLI**：默认发布为经过 strip 的**单个二进制，约 20 MB 量级**，静态链接，运行**不依赖 Node / Python**。上方 **FINCLAW** 头图使用了与彩色终端下 `finclaw chat` 一致的主题渐变色。
 
 **能力概览：** 在 **Claw** 智能体运行时之上工作（公开线路合同见 [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)）— 支持交互式 REPL、slash 命令、本机 **profile（配置隔离）**，以及可选的**常驻** `finclaw serve` 模式。
 
