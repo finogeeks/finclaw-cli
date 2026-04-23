@@ -162,23 +162,32 @@ else
   curl -fSL --retry 3 --retry-delay 1 "$sums_url" -o SHA256SUMS
 
   # Multi-platform releases ship one SHA256SUMS listing all tar.zst files. We only
-  # download one archive, so verify that line only (full-file -c would fail for
-  # missing siblings).
+  # download one archive. Do not use `shasum -c` / `sha256sum -c` on the full
+  # SHA256SUMS: they verify every listed file. Compare the single expected hash
+  # to a hash of the downloaded archive only.
   c="$(
     awk -v f="$archive_name" 'NF >= 2 && $NF == f { c++ } END { print c + 0 }' SHA256SUMS
   )"
   if [ "$c" -ne 1 ]; then
     die "expected exactly one SHA256 line for ${archive_name} in SHA256SUMS (found ${c})"
   fi
-  awk -v f="$archive_name" 'NF >= 2 && $NF == f { print }' SHA256SUMS > SHA256SUMS.one
+  expected_hash="$(
+    awk -v f="$archive_name" 'NF >= 2 && $NF == f { print $1; exit }' SHA256SUMS
+  )"
+  [ -n "$expected_hash" ] || die "empty hash in SHA256SUMS for ${archive_name}"
 
   if command -v shasum >/dev/null 2>&1; then
-    shasum -a 256 -c SHA256SUMS.one
+    actual_hash="$(shasum -a 256 "$archive_name" | awk '{print $1}')"
   elif command -v sha256sum >/dev/null 2>&1; then
-    sha256sum -c SHA256SUMS.one
+    actual_hash="$(sha256sum "$archive_name" | awk '{print $1}')"
   else
     die "neither shasum nor sha256sum is available; install one, or (not recommended) set FINCLAW_INSECURE_SKIP_CHECKSUM=1"
   fi
+
+  if [ "$expected_hash" != "$actual_hash" ]; then
+    die "SHA256 mismatch for ${archive_name} (expected ${expected_hash}, got ${actual_hash})"
+  fi
+  info "checksum OK (${archive_name})"
 fi
 
 if command -v zstd >/dev/null 2>&1; then
