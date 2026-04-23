@@ -5,6 +5,42 @@
 - **English** — 见 [`README.md`](README.md)  
 - **中文（本页）** — 你正在阅读的就是中文版
 
+## 0）一行命令安装（`install.sh`）
+
+本仓库提供 [`install.sh`](install.sh)：一个尽量兼容的 POSIX `sh` 安装脚本，会：
+
+- 自动解析 **latest** 发布（或你指定的版本号）
+- 按当前系统/架构选择正确的 `*.tar.zst`
+- 在发布物包含时校验 `SHA256SUMS`
+- 默认把 `finclaw` 安装到 `$HOME/.local/bin`
+
+从 `main` 分支拉取并执行（始终使用本仓库 `main` 上最新的 `install.sh`）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh
+```
+
+当对应 tag 已存在后，推荐“固定到某个已发布版本”的脚本（更可复现）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/v0.1.0/install.sh | sh
+```
+
+因为使用了管道，需要通过 `sh` 转发参数：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh -s -- --version 0.1.0
+```
+
+或者使用环境变量：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh \
+  | env FINCLAW_VERSION=0.1.0 FINCLAW_INSTALL_DIR="$HOME/.local/bin" sh
+```
+
+如确有需要，可设置 `FINCLAW_INSECURE_SKIP_CHECKSUM=1` **跳过**校验（不推荐，仅应急）。
+
 ## 1）如何手动下载并获取首个二进制
 
 1. 打开 **Releases** 页面：`https://github.com/finogeeks/finclaw-cli/releases`

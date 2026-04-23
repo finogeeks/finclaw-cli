@@ -5,6 +5,42 @@ This repository is the **public download surface** for the `finclaw` command-lin
 - **English (this file)** — you are here  
 - **中文** — see [`README.zh.md`](README.zh.md)
 
+## 0) One-line install (`install.sh`)
+
+This repo ships [`install.sh`](install.sh), a small POSIX `sh` installer that:
+
+- resolves the **latest** GitHub Release (or a pinned version you provide)
+- downloads the correct `*.tar.zst` for your OS/arch
+- verifies `SHA256SUMS` when present
+- installs `finclaw` into `$HOME/.local/bin` by default
+
+Install from `main` (always points at the newest `install.sh` in this repo):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh
+```
+
+Pin a specific release’s script (recommended for reproducible installs after that tag exists):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/v0.1.0/install.sh | sh
+```
+
+Pass flags through `sh` (because of the pipe):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh -s -- --version 0.1.0
+```
+
+Or set environment variables:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh \
+  | env FINCLAW_VERSION=0.1.0 FINCLAW_INSTALL_DIR="$HOME/.local/bin" sh
+```
+
+`FINCLAW_INSECURE_SKIP_CHECKSUM=1` exists as an **escape hatch**, but you should not need it for normal releases.
+
 ## 1) Download the first binary (manual)
 
 1. Open **Releases**: `https://github.com/finogeeks/finclaw-cli/releases`
