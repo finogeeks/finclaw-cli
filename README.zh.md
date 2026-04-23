@@ -2,7 +2,7 @@
   <img src="assets/finclaw-wordmark.svg" width="560" alt="FINCLAW" />
 </p>
 
-<p align="center"><em>字标颜色与彩色终端下 <code>finclaw chat</code> 的横幅一致：蓝 → 靛 → 洋红（#4796E4 → #847ACE → #C3677F）。</em></p>
+
 
 # finclaw
 
@@ -19,6 +19,13 @@
 | --- | --- |
 | **English** | [README.md](README.md) |
 | **中文** | *当前页面* |
+
+### 文档
+
+| | |
+| --- | --- |
+| **Getting started（英文完整上手指南）** | [docs/getting-started.md](docs/getting-started.md) |
+| **上手指南（安装、大模型、校验）** | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
 
 ---
 
@@ -96,7 +103,7 @@ finclaw chat -m "你好，finclaw"
 finclaw serve
 ```
 
-**大模型与 Key：** 内联 mock 适合冒烟自测；真实调用需在 `config.yaml` 等位置配置**提供商与密钥**。可配合 `finclaw config` / `finclaw doctor`，并参考你所在渠道附带的**主机侧文档**（若有）。
+**大模型与 Key：** 内建 mock 适合冒烟；真实调用需配置 **provider、model、API key**（及可选 `base_url`）。步骤与优先级见 **[上手指南](docs/getting-started.zh.md)**（`finclaw config set`、环境变量、`~/.finclaw/.env`）。改完后可运行 `finclaw doctor`、`finclaw config check`。
 
 ---
 
@@ -135,19 +142,16 @@ finclaw serve
 
 **校验** — 若失败，**不要运行**二进制，请从 Release 页重新下载。
 
-macOS（通常自带 `shasum`）：
+`SHA256SUMS` 中列出**所有平台**的压缩包。你一般只下载**其中一个** `*.tar.zst`，因此**不要**对整份 `SHA256SUMS` 直接执行 `shasum -a 256 -c` 或 `sha256sum -c`（会去找其它平台文件并报错）。只校验**你下载文件对应的一行**，例如（按实际 `VER` 与 `FILE` 修改）：
 
 ```bash
 cd ~/Downloads
-shasum -a 256 -c SHA256SUMS
+VER=0.1.0
+FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"
+grep -F "$FILE" SHA256SUMS | shasum -a 256 -c -
 ```
 
-常见 Linux（GNU coreutils）：
-
-```bash
-cd ~/Downloads
-sha256sum -c SHA256SUMS
-```
+Linux 上亦可用同一条 `grep` 后接 `sha256sum -c`（若你更习惯 `sha256sum`）。
 
 **解压依赖：** `tar` 与 `zstd`（格式为 `*.tar.zst`）。
 

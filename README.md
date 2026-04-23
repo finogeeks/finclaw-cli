@@ -2,7 +2,7 @@
   <img src="assets/finclaw-wordmark.svg" width="560" alt="FINCLAW" />
 </p>
 
-<p align="center"><em>Wordmark fill: CLI theme gradient (#4796E4 → #847ACE → #C3677F), same as <code>finclaw chat</code> on a color TTY.</em></p>
+
 
 # finclaw
 
@@ -19,6 +19,13 @@ This repository is the **public install surface** for the `finclaw` command-line
 | --- | --- |
 | **English** | *You are here* |
 | **中文** | [README.zh.md](README.zh.md) |
+
+### Documentation
+
+| | |
+| --- | --- |
+| **Getting started (full walkthrough: install, PATH, `init`, LLM, `doctor`, `chat`)** | [docs/getting-started.md](docs/getting-started.md) |
+| **上手指南（安装、大模型、校验与排错）** | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
 
 ---
 
@@ -96,7 +103,7 @@ finclaw chat -m "Hello from finclaw"
 finclaw serve
 ```
 
-**LLM providers:** the embedded mock is fine for smoke tests; for real models you will configure API keys and endpoints. Use `finclaw config` / `finclaw doctor` after editing `config.yaml`, or read the host documentation that ships with your distribution.
+**LLM providers:** the embedded mock is fine for smoke tests; for real models configure **provider, model, and API key** (or `base_url` for OpenAI-compatible stacks). See **[Getting started](docs/getting-started.md)** (environment variables, `~/.finclaw/.env`, and `finclaw config set`). Use `finclaw doctor` and `finclaw config check` after changes.
 
 ---
 
@@ -135,19 +142,16 @@ finclaw serve
 
 **Verify the download** — do not run the binary if this fails.
 
-macOS:
+`SHA256SUMS` lists **every** platform archive in the release. You only downloaded **one** `.tar.zst`, so **do not** run `shasum -a 256 -c` or `sha256sum -c` on the full `SHA256SUMS` (it will look for the other platform files and fail). Verify **only the line for your file**, for example (adjust `VER` and `FILE`):
 
 ```bash
 cd ~/Downloads
-shasum -a 256 -c SHA256SUMS
+VER=0.1.0
+FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"
+grep -F "$FILE" SHA256SUMS | shasum -a 256 -c -
 ```
 
-Linux (GNU coreutils):
-
-```bash
-cd ~/Downloads
-sha256sum -c SHA256SUMS
-```
+On Linux you can use the same `grep` pattern with `sha256sum -c` instead of `shasum` if you prefer.
 
 **Prerequisites to extract:** `tar` and `zstd` (the archives are `*.tar.zst`).
 
