@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  FINCLAW block wordmark with the same horizontal gradient as hosts/cli/src/ui.rs:
+  FINCLAW_GRADIENT  #4796E4  #847ACE  #C3677F (figlet "ANSI Shadow" pre-render, FINCLAW_LOGO_LINES)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58 5.9" role="img" aria-label="FINCLAW">
+  <defs>
+    <linearGradient id="finclawWordmark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4796E4"/>
+      <stop offset="50%" stop-color="#847ACE"/>
+      <stop offset="100%" stop-color="#C3677F"/>
+    </linearGradient>
+  </defs>
+  <text
+    x="0"
+    y="0.85"
+    fill="url(#finclawWordmark)"
+    font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+    font-size="0.82"
+    font-weight="400"
+  >
+    <tspan x="0" y="0.85" dy="0">WWW   W WW      W W    W</tspan>
+    <tspan x="0" dy="1em">TPPPP]QW  QTPPPP]Q     TPPWQ    Q</tspan>
+    <tspan x="0" dy="1em">W  QTW QQ     Q     QQ W Q</tspan>
+    <tspan x="0" dy="1em">TPP]  QQZWQQ     Q     TPPQQWQ</tspan>
+    <tspan x="0" dy="1em">Q     QQ ZQZWWQ  QZTT]</tspan>
+    <tspan x="0" dy="1em">ZP]     ZP]ZP]  ZPPP] ZPPPPP]ZPPPPPP]ZP]  ZP] ZPP]ZPP]</tspan>
+  </text>
+</svg>

@@ -1,91 +1,157 @@
-# finclaw CLI（二进制发布说明）
+<p align="center">
+  <img src="assets/finclaw-wordmark.svg" width="560" alt="FINCLAW" />
+</p>
 
-本仓库是 `finclaw` 命令行工具的**公开下载发布仓库**。应用源码在私有的主仓库中开发；**构建产物发布在本仓库的 GitHub Releases**，方便最终用户**无需拉取源码**即可安装使用。
+<p align="center"><em>字标颜色与彩色终端下 <code>finclaw chat</code> 的横幅一致：蓝 → 靛 → 洋红（#4796E4 → #847ACE → #C3677F）。</em></p>
 
-- **English** — 见 [`README.md`](README.md)  
-- **中文（本页）** — 你正在阅读的就是中文版
+# finclaw
 
-## 0）一行命令安装（`install.sh`）
+[![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
+![支持平台 macOS 与 Linux](https://img.shields.io/badge/平台-macOS%20%7C%20Linux-lightgrey)
 
-本仓库提供 [`install.sh`](install.sh)：一个尽量兼容的 POSIX `sh` 安装脚本，会：
+**以 Rust 实现、体积极小、追求高性能的终端 CLI**：默认发布为经过 strip 的**单个二进制，约 20 MB 量级**，静态链接，运行**不依赖 Node / Python**。上方 **FINCLAW** 字样与进入交互式 `finclaw chat` 时终端内展示的标识一致。
 
-- 自动解析 **latest** 发布（或你指定的版本号）
-- 按当前系统/架构选择正确的 `*.tar.zst`
-- 在发布物包含时校验 `SHA256SUMS`
-- 默认把 `finclaw` 安装到 `$HOME/.local/bin`
+**能力概览：** 在 **Claw** 智能体运行时之上工作（公开线路合同见 [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)）— 支持交互式 REPL、slash 命令、本机 **profile（配置隔离）**，以及可选的**常驻** `finclaw serve` 模式。
 
-从 `main` 分支拉取并执行（始终使用本仓库 `main` 上最新的 `install.sh`）：
+本仓库是 `finclaw` 的**公开下载与发版地址**。主工程在私有单仓中开发；**正式构建**发布在 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases)，**无需拉取源码**即可安装。
+
+| | |
+| --- | --- |
+| **English** | [README.md](README.md) |
+| **中文** | *当前页面* |
+
+---
+
+## 你能得到什么
+
+| | |
+| --- | --- |
+| **轻量 Rust 单文件、低负担** | 原生机器码、磁盘占用约 **20 MB** 量级、交互路径短，适合长驻终端日常使用。 |
+| **真·终端体验** | 无 `-m` 时进入交互式 REPL：多行输入、内联帮助、以及 slash 命令。 |
+| **Profile 优先** | 使用 `~/.finclaw/profiles/<name>/` 做隔离，涵盖模板、技能、策略与身份，并支持备份/导入等分享工作流。 |
+| **Claw 后端** | 与 Finclaw 生态中工具、技能、策略等合同一致；单二进制按宿主设计连接内嵌或远程 Claw。 |
+| **多种运行方式** | **一次性**（`finclaw chat -m "…"`）· **REPL**（`finclaw chat`）· **常驻**（`finclaw serve`）。 |
+| **偏运维/工程向** | `doctor`、`version`、各 shell 的 completion 生成、以及可预期的更新说明 — 适合先读 `--help` 再动手的人。 |
+
+---
+
+## 快速安装
+
+**适用环境：** macOS、Linux，以及在 **WSL2** 下的 glibc Linux（如常见 Ubuntu 发行版）。**当前发布矩阵不含原生 Windows `.exe`**，请在 WSL2 内使用 `*-unknown-linux-gnu` 包，或在 macOS/Linux 原生使用。
+
+**一行命令**（按机器解析最新或指定版本、拉取 `*.tar.zst`、在发布物提供时校验 `SHA256SUMS`、默认安装到 `$HOME/.local/bin`）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh
 ```
 
-当对应 tag 已存在后，推荐“固定到某个已发布版本”的脚本（更可复现）：
+若对应 tag 已存在 **install.sh**，建议将脚本**固定到该 tag**（更可复现）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/v0.1.0/install.sh | sh
 ```
 
-因为使用了管道，需要通过 `sh` 转发参数：
+通过管道向 `sh` 传参：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh -s -- --version 0.1.0
 ```
 
-或者使用环境变量：
+或使用环境变量（与 `install.sh` 说明一致）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh \
   | env FINCLAW_VERSION=0.1.0 FINCLAW_INSTALL_DIR="$HOME/.local/bin" sh
 ```
 
-如确有需要，可设置 `FINCLAW_INSECURE_SKIP_CHECKSUM=1` **跳过**校验（不推荐，仅应急）。
+`FINCLAW_INSECURE_SKIP_CHECKSUM=1` 仅作**应急**跳过校验，正常发布**不建议**使用。
 
-## 1）如何手动下载并获取首个二进制
+**安装后：**
 
-1. 打开 **Releases** 页面：`https://github.com/finogeeks/finclaw-cli/releases`
-2. 选择一个版本（通常标签为 `v0.1.0` 这种形式）。
-3. 下载**对应你平台**的压缩包，并同时下载校验文件：
-   - `finclaw-v<version>-x86_64-unknown-linux-gnu.tar.zst`（Linux x86_64；在大多数 WSL2 发行版上也适用）
-   - `finclaw-v<version>-x86_64-apple-darwin.tar.zst`（Intel 芯片 macOS）
-   - `finclaw-v<version>-aarch64-apple-darwin.tar.zst`（Apple 芯片 macOS）
-   - `SHA256SUMS`（强烈建议下载并校验）
-   - `release.json`（元数据；可选，不影响安装）
+```bash
+source ~/.zshrc    # 或: source ~/.bashrc
+finclaw --version
+```
 
-> **目前 Releases 不提供原生 Windows 的 `*.exe`。** 在 Windows 上请使用 **WSL2** 搭配常见的 glibc Linux（如 Ubuntu），并安装 **Linux** 压缩包；或在 macOS/Linux 上原生运行。
+---
 
-### 校验下载内容是否完整、未被篡改
+## 首次上手（四条命令）
 
-macOS 通常自带 `shasum`：
+```text
+finclaw init        # 首次：资料目录、模板与初始配置
+finclaw doctor      # 配置好 LLM 后做一次健康检查
+finclaw chat        # 进入 REPL（不要带 -m）
+finclaw --help      # 子命令全览；各子命令另有 --help
+```
+
+**单轮对话**（适合脚本/CI，得到回复后退出）：
+
+```bash
+finclaw chat -m "你好，finclaw"
+```
+
+**需要常驻服务时**（本机长进程）：
+
+```bash
+finclaw serve
+```
+
+**大模型与 Key：** 内联 mock 适合冒烟自测；真实调用需在 `config.yaml` 等位置配置**提供商与密钥**。可配合 `finclaw config` / `finclaw doctor`，并参考你所在渠道附带的**主机侧文档**（若有）。
+
+---
+
+## 命令速查
+
+| 想做的事 | 从这儿开始 |
+| --- | --- |
+| 看构建/合同信息 | `finclaw version` |
+| 自检、配置与沙箱提示 | `finclaw doctor` |
+| 在终端里和智能体聊 | `finclaw chat`（REPL）或 `finclaw chat -m "…"` |
+| 切换或查看模型 | `finclaw model` / `finclaw model <id>` |
+| 管理 profile | `finclaw profile --help` |
+| 策略与身份 | `finclaw policy --help` · `finclaw identity --help` |
+| Shell 补全 | `finclaw completion bash`（亦支持 zsh、fish、elvish、PowerShell 等） |
+| 看日志 | `finclaw logs --help` |
+| 查公开升级渠道 | `finclaw update`（多数产品形态下偏**提示+下载说明**；是否自动覆盖二进制以**发行说明**为准） |
+| 卸载/清理本机数据 | `finclaw uninstall` |
+
+以 `finclaw --help` 与 `finclaw <子命令> --help` 为准。
+
+---
+
+## 手动下载（完全可控）
+
+1. 打开 **[Releases](https://github.com/finogeeks/finclaw-cli/releases)**，选择版本（如 `v0.1.0`）。
+2. 下载**对应本机架构**的压缩包，以及 **`SHA256SUMS`**。
+3. 校验通过后再解包、安装 `finclaw` 到 `PATH` 中的目录。
+
+| 发布文件 | 适用场景 |
+| --- | --- |
+| `finclaw-v<version>-aarch64-apple-darwin.tar.zst` | Apple 芯片 macOS |
+| `finclaw-v<version>-x86_64-apple-darwin.tar.zst` | Intel 芯片 macOS |
+| `finclaw-v<version>-x86_64-unknown-linux-gnu.tar.zst` | Linux x86_64；多数 WSL2 环境选此 |
+| `SHA256SUMS` | 建议始终下载并执行校验 |
+| `release.json` | 元数据，可选 |
+
+**校验** — 若失败，**不要运行**二进制，请从 Release 页重新下载。
+
+macOS（通常自带 `shasum`）：
 
 ```bash
 cd ~/Downloads
 shasum -a 256 -c SHA256SUMS
 ```
 
-大多数 Linux 发行版使用 GNU `coreutils`：
+常见 Linux（GNU coreutils）：
 
 ```bash
 cd ~/Downloads
 sha256sum -c SHA256SUMS
 ```
 
-**校验失败请不要运行二进制**，请从 Release 页面重新下载。
+**解压依赖：** `tar` 与 `zstd`（格式为 `*.tar.zst`）。
 
-## 2）在本地安装与初始化配置
-
-先决条件：
-
-- 终端环境（macOS / Linux 终端；或 Windows 上的 Linux 子系统）
-- 已安装 `tar` 和 `zstd`（`*.tar.zst` 格式需要 `zstd` 解压/解包）
-
-### 解压缩发布包
-
-压缩包内目录结构固定为：
-
-- `finclaw-v<version>-<target>/finclaw`
-
-以 Apple Silicon 的 macOS 为例（请把 `VER` 与文件名改成你实际下载的版本/架构）：
+示例（Apple 芯片，请把 `VER` 与文件名换成你的实际包名）：
 
 ```bash
 VER=0.1.0
@@ -93,94 +159,46 @@ FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"
 zstd -dc "$FILE" | tar -xf -
 ```
 
-在部分支持 `--zstd` 的 `tar` 上也可以：
+部分发行版上也可：
 
 ```bash
 tar --zstd -xf "finclaw-v${VER}-x86_64-unknown-linux-gnu.tar.zst"
 ```
 
-### 将 `finclaw` 安装到 `PATH`（用户目录，无需 root）
-
-将下面目录名替换为你实际解包出来的目录名。
+**安装二进制**（目录名以包内实际为准）：
 
 ```bash
 install -m 0755 "finclaw-v${VER}-aarch64-apple-darwin/finclaw" "$HOME/.local/bin/finclaw"
 ```
 
-确保 shell 能找到它（示例）：
+**PATH**（若提示找不到命令）：
 
 ```bash
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc   # 或 ~/.bashrc
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-验证安装：
+### 平台与安全提示
 
-```bash
-finclaw --version
-```
+- **macOS** — 未签名/未公证的二进制可能触发 **Gatekeeper**；若被拦截，在 **系统设置 → 隐私与安全性** 中按提示允许，或改用企业签/组织内发版包。
+- **Windows** — 目前**不**在矩阵内提供独立 `.exe`；请使用 **WSL2 + Linux 包**，或 macOS/Linux 原生，直到出现 Windows 目标产物（如 `*-pc-windows-msvc`）。
 
-### 第一次配置（资料目录在 `~/.finclaw`）
+### 本机数据（摘要）
 
-`finclaw` 默认把本机数据放在 `~/.finclaw/`（如果你设置了 `FINCLAW_HOME`，则使用该目录）。其中每个隔离环境称为 **profile**（默认名通常是 `default`）。
+- 默认根目录：`~/.finclaw`（或环境变量 `FINCLAW_HOME`）。
+- **Profile** 即其下的一个隔离环境；首次运行常由 `finclaw init` 建立默认 `default`（以实际 `init` 行为为准）。
 
-运行交互式初始化：
+### 升级
 
-```bash
-finclaw init
-```
+**Releases** 出现新版本时：**重新下载**本机对应包，**再次校验** `SHA256SUMS`，**覆盖**本地 `finclaw`。`update` 子命令多数情况下用于**说明渠道与升级步骤**；除非你的发行说明明确写「自动原地更新」，否则不要默认假设会默默替换二进制。
 
-也支持非交互/脚本化参数；详见：
+### 支持渠道
 
-```bash
-finclaw init --help
-```
+- **下载失败、包损坏、校验不过、无法解压**：请在 **[Issues](https://github.com/finogeeks/finclaw-cli/issues)** 中反馈，并附上**版本号**、**文件名**、**操作系统与 CPU 架构**（例如 `macOS 15, arm64` 或 `Ubuntu 24.04, x86_64`）。
+- **产品行为、智能体能力、与私有部署或商业支持相关的问题**：若你们有**内部分发/工单渠道**，以该渠道为准；本公开仓库以**发版与安装**为主。
 
-要调用**真实大模型**通常需要配置 **LLM 提供商 API Key/endpoint** 等信息。你使用的发行方一般会提供“如何配置”的说明文档；在本地完成配置后，也可以运行 `finclaw doctor` 做基础自检。
+---
 
-**macOS 安全提示：** 未签名/未公证的二进制可能触发 Gatekeeper 拦截。如果无法直接运行，请在 **系统设置 → 隐私与安全性** 中按提示允许，或改用你们公司提供的已签名包。
+## 许可
 
-**Windows 说明：** 如果不使用 WSL，目前原生 Windows 可执行文件不在发布矩阵中，请先以 WSL2 使用 Linux 包（直到发布 `*-pc-windows-msvc` 等 Windows 目标产物）。
-
-## 3）基本用法（每天最常用的命令）
-
-查看帮助与命令列表：
-
-```bash
-finclaw --help
-finclaw <子命令> --help
-```
-
-健康检查/版本信息：
-
-```bash
-finclaw version
-finclaw doctor
-```
-
-一次对话（发一条消息，拿到回复就退出；适合脚本）：
-
-```bash
-finclaw chat -m "你好，finclaw"
-```
-
-进入交互式 REPL（不携带 `--message` 时）：
-
-```bash
-finclaw chat
-```
-
-在适合的生产部署方式下，也可以运行常驻进程（当你准备好这种部署时）：
-
-```bash
-finclaw serve
-```
-
-## 如何升级
-
-**Releases 页面**出现新版本时：重新下载你平台对应文件 → 用 `SHA256SUMS` 校验 → 覆盖本地 `finclaw` 二进制。若你的 `finclaw` 提供 `update` 子命令，在多数产品形态里它更偏向**提示/安全检查**；只有当你的发布说明明确写了“可自动更新”才应按说明使用。
-
-## 支持渠道
-
-- **下载/包损坏/无法解压**：请在本仓库提 issue，并附上**版本标签**、**文件名**、以及你使用的操作系统/架构。  
-- **功能/行为/配置**相关问题：以你们内部分发的支持链接为准（如果适用）。
+你下载的**二进制**的许可、再分发与商标条款，以对应 **GitHub Release** 页面及包内 `LICENSE` / 说明文件为准，本页文字**不能替代**其法律含义。
