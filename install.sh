@@ -161,10 +161,21 @@ else
   info "downloading ${sums_url}"
   curl -fSL --retry 3 --retry-delay 1 "$sums_url" -o SHA256SUMS
 
+  # Multi-platform releases ship one SHA256SUMS listing all tar.zst files. We only
+  # download one archive, so verify that line only (full-file -c would fail for
+  # missing siblings).
+  c="$(
+    awk -v f="$archive_name" 'NF >= 2 && $NF == f { c++ } END { print c + 0 }' SHA256SUMS
+  )"
+  if [ "$c" -ne 1 ]; then
+    die "expected exactly one SHA256 line for ${archive_name} in SHA256SUMS (found ${c})"
+  fi
+  awk -v f="$archive_name" 'NF >= 2 && $NF == f { print }' SHA256SUMS > SHA256SUMS.one
+
   if command -v shasum >/dev/null 2>&1; then
-    shasum -a 256 -c SHA256SUMS
+    shasum -a 256 -c SHA256SUMS.one
   elif command -v sha256sum >/dev/null 2>&1; then
-    sha256sum -c SHA256SUMS
+    sha256sum -c SHA256SUMS.one
   else
     die "neither shasum nor sha256sum is available; install one, or (not recommended) set FINCLAW_INSECURE_SKIP_CHECKSUM=1"
   fi
