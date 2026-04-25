@@ -12,6 +12,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Long-lived process | `finclaw serve` |
 | Runtime status / stop | `finclaw status` · `finclaw stop` |
 | Read/write `config.yaml` | `finclaw config` |
+| Guided LLM setup | `finclaw setup` |
 | Conversation history | `finclaw history` |
 | Shell completion script | `finclaw completion` |
 | Tokens / LLM host credentials / cron auth | `finclaw auth` |
@@ -23,7 +24,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Man page (roff toolchain) | `finclaw man` |
 | systemd / launchd unit helper | `finclaw service` |
 | MCP stdio (optional build feature) | `finclaw mcp` |
-| Model id picker / set | `finclaw model` |
+| Model id (picker matches `finclaw setup` when interactive) / set | `finclaw model` |
 | Log tailing | `finclaw logs` |
 | Profiles (list, create, apply, …) | `finclaw profile` |
 | Policy files and admin sync | `finclaw policy` |
@@ -32,7 +33,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Backup / import archives | `finclaw backup` · `finclaw import` |
 | Update channel / URL guidance | `finclaw update` |
 | Uninstall | `finclaw uninstall` |
-| First-time setup | `finclaw init` |
+| First-time profile bootstrap | `finclaw init` |
 
 **Topic guides in this repository:**
 

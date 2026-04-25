@@ -12,6 +12,7 @@
 | 常驻进程 | `finclaw serve` |
 | 状态 / 停止 | `finclaw status` · `finclaw stop` |
 | 读写 `config.yaml` | `finclaw config` |
+| 引导式 LLM 配置 | `finclaw setup` |
 | 对话历史 | `finclaw history` |
 | Shell 补全脚本 | `finclaw completion` |
 | 凭据、令牌等 | `finclaw auth` |
@@ -23,7 +24,7 @@
 | man 页生成 | `finclaw man` |
 | systemd/launchd 单元辅助 | `finclaw service` |
 | MCP stdio（可选编译特性） | `finclaw mcp` |
-| 模型 id | `finclaw model` |
+| 模型 id（交互时与 `finclaw setup` 相同的选择器）/ 设置 | `finclaw model` |
 | 日志 | `finclaw logs` |
 | Profile 管理 | `finclaw profile` |
 | 策略与运行时同步 | `finclaw policy` |
@@ -32,7 +33,7 @@
 | 备份 / 导入 | `finclaw backup` · `finclaw import` |
 | 更新渠道说明 | `finclaw update` |
 | 卸载 | `finclaw uninstall` |
-| 首次初始化 | `finclaw init` |
+| 首次 profile 初始化 | `finclaw init` |
 
 **本仓库中的专题文档：**
 

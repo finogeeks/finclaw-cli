@@ -59,7 +59,7 @@ finclaw model
 finclaw model <model-id>
 ```
 
-Interactive mode lists the bundled model catalogue; non-interactive use passes an id directly.
+With a TTY and no model id, the interactive flow uses the **same numbered catalog picker** as `finclaw setup` (provider-scoped entries from the bundled list). You need `llm.provider` in your profile config or `--provider …` on the command line; if neither is set, run `finclaw setup` first. Non-interactive use (no TTY) or a concrete `<model-id>` sets the value directly.
 
 ## History
 

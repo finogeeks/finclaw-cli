@@ -59,6 +59,8 @@ finclaw model
 finclaw model <model-id>
 ```
 
+在交互式终端、且未在命令行写 model id 时，**与 `finclaw setup` 使用同一套**编号列表从内置目录中选模型（按 provider 过滤）。需已在配置中设置 `llm.provider`，或本次命令加 `--provider`；若尚未配置 provider，请先执行 `finclaw setup`。无 TTY 或显式给出 `<model-id>` 时则直接设置该 id。
+
 ## 历史记录
 
 ```bash
