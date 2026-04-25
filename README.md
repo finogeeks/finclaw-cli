@@ -115,6 +115,7 @@ finclaw serve
 | See what this build is | `finclaw version` |
 | Health / config / sandbox hints | `finclaw doctor` |
 | Talk to the agent in the shell | `finclaw chat` (REPL) or `finclaw chat -m "…"` |
+| Browse / install skills | `finclaw skills --help` |
 | Switch or inspect models | `finclaw model` / `finclaw model <id>` |
 | Manage a profile (clone, template, diff) | `finclaw profile --help` |
 | Policies and identity | `finclaw policy --help` · `finclaw identity --help` |
@@ -124,6 +125,40 @@ finclaw serve
 | Uninstall / wipe local state | `finclaw uninstall` |
 
 `finclaw --help` and `finclaw <subcommand> --help` are authoritative for flags.
+
+---
+
+## Skills
+
+FinClaw loads skills from the active profile:
+
+```text
+~/.finclaw/profiles/<profile>/skills/<skill-id>/SKILL.md
+```
+
+Use the built-in ClawHub adapter for public OpenClaw / ClawHub skills. These commands do not require `clawhub login`; publishing and authenticated registry workflows are intentionally out of scope for `finclaw`:
+
+```bash
+finclaw skills clawhub browse
+finclaw skills clawhub search "postgres backups"
+finclaw skills clawhub info postgres-backups
+finclaw skills clawhub install postgres-backups
+finclaw skills list
+finclaw skills check
+```
+
+You can also use the open `npx skills` ecosystem directly. Install to the OpenClaw-compatible local `skills/` layout, then copy or move the resulting skill directory into your active FinClaw profile:
+
+```bash
+mkdir -p /tmp/finclaw-skills-import
+cd /tmp/finclaw-skills-import
+npx skills add vercel-labs/agent-skills --skill frontend-design --agent openclaw --copy -y
+mkdir -p ~/.finclaw/profiles/default/skills
+cp -R skills/frontend-design ~/.finclaw/profiles/default/skills/
+finclaw skills check
+```
+
+Use `--profile <name>` with `finclaw skills check` / `list` when installing into a non-default profile, and copy into `~/.finclaw/profiles/<name>/skills/`.
 
 ---
 

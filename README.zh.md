@@ -115,6 +115,7 @@ finclaw serve
 | 看构建/合同信息 | `finclaw version` |
 | 自检、配置与沙箱提示 | `finclaw doctor` |
 | 在终端里和智能体聊 | `finclaw chat`（REPL）或 `finclaw chat -m "…"` |
+| 浏览 / 安装技能 | `finclaw skills --help` |
 | 切换或查看模型 | `finclaw model` / `finclaw model <id>` |
 | 管理 profile | `finclaw profile --help` |
 | 策略与身份 | `finclaw policy --help` · `finclaw identity --help` |
@@ -124,6 +125,40 @@ finclaw serve
 | 卸载/清理本机数据 | `finclaw uninstall` |
 
 以 `finclaw --help` 与 `finclaw <子命令> --help` 为准。
+
+---
+
+## 技能
+
+FinClaw 会从当前 profile 的技能目录加载技能：
+
+```text
+~/.finclaw/profiles/<profile>/skills/<skill-id>/SKILL.md
+```
+
+公开的 OpenClaw / ClawHub 技能可以直接通过内置 ClawHub adapter 浏览和安装。这些命令不需要 `clawhub login`；发布、同步、删除等需要鉴权的 registry 工作流不属于 `finclaw` 的范围：
+
+```bash
+finclaw skills clawhub browse
+finclaw skills clawhub search "postgres backups"
+finclaw skills clawhub info postgres-backups
+finclaw skills clawhub install postgres-backups
+finclaw skills list
+finclaw skills check
+```
+
+你也可以直接使用开放的 `npx skills` 生态。先让它安装到 OpenClaw 兼容的本地 `skills/` 布局，再把得到的技能目录复制或移动到当前 FinClaw profile：
+
+```bash
+mkdir -p /tmp/finclaw-skills-import
+cd /tmp/finclaw-skills-import
+npx skills add vercel-labs/agent-skills --skill frontend-design --agent openclaw --copy -y
+mkdir -p ~/.finclaw/profiles/default/skills
+cp -R skills/frontend-design ~/.finclaw/profiles/default/skills/
+finclaw skills check
+```
+
+如果使用非默认 profile，请在 `finclaw skills check` / `list` 时加 `--profile <name>`，并复制到 `~/.finclaw/profiles/<name>/skills/`。
 
 ---
 
