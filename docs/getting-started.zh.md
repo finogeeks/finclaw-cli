@@ -139,6 +139,8 @@ finclaw serve
 
 备份、导入、profile 管理见 `finclaw profile --help`。
 
+**技能包（Skill packs）：** 使用 `finclaw skills` 子命令可配置远程 hub、校验安装、从索引安装/更新/卸载，也可手动放入 `~/.finclaw/profiles/<name>/skills/<id>/`。完整说明见主仓库英文指南：<https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md>。
+
 ---
 
 ## 6. 升级

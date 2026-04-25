@@ -26,6 +26,7 @@ This repository is the **public install surface** for the `finclaw` command-line
 | --- | --- |
 | **Getting started (full walkthrough: install, PATH, `init`, LLM, `doctor`, `chat`)** | [docs/getting-started.md](docs/getting-started.md) |
 | **上手指南（安装、大模型、校验与排错）** | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
+| **Skills (hubs, `finclaw skills`, install / update / check)** — user guide in the main Finclaw source tree | <https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md> |
 
 ---
 

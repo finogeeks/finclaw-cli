@@ -141,6 +141,8 @@ Use `finclaw model` / `finclaw model <id>` to change the model id when your prov
 
 Use `finclaw profile --help` for copy/backup flows.
 
+**Skills:** to configure hubs, run `finclaw skills list` / `check` / `hubs` / `install`, or drop packs into `~/.finclaw/profiles/<name>/skills/<id>/`. See the main Finclaw user guide: <https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md>.
+
 ---
 
 ## 6. Updates

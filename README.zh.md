@@ -26,6 +26,7 @@
 | --- | --- |
 | **Getting started（英文完整上手指南）** | [docs/getting-started.md](docs/getting-started.md) |
 | **上手指南（安装、大模型、校验）** | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
+| **技能（`finclaw skills`、hub、安装/校验）** — 主仓库用户文档（英文） | <https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md> |
 
 ---
 
