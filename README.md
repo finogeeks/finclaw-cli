@@ -13,7 +13,7 @@
 
 **What it does:** terminal-native work on the **Claw** agent runtime (public wire contract: [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)) — interactive REPL, slash commands, per-machine **profiles**, and optional **daemon** mode (`finclaw serve`).
 
-This repository is the **public install surface** for the `finclaw` command-line tool. The application is developed in a private monorepo; **release builds are published here** on [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) so you can install without source access.
+This repository is the **official home** for the `finclaw` command-line tool: install scripts, user docs, and **release builds** on [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases).
 
 | | |
 | --- | --- |
@@ -26,7 +26,7 @@ This repository is the **public install surface** for the `finclaw` command-line
 | --- | --- |
 | **Getting started (full walkthrough: install, PATH, `init`, LLM, `doctor`, `chat`)** | [docs/getting-started.md](docs/getting-started.md) |
 | **上手指南（安装、大模型、校验与排错）** | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
-| **Skills (hubs, `finclaw skills`, install / update / check)** — user guide in the main Finclaw source tree | <https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md> |
+| **Skills** (hubs, `finclaw skills`, install / update / check) | Run `finclaw skills --help`. Wire contract: [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract) |
 
 ---
 
@@ -200,7 +200,7 @@ When a new release appears, **download the new archive** for your platform, **re
 ### Support
 
 - **Install / download / checksum / cannot extract:** open a **[discussion or issue](https://github.com/finogeeks/finclaw-cli/issues)** on this repository with the **release tag**, **file name**, and **OS and CPU architecture** (e.g. `macOS 15, arm64` or `Ubuntu 24.04, x86_64`).
-- **Agent behaviour, product configuration, and runtime issues** may be routed through your team’s or vendor’s private Finclaw support channel when applicable; this public repo is focused on **shipping and installing** the binary.
+- **Agent behaviour, product configuration, and runtime issues** outside install scope: use your organization’s or vendor’s support channel when applicable; this repository focuses on **shipping and installing** the binary.
 
 ---
 

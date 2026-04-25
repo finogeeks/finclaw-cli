@@ -1,6 +1,6 @@
 # Getting started with finclaw
 
-This guide is for **end users** installing from [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases). The `finclaw` binary is built from a private monorepo; this public repo is the **install and documentation surface**.
+This guide is for **end users** installing from [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases). CLI documentation in this repository, plus `finclaw --help` on your machine, is the **authoritative** surface.
 
 **Chinese version:** [getting-started.zh.md](getting-started.zh.md)
 
@@ -141,7 +141,7 @@ Use `finclaw model` / `finclaw model <id>` to change the model id when your prov
 
 Use `finclaw profile --help` for copy/backup flows.
 
-**Skills:** to configure hubs, run `finclaw skills list` / `check` / `hubs` / `install`, or drop packs into `~/.finclaw/profiles/<name>/skills/<id>/`. See the main Finclaw user guide: <https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md>.
+**Skills:** configure hubs with `finclaw skills list` / `check` / `hubs` / `install`, or drop packs into `~/.finclaw/profiles/<name>/skills/<id>/`. Use `finclaw skills --help` for all flags. The public [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) repository describes the wire-level integration contract.
 
 ---
 

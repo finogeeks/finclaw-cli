@@ -1,6 +1,6 @@
 # finclaw 上手指南
 
-本文面向从 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) **直接安装**的用户。`finclaw` 可执行文件在私有单仓中构建；**本公开仓库是安装与说明入口**。
+本文面向从 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) **直接安装**的用户。CLI 说明以**本仓库文档**与 `finclaw --help` 为准。
 
 **English:** [getting-started.md](getting-started.md)
 
@@ -139,7 +139,7 @@ finclaw serve
 
 备份、导入、profile 管理见 `finclaw profile --help`。
 
-**技能包（Skill packs）：** 使用 `finclaw skills` 子命令可配置远程 hub、校验安装、从索引安装/更新/卸载，也可手动放入 `~/.finclaw/profiles/<name>/skills/<id>/`。完整说明见主仓库英文指南：<https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md>。
+**技能包（Skill packs）：** 使用 `finclaw skills` 子命令可配置远程 hub、校验安装、从索引安装/更新/卸载，也可手动放入 `~/.finclaw/profiles/<name>/skills/<id>/`。完整参数以 `finclaw skills --help` 为准；公开合同见 [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)。
 
 ---
 

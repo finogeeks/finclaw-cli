@@ -13,7 +13,7 @@
 
 **能力概览：** 在 **Claw** 智能体运行时之上工作（公开线路合同见 [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)）— 支持交互式 REPL、slash 命令、本机 **profile（配置隔离）**，以及可选的**常驻** `finclaw serve` 模式。
 
-本仓库是 `finclaw` 的**公开下载与发版地址**。主工程在私有单仓中开发；**正式构建**发布在 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases)，**无需拉取源码**即可安装。
+本仓库是 `finclaw` 的**官方发布与文档站点**；**正式构建**在 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) 提供，配套安装脚本与说明见本仓库。
 
 | | |
 | --- | --- |
@@ -26,7 +26,7 @@
 | --- | --- |
 | **Getting started（英文完整上手指南）** | [docs/getting-started.md](docs/getting-started.md) |
 | **上手指南（安装、大模型、校验）** | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
-| **技能（`finclaw skills`、hub、安装/校验）** — 主仓库用户文档（英文） | <https://github.com/Geeksfino/finclaw/blob/main/docs/agent/managing-skills-with-finclaw.md> |
+| **技能**（`finclaw skills`、hub、安装/校验） | 运行 `finclaw skills --help`；线路与合同见 [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract) |
 
 ---
 
