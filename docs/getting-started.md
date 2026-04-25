@@ -1,6 +1,8 @@
 # Getting started with finclaw
 
-This guide is for **end users** installing from [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases). CLI documentation in this repository, plus `finclaw --help` on your machine, is the **authoritative** surface.
+**Documentation index (all topics, EN + 中文):** [docs/README.md](README.md)
+
+This guide is for **end users** installing from [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases). CLI documentation in this repository, plus `finclaw --help` on your machine, is the **authoritative** surface. Deeper topics (policies, profiles, skills) live in the linked guides and do not require access to any private source repository.
 
 **Chinese version:** [getting-started.zh.md](getting-started.zh.md)
 
@@ -158,4 +160,4 @@ New builds appear on [Releases](https://github.com/finogeeks/finclaw-cli/release
 
 ---
 
-*For a shorter overview, see the root [README.md](../README.md).*
+*Overview and links:* root [README.md](../README.md) · full index [docs/README.md](README.md)

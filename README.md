@@ -2,242 +2,65 @@
   <img src="assets/finclaw-wordmark.svg" width="560" alt="FINCLAW" />
 </p>
 
-
-
 # finclaw
 
 [![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
 ![Platforms macOS and Linux](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey)
 
-**A lightweight, high-performance CLI built in Rust** — a single **~20 MB** (release/stripped) binary, statically linked, with no Node or Python required to run the tool. The header above uses the same CLI theme colors you see in `finclaw chat` on a color terminal.
+**A lightweight, high-performance CLI built in Rust** — a single **~20 MB** (release/stripped) binary, statically linked, with no Node or Python required to run the tool.
 
 **What it does:** terminal-native work on the **Claw** agent runtime (public wire contract: [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)) — interactive REPL, slash commands, per-machine **profiles**, and optional **daemon** mode (`finclaw serve`).
 
-This repository is the **official home** for the `finclaw` command-line tool: install scripts, user docs, and **release builds** on [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases).
+This repository is the **official home** for the `finclaw` command-line tool: install scripts, user documentation, and **release builds** on [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases).
 
 | | |
 | --- | --- |
 | **English** | *You are here* |
 | **中文** | [README.zh.md](README.zh.md) |
 
-### Documentation
+## Documentation
 
-| | |
-| --- | --- |
-| **Getting started (full walkthrough: install, PATH, `init`, LLM, `doctor`, `chat`)** | [docs/getting-started.md](docs/getting-started.md) |
-| **上手指南（安装、大模型、校验与排错）** | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
-| **Skills** (hubs, `finclaw skills`, install / update / check) | Run `finclaw skills --help`. Wire contract: [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract) |
+All user guides are **self-contained in this repository** (no private source access required). See **[docs/README.md](docs/README.md)** for the full index (English + 中文 for each topic).
 
----
+| Topic | English | 中文 |
+| --- | --- | --- |
+| **Index** | [docs/README.md](docs/README.md) | 同上（双语对照表） |
+| Quick start | [docs/getting-started.md](docs/getting-started.md) | [docs/getting-started.zh.md](docs/getting-started.zh.md) |
+| Install and updates | [docs/installation.md](docs/installation.md) | [docs/installation.zh.md](docs/installation.zh.md) |
+| Configuration | [docs/configuration.md](docs/configuration.md) | [docs/configuration.zh.md](docs/configuration.zh.md) |
+| Profiles and backup | [docs/profiles.md](docs/profiles.md) | [docs/profiles.zh.md](docs/profiles.zh.md) |
+| Security and policies | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
+| Skills | [docs/skills.md](docs/skills.md) | [docs/skills.zh.md](docs/skills.zh.md) |
+| Chat and operations | [docs/chat-and-operations.md](docs/chat-and-operations.md) | [docs/chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
+| Command index | [docs/reference-commands.md](docs/reference-commands.md) | [docs/reference-commands.zh.md](docs/reference-commands.zh.md) |
+| Troubleshooting | [docs/troubleshooting.md](docs/troubleshooting.md) | [docs/troubleshooting.zh.md](docs/troubleshooting.zh.md) |
+| Advanced (completions, man, optional features) | [docs/advanced.md](docs/advanced.md) | [docs/advanced.zh.md](docs/advanced.zh.md) |
+| Contributor doc maintenance | [docs/MAINTENANCE.md](docs/MAINTENANCE.md) | [docs/MAINTENANCE.md](docs/MAINTENANCE.md) (EN) |
 
-## What you get
-
-| | |
-| --- | --- |
-| **Small Rust binary, fast path** | Native code, small disk footprint (on the order of **~20 MB** per platform build), and a responsive CLI — ideal for daily terminal use. |
-| **Real terminal UI** | Interactive REPL when you run `finclaw chat` with no message: multiline input, inline help, and slash commands. |
-| **Profiles, not a single global blob** | Isolated `~/.finclaw/profiles/<name>/` layout — templates, skills, policies, and identity, shareable with backup/import flows. |
-| **Claw under the hood** | Tool/skill and policy contracts from the Finclaw stack; one binary talks to embedded or remote Claw as the host is designed. |
-| **Run modes** | **One-shot** (`finclaw chat -m "…"`), **REPL** (`finclaw chat`), or a **long-lived** process (`finclaw serve`) when you want a daemon. |
-| **Operator-friendly** | `finclaw doctor`, `finclaw version`, shell completions, and explicit update guidance — built for people who read `--help` first. |
-
----
+`finclaw --help` and `finclaw <subcommand> --help` remain authoritative for flags on your build.
 
 ## Quick install
 
-**Works on macOS, Linux, and on Windows via WSL2** (glibc-based Linux; use the `*-unknown-linux-gnu` archive). A native Windows `.exe` is not in the current release set.
-
-**One-liner** (downloads the correct `*.tar.zst` for this machine, verifies `SHA256SUMS` when the release provides it, installs into `$HOME/.local/bin`):
+**Platforms:** macOS, Linux, and **Windows via WSL2** (glibc Linux). A native Windows `.exe` is not in the current release set.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh
 ```
 
-Pin a **stable script URL** to a tag once that tag’s `install.sh` exists:
+Then ensure `$HOME/.local/bin` (or your chosen install dir) is on `PATH` and run `finclaw --version`.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/v0.1.0/install.sh | sh
-```
+**Details:** [docs/installation.md](docs/installation.md) (manual download, checksums, extract, updates).
 
-Pass flags through the pipe:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh -s -- --version 0.1.0
-```
-
-Or use environment variables (same as `install.sh` documents):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh \
-  | env FINCLAW_VERSION=0.1.0 FINCLAW_INSTALL_DIR="$HOME/.local/bin" sh
-```
-
-`FINCLAW_INSECURE_SKIP_CHECKSUM=1` is an **emergency** escape hatch; you should not need it for normal releases.
-
-**After install:**
-
-```bash
-source ~/.zshrc    # or: source ~/.bashrc
-finclaw --version
-```
-
----
-
-## First run in four commands
+## First run
 
 ```text
-finclaw init        # first-time: profile dirs, stub config, optional template
-finclaw doctor      # quick sanity check after you add LLM settings
-finclaw chat        # drop into the interactive REPL (no -m)
-finclaw --help      # full command tree; every subcommand has --help
+finclaw init
+finclaw doctor
+finclaw chat
+finclaw --help
 ```
 
-**One-liner to the model** (for scripts or CI — exits after the reply):
-
-```bash
-finclaw chat -m "Hello from finclaw"
-```
-
-**When you are ready for a service-style deployment** (long-lived process on the machine):
-
-```bash
-finclaw serve
-```
-
-**LLM providers:** the embedded mock is fine for smoke tests; for real models configure **provider, model, and API key** (or `base_url` for OpenAI-compatible stacks). See **[Getting started](docs/getting-started.md)** (environment variables, `~/.finclaw/.env`, and `finclaw config set`). Use `finclaw doctor` and `finclaw config check` after changes.
-
----
-
-## Command cheat sheet
-
-| I want to… | Start here |
-| --- | --- |
-| See what this build is | `finclaw version` |
-| Health / config / sandbox hints | `finclaw doctor` |
-| Talk to the agent in the shell | `finclaw chat` (REPL) or `finclaw chat -m "…"` |
-| Browse / install skills | `finclaw skills --help` |
-| Switch or inspect models | `finclaw model` / `finclaw model <id>` |
-| Manage a profile (clone, template, diff) | `finclaw profile --help` |
-| Policies and identity | `finclaw policy --help` · `finclaw identity --help` |
-| Shell completion | `finclaw completion bash` (zsh, fish, elvish, PowerShell) |
-| Follow logs | `finclaw logs --help` |
-| Check for a newer public build | `finclaw update` (prints channel + URL; replace binary manually unless release notes say otherwise) |
-| Uninstall / wipe local state | `finclaw uninstall` |
-
-`finclaw --help` and `finclaw <subcommand> --help` are authoritative for flags.
-
----
-
-## Skills
-
-FinClaw loads skills from the active profile:
-
-```text
-~/.finclaw/profiles/<profile>/skills/<skill-id>/SKILL.md
-```
-
-Use the built-in ClawHub adapter for public OpenClaw / ClawHub skills. These commands do not require `clawhub login`; publishing and authenticated registry workflows are intentionally out of scope for `finclaw`:
-
-```bash
-finclaw skills clawhub browse
-finclaw skills clawhub search "postgres backups"
-finclaw skills clawhub info postgres-backups
-finclaw skills clawhub install postgres-backups
-finclaw skills list
-finclaw skills check
-```
-
-You can also use the open `npx skills` ecosystem directly. Install to the OpenClaw-compatible local `skills/` layout, then copy or move the resulting skill directory into your active FinClaw profile:
-
-```bash
-mkdir -p /tmp/finclaw-skills-import
-cd /tmp/finclaw-skills-import
-npx skills add vercel-labs/agent-skills --skill frontend-design --agent openclaw --copy -y
-mkdir -p ~/.finclaw/profiles/default/skills
-cp -R skills/frontend-design ~/.finclaw/profiles/default/skills/
-finclaw skills check
-```
-
-Use `--profile <name>` with `finclaw skills check` / `list` when installing into a non-default profile, and copy into `~/.finclaw/profiles/<name>/skills/`.
-
----
-
-## Manual download (full control)
-
-1. Open **[Releases](https://github.com/finogeeks/finclaw-cli/releases)** and pick a version (tags look like `v0.1.0`).
-2. Download **one** platform archive and **`SHA256SUMS`**.
-3. Verify, then extract and install the binary to a directory on your `PATH`.
-
-| Asset | When to use it |
-| --- | --- |
-| `finclaw-v<version>-aarch64-apple-darwin.tar.zst` | macOS Apple Silicon |
-| `finclaw-v<version>-x86_64-apple-darwin.tar.zst` | macOS Intel |
-| `finclaw-v<version>-x86_64-unknown-linux-gnu.tar.zst` | Linux x86_64 and typical WSL2 distros on Intel/AMD |
-| `SHA256SUMS` | Always, unless you are intentionally skipping verification |
-| `release.json` | Optional metadata |
-
-**Verify the download** — do not run the binary if this fails.
-
-`SHA256SUMS` lists **every** platform archive in the release. You only downloaded **one** `.tar.zst`, so **do not** run `shasum -a 256 -c` or `sha256sum -c` on the full `SHA256SUMS` (it will look for the other platform files and fail). Verify **only the line for your file**, for example (adjust `VER` and `FILE`):
-
-```bash
-cd ~/Downloads
-VER=0.1.0
-FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"
-grep -F "$FILE" SHA256SUMS | shasum -a 256 -c -
-```
-
-On Linux you can use the same `grep` pattern with `sha256sum -c` instead of `shasum` if you prefer.
-
-**Prerequisites to extract:** `tar` and `zstd` (the archives are `*.tar.zst`).
-
-Example extract (Apple Silicon, adjust `VER` and the filename to your download):
-
-```bash
-VER=0.1.0
-FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"
-zstd -dc "$FILE" | tar -xf -
-```
-
-Many Linux distros also support:
-
-```bash
-tar --zstd -xf "finclaw-v${VER}-x86_64-unknown-linux-gnu.tar.zst"
-```
-
-**Install the binary** (path matches the directory name inside the archive):
-
-```bash
-install -m 0755 "finclaw-v${VER}-aarch64-apple-darwin/finclaw" "$HOME/.local/bin/finclaw"
-```
-
-**PATH** (if `finclaw` is not found):
-
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc   # or ~/.bashrc
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-### Platforms
-
-- **macOS** — unsigned binaries can trigger **Gatekeeper**. If the binary is blocked, use **System Settings → Privacy & Security** to allow it, or use a signed build from your organization if one is available.
-- **Windows** — native Windows is **not** in the current artifact matrix; use **WSL2** and the Linux binary until a `*-pc-windows-msvc` (or similar) build is published.
-
-### Data layout (high level)
-
-- Default root: `~/.finclaw` (or `$FINCLAW_HOME`).
-- A **profile** is an isolated environment under that root; the default name is `default` and is created by `finclaw init` on first use.
-
-### Updates
-
-When a new release appears, **download the new archive** for your platform, **re-verify** `SHA256SUMS`, and **replace** the `finclaw` binary. The `update` subcommand is there to show channel and download guidance; it does not silently overwrite the binary unless your release documentation explicitly says it does for your edition.
-
-### Support
-
-- **Install / download / checksum / cannot extract:** open a **[discussion or issue](https://github.com/finogeeks/finclaw-cli/issues)** on this repository with the **release tag**, **file name**, and **OS and CPU architecture** (e.g. `macOS 15, arm64` or `Ubuntu 24.04, x86_64`).
-- **Agent behaviour, product configuration, and runtime issues** outside install scope: use your organization’s or vendor’s support channel when applicable; this repository focuses on **shipping and installing** the binary.
-
----
+**One-shot:** `finclaw chat -m "Hello"` · **LLM setup:** [docs/getting-started.md](docs/getting-started.md)
 
 ## License
 

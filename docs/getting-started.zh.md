@@ -1,6 +1,8 @@
 # finclaw 上手指南
 
-本文面向从 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) **直接安装**的用户。CLI 说明以**本仓库文档**与 `finclaw --help` 为准。
+**完整文档索引（中英文专题）：** [docs/README.md](README.md)
+
+本文面向从 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) **直接安装**的用户。CLI 说明以**本仓库文档**与 `finclaw --help` 为准。策略、profile、技能等深内容见索引中的专题，**不依赖**任何私有源码仓库即可阅读。
 
 **English:** [getting-started.md](getting-started.md)
 
@@ -156,4 +158,4 @@ finclaw serve
 
 ---
 
-*更短的总览见仓库根 [README.zh.md](../README.zh.md)。*
+*总览与链接：* 仓库根 [README.zh.md](../README.zh.md) · 完整索引 [docs/README.md](README.md)
