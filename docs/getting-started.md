@@ -60,11 +60,32 @@ finclaw init
 
 This creates the default profile layout under your Finclaw home (usually `~/.finclaw`) and a valid `config.yaml` with the **mock** LLM provider so the CLI is safe to run before you add real API keys.
 
+If stdin is interactive, `finclaw init` now also offers to launch the guided LLM setup flow immediately.
+
 ---
 
 ## 3. Point finclaw at a real LLM (optional but usual)
 
 The embedded **mock** provider is for smoke tests. For real models you set **provider**, **model**, and **API key** (or base URL for compatible endpoints).
+
+### Recommended path — `finclaw setup`
+
+```bash
+finclaw setup
+```
+
+This guides you through:
+
+- picking a provider (`openai`, `anthropic`, `deepseek`, `openrouter`, `ollama`, `lmstudio`, or a custom OpenAI-compatible endpoint)
+- choosing a default model
+- optionally storing an API key in `config.yaml`
+- setting a local/custom `base_url` when needed
+
+For scripts and CI, you can skip prompts:
+
+```bash
+finclaw setup --non-interactive --provider openai --model gpt-4o-mini
+```
 
 ### Option A — `finclaw config` (writes YAML on disk)
 
@@ -105,6 +126,15 @@ finclaw doctor
 
 `doctor` and `config check` surface missing keys, bad paths, and provider issues.
 
+**Suggested first-run loop:**
+
+```bash
+finclaw init
+finclaw setup
+finclaw doctor
+finclaw chat -m "Hello from finclaw"
+```
+
 **Wire contract (public):** [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) describes the integration surface; day-to-day CLI flags are in `finclaw --help`.
 
 ---
@@ -129,7 +159,7 @@ finclaw chat -m "Hello from finclaw"
 finclaw serve
 ```
 
-Use `finclaw model` / `finclaw model <id>` to change the model id when your provider supports it.
+Use `finclaw model` / `finclaw model <id>` to change the model id when your provider supports it. Interactive `finclaw model` (no id, TTY) uses the same catalog picker as `finclaw setup`; have `llm.provider` set in config or pass `--provider` for that flow.
 
 ---
 

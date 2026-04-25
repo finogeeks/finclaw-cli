@@ -60,11 +60,32 @@ finclaw init
 
 通常会在 Finclaw 主目录（一般为 `~/.finclaw`）下建立 profile 与初始 `config.yaml`；默认 LLM 为 **mock**，便于未配置密钥时也能冒烟自测。
 
+如果当前终端可交互，`finclaw init` 还会询问是否立刻进入引导式 LLM 配置流程。
+
 ---
 
 ## 3. 配置真实大模型（可选，但常用）
 
 内建 **mock** 仅适合连通性/冒烟；真实使用需设置 **provider**、**model**、**API 密钥**（及可选 **base_url** 等）。
+
+### 推荐方式 — `finclaw setup`
+
+```bash
+finclaw setup
+```
+
+它会引导你完成：
+
+- 选择 provider（如 `openai`、`anthropic`、`deepseek`、`openrouter`、`ollama`、`lmstudio`，或自定义 OpenAI 兼容端点）
+- 选择默认 model
+- 需要时写入 API 密钥到 `config.yaml`
+- 为本地/自定义端点设置 `base_url`
+
+脚本或 CI 可直接使用非交互模式：
+
+```bash
+finclaw setup --non-interactive --provider openai --model gpt-4o-mini
+```
 
 ### 方式 A — `finclaw config`（写入 YAML）
 
@@ -103,6 +124,15 @@ finclaw config check
 finclaw doctor
 ```
 
+**推荐首次闭环：**
+
+```bash
+finclaw init
+finclaw setup
+finclaw doctor
+finclaw chat -m "你好，finclaw"
+```
+
 **公开合同：** 线路与合同见 [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)；日常子命令以 `finclaw --help` 为准。
 
 ---
@@ -127,7 +157,7 @@ finclaw chat -m "你好，finclaw"
 finclaw serve
 ```
 
-模型与 `finclaw model` 的说明见 `finclaw model --help`。
+模型与 `finclaw model` 的说明见 `finclaw model --help`。交互式、无参的 `finclaw model` 与 `finclaw setup` 使用**同一套**编号选模型；需已在配置中设置 `llm.provider` 或加 `--provider`。
 
 ---
 

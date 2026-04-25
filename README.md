@@ -55,6 +55,7 @@ Then ensure `$HOME/.local/bin` (or your chosen install dir) is on `PATH` and run
 
 ```text
 finclaw init
+finclaw setup
 finclaw doctor
 finclaw chat
 finclaw --help

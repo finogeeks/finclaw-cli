@@ -55,6 +55,7 @@ curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.
 
 ```text
 finclaw init
+finclaw setup
 finclaw doctor
 finclaw chat
 finclaw --help
