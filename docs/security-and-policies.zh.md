@@ -6,6 +6,30 @@
 
 **子命令以本机 `finclaw policy --help`、`finclaw identity --help`、`finclaw capability --help` 为准。**
 
+## 宿主执行沙箱（`--security`）
+
+该全局开关与 **profile 下 `policies/*.yaml` 的“策略”** 是不同层面：`--security` 决定在 Claw 启动前，**本进程**为本地 **工具/exec 隔离**（如 Tier A/B、Seatbelt、bwrap、Apple Container 等）写入哪些 `AI_INFRA_RS_*` 环境变量。它不替代 `finclaw policy` 对自动批准、HTTP 白名单、exec 白名单等内容的配置。
+
+| 取值 | 概要 |
+| --- | --- |
+| `isolated` | 在**当前系统与构建**上能落地的**最强本地隔离**（例如 macOS 上在栈可用时走 Apple Container；在映射到 Linux 的环境变量中对应更偏 “cloud / fail-closed” 的 bwrap 姿态）。 |
+| `restricted` | 典型**桌面**沙箱：macOS 上为 Seatbelt；Linux 为偏桌面的 bwrap 组合。 |
+| `yolo` | **兼容优先**的 “legacy” 宿主执行姿态；该映射会关闭所覆盖变量中的 Tier B 等。 |
+
+**默认与提示**
+
+- **`finclaw chat`** 在未显式传 `--security` 时，等效为 **`yolo`**，以便本地使用习惯与 OpenClaw / Hermes 系宿主相近。可打印 **stderr 提示**，建议需要更强沙箱时使用 `--security restricted` 或 `--security isolated`。
+- **其他子命令** 不会在省略 `--security` 时套用这个 chat 专用默认；以本机构建/宿主基线为准（见本机 `finclaw --help`）。
+
+**示例**
+
+```bash
+finclaw chat --security restricted
+finclaw --security isolated chat -m "你好"
+```
+
+若仍**手动**设置 `AI_INFRA_RS_*`，请避免与同一进程内 `--security` 映射相冲突。实现矩阵见上游源码 `hosts/cli/src/security.rs`（finclaw 仓库）。
+
 ## 策略类型（磁盘上的 kind）
 
 在 `<profile_root>/policies/` 下，常见文件命名习惯如下：
@@ -108,6 +132,6 @@ finclaw doctor --fix
 
 ## 另见
 
+- [configuration.zh.md](configuration.zh.md) — `config.yaml`、环境变量、全局参数 `--security`
 - [profiles.zh.md](profiles.zh.md) — `profile apply`、备份与导入
-- [configuration.zh.md](configuration.zh.md) — 配置与环境变量
 - [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) — 公开线路合同

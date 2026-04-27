@@ -61,7 +61,7 @@ finclaw chat
 finclaw --help
 ```
 
-**One-shot:** `finclaw chat -m "Hello"` · **LLM setup:** [docs/getting-started.md](docs/getting-started.md)
+**One-shot:** `finclaw chat -m "Hello"` · **LLM setup:** [docs/getting-started.md](docs/getting-started.md) · **Host sandbox (`--security`):** [docs/security-and-policies.md](docs/security-and-policies.md)
 
 ## License
 

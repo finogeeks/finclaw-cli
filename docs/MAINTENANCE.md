@@ -17,8 +17,9 @@ These notes are for people who edit documentation in the **finclaw-cli** public 
 
 1. Update the topic guide (English + Chinese) for the affected area.
 2. Update [reference-commands.md](reference-commands.md) (and `.zh.md`) if top-level commands or primary workflows change.
-3. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
-4. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
+3. **Global `--security` / host isolation** — if the mapping to `AI_INFRA_RS_*` or default behavior changes upstream, update [security-and-policies.md](security-and-policies.md) and [security-and-policies.zh.md](security-and-policies.zh.md) first, then [configuration.md](configuration.md) / [configuration.zh.md](configuration.zh.md) and [chat-and-operations.md](chat-and-operations.md) / `.zh.md` cross-references as needed.
+4. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
+5. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
 
 ## Bilingual files
 

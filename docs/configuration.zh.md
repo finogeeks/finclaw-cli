@@ -18,6 +18,10 @@ finclaw profile use <name>
 
 会在 finclaw 主目录下记录当前选择（例如 `active-profile` 文件）。
 
+## 全局参数：宿主沙箱（`--security`）
+
+`--security <isolated|restricted|yolo>` 为**全局**参数（与子命令的相对位置可按 `--help` 习惯书写，作用于**整个进程**）。**不会**写入 `config.yaml`；在运行时启动前设置与本地工具/exec 隔离相关的 `AI_INFRA_RS_*` 环境变量。它与 `policies/` 下 YAML 策略是不同层面，详见 [security-and-policies.zh.md](security-and-policies.zh.md#宿主执行沙箱security)。
+
 ## 宿主配置文件
 
 与 LLM 提供商、密钥、守护进程开关等相关的主配置一般为 **活动 profile** 下的 YAML：

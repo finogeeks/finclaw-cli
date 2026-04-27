@@ -6,6 +6,30 @@ This page describes **how to configure** what the agent is allowed to do: OS com
 
 **Authoritative for flags:** `finclaw policy --help`, `finclaw identity --help`, `finclaw capability --help`.
 
+## Host execution sandbox (`--security`)
+
+This is **separate** from the on-disk **policy** files in `<profile_root>/policies/`. The **global** CLI flag `--security` chooses how the Claw **host** isolates local tool and exec work (for example Tier A vs Tier B, Seatbelt, bwrap, Apple Container) by setting `AI_INFRA_RS_*` environment variables in the `finclaw` process before the runtime starts. It does **not** replace `finclaw policy` for auto-approve rules, HTTP allowlists, or exec command allowlists.
+
+| Value | Summary |
+| --- | --- |
+| `isolated` | Strongest local isolation the build can apply on your OS (for example Apple Container on macOS when available; a fail-closed, bwrap-oriented “cloud” profile on Linux in the mapped env). |
+| `restricted` | Desktop sandboxing: Seatbelt on macOS; a desktop-oriented bwrap profile on Linux. |
+| `yolo` | Compatibility-first “legacy” host posture; Tier B stays off in the variables this flag sets. |
+
+**Defaults and reminders**
+
+- **`finclaw chat`** uses **`yolo`** when you omit `--security` (so local CLI use matches common OpenClaw/Hermes-style access). The binary may print a **stderr notice** suggesting `--security restricted` or `--security isolated` if you want a stronger sandbox.
+- **Other subcommands** do not apply that chat default; omitting the flag leaves the host/runtime defaults for your OS (see `finclaw --help` on your build).
+
+**Examples**
+
+```bash
+finclaw chat --security restricted
+finclaw --security isolated chat -m "Hello"
+```
+
+Advanced setups may still set `AI_INFRA_RS_*` by hand. Avoid duplicating the same keys in a conflicting way in one process; the `--security` path is intended to own the mapped subset for that invocation. Implementation reference (source repo): `hosts/cli/src/security.rs` in the finclaw workspace.
+
 ## Policy kinds (on disk)
 
 Under `<profile_root>/policies/`, four policy **kinds** are used (file names are conventional):
@@ -121,6 +145,6 @@ finclaw doctor --fix
 
 ## See also
 
+- [configuration.md](configuration.md) — `config.yaml`, env, and global flags such as `--security`
 - [profiles.md](profiles.md) — `profile apply`, backup/import
-- [configuration.md](configuration.md) — `config.yaml` and env
 - [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) — public wire contract (not a full policy schema dump)

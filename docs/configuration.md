@@ -18,6 +18,10 @@ finclaw profile use <name>
 
 This records the choice under the finclaw home (for example `active-profile`).
 
+## Global flag: host sandbox (`--security`)
+
+`--security <isolated|restricted|yolo>` is a **global** flag (place it before or after the subcommand; it applies to the whole process). It is **not** stored in `config.yaml`. It sets `AI_INFRA_RS_*` variables for local tool/exec isolation before the runtime starts. This is separate from policy YAML under `policies/` — see [security-and-policies.md](security-and-policies.md) (section *Host execution sandbox*).
+
 ## Host config file
 
 The main YAML file for LLM provider, keys, and host toggles lives under the **active profile**:

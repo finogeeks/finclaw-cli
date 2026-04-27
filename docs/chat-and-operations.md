@@ -29,6 +29,14 @@ Token streaming to the terminal is typically on by default; `--no-stream` (or th
 finclaw chat --capability read_only -m "Explain this repository layout."
 ```
 
+### Host sandbox (`--security`)
+
+`--security` is a **global** flag (not a `chat`-only option) that sets process-level `AI_INFRA_RS_*` variables for how strongly local tools and exec are isolated. `finclaw chat` defaults to `yolo` when you omit it. Full table and examples: [security-and-policies.md](security-and-policies.md) (*Host execution sandbox*).
+
+```bash
+finclaw chat --security restricted
+```
+
 ## Long-lived daemon
 
 ```bash

@@ -12,7 +12,7 @@ User guides for the [`finclaw` CLI](https://github.com/finogeeks/finclaw-cli) (r
 | Installation and binary updates | [installation.md](installation.md) | [installation.zh.md](installation.zh.md) |
 | Configuration, env, paths | [configuration.md](configuration.md) | [configuration.zh.md](configuration.zh.md) |
 | Profiles, templates, backup and import | [profiles.md](profiles.md) | [profiles.zh.md](profiles.zh.md) |
-| Security: policies, presets, identity, capability | [security-and-policies.md](security-and-policies.md) | [security-and-policies.zh.md](security-and-policies.zh.md) |
+| Security: policies, presets, identity, capability, **global `--security` (host sandbox)** | [security-and-policies.md](security-and-policies.md) | [security-and-policies.zh.md](security-and-policies.zh.md) |
 | Skills: hubs, ClawHub, install and check | [skills.md](skills.md) | [skills.zh.md](skills.zh.md) |
 | Chat, REPL, daemon, logs, operations | [chat-and-operations.md](chat-and-operations.md) | [chat-and-operations.zh.md](chat-and-operations.zh.md) |
 | Command index (cheat sheet) | [reference-commands.md](reference-commands.md) | [reference-commands.zh.md](reference-commands.zh.md) |

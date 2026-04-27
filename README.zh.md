@@ -61,7 +61,7 @@ finclaw chat
 finclaw --help
 ```
 
-**一次性对话：** `finclaw chat -m "你好"` · **大模型配置：** [docs/getting-started.zh.md](docs/getting-started.zh.md)
+**一次性对话：** `finclaw chat -m "你好"` · **大模型配置：** [docs/getting-started.zh.md](docs/getting-started.zh.md) · **宿主沙箱（`--security`）：** [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md)
 
 ## 许可
 

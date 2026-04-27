@@ -151,6 +151,8 @@ finclaw chat
 finclaw chat -m "你好，finclaw"
 ```
 
+**更强本地沙箱（可选）**：全局参数 `--security` 控制宿主侧工具/exec 隔离（`isolated` / `restricted` / `yolo`），`chat` 在省略时默认等效为 `yolo`。详见 [security-and-policies.zh.md](security-and-policies.zh.md)（**宿主执行沙箱**）。
+
 **常驻服务**（本机长进程）：
 
 ```bash

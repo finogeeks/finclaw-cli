@@ -8,6 +8,7 @@
 | --- | --- |
 | 版本 / 构建 / 合同信息 | `finclaw version` |
 | 健康检查、配置、沙箱提示 | `finclaw doctor` |
+| 全局宿主执行沙箱 | `finclaw --security <isolated\|restricted\|yolo> …`（见 [security-and-policies.zh.md](security-and-policies.zh.md)） |
 | 对话（REPL 或一次性） | `finclaw chat` · `finclaw chat -m "…"` |
 | 常驻进程 | `finclaw serve` |
 | 状态 / 停止 | `finclaw status` · `finclaw stop` |

@@ -153,6 +153,8 @@ finclaw chat
 finclaw chat -m "Hello from finclaw"
 ```
 
+**Stronger local sandbox** (optional): the global flag `--security` controls host-side tool/exec isolation (`isolated` / `restricted` / `yolo`). `chat` defaults to `yolo` when omitted. See [security-and-policies.md](security-and-policies.md) (*Host execution sandbox*).
+
 **Long-lived process** (when you want a daemon on the machine):
 
 ```bash

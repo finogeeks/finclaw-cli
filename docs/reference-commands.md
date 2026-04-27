@@ -8,6 +8,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | --- | --- |
 | Version / build / contract info | `finclaw version` |
 | Health, config, sandbox hints | `finclaw doctor` |
+| Host execution sandbox (global) | `finclaw --security <isolated\|restricted\|yolo> …` — see [security-and-policies.md](security-and-policies.md) |
 | Chat (REPL or one-shot) | `finclaw chat` · `finclaw chat -m "…"` |
 | Long-lived process | `finclaw serve` |
 | Runtime status / stop | `finclaw status` · `finclaw stop` |
