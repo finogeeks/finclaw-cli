@@ -82,9 +82,9 @@ finclaw skills check
 
 将 `default` 换成你的 profile 名。
 
-## 线路合同
+## 与 Claw 的集成（依运行时而定）
 
-集成层面的公开说明见 [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)；不能替代本机 `finclaw skills` 的实际能力。
+协议级集成以所部署的 Claw 为准；日常仍以上述 `finclaw skills` 命令与 `--help` 为准。
 
 ## 另见
 

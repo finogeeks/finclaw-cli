@@ -2,7 +2,7 @@
 
 **Documentation index (all topics, EN + 中文):** [docs/README.md](README.md)
 
-This guide is for **end users** installing from [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases). CLI documentation in this repository, plus `finclaw --help` on your machine, is the **authoritative** surface. Deeper topics (policies, profiles, skills) live in the linked guides and do not require access to any private source repository.
+This guide is for **end users** installing from [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases). CLI documentation in this repository, plus `finclaw --help` on your machine, is the **authoritative** surface for the command-line tool. Deeper topics (policies, profiles, skills) live in the linked guides in this repo.
 
 **Chinese version:** [getting-started.zh.md](getting-started.zh.md)
 
@@ -135,7 +135,7 @@ finclaw doctor
 finclaw chat -m "Hello from finclaw"
 ```
 
-**Wire contract (public):** [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) describes the integration surface; day-to-day CLI flags are in `finclaw --help`.
+**Claw HTTP/API behavior** depends on your deployment; day-to-day CLI flags are in `finclaw --help`.
 
 ---
 
@@ -175,7 +175,7 @@ Use `finclaw model` / `finclaw model <id>` to change the model id when your prov
 
 Use `finclaw profile --help` for copy/backup flows.
 
-**Skills:** configure hubs with `finclaw skills list` / `check` / `hubs` / `install`, or drop packs into `~/.finclaw/profiles/<name>/skills/<id>/`. Use `finclaw skills --help` for all flags. The public [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) repository describes the wire-level integration contract.
+**Skills:** configure hubs with `finclaw skills list` / `check` / `hubs` / `install`, or drop packs into `~/.finclaw/profiles/<name>/skills/<id>/`. Use `finclaw skills --help` for all flags.
 
 ---
 

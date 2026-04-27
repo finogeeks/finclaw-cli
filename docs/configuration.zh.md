@@ -63,6 +63,6 @@ finclaw config check
 finclaw doctor
 ```
 
-## 线路合同
+## 与 Claw 的 HTTP/API（依部署而定）
 
-协议与集成层面的公开说明见 [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)。具体子命令与参数以本机 `finclaw --help` 为准。
+协议与集成细节以你所部署的 Claw 运行时及厂商/运维文档为准。子命令与参数以本机 `finclaw --help` 为准。

@@ -63,6 +63,6 @@ finclaw config check
 finclaw doctor
 ```
 
-## Wire contract
+## Claw HTTP/API (deployment-specific)
 
-For HTTP/API contract details, the public [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) repository is the reference. CLI flags remain authoritative for what **your** binary supports.
+For HTTP/API integration details, rely on documentation for **your** Claw deployment and runtime build. CLI flags remain authoritative for what **your** `finclaw` binary supports (`finclaw --help`).

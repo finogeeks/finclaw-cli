@@ -1,10 +1,10 @@
 # finclaw documentation
 
-User guides for the [`finclaw` CLI](https://github.com/finogeeks/finclaw-cli) (release binaries and install scripts in this repository). All guides are self-contained; **no access to a private source repository is required** to use them.
+User guides for the `finclaw` CLI (release binaries and install scripts in this repository). All guides are self-contained to this repo.
 
 **Authoritative for flags and subcommands:** `finclaw --help` and `finclaw <subcommand> --help` on your machine (match your installed version).
 
-**Wire contract (public):** [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) — integration surface, not a substitute for the CLI how-tos below.
+**HTTP/API integration** with Claw is defined by the runtime you deploy; these guides focus on the CLI. Use your operator or vendor documentation for wire-level details when needed.
 
 | Topic | English | 中文 |
 | --- | --- | --- |

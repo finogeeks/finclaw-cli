@@ -28,7 +28,7 @@ finclaw chat --security restricted
 finclaw --security isolated chat -m "Hello"
 ```
 
-Advanced setups may still set `AI_INFRA_RS_*` by hand. Avoid duplicating the same keys in a conflicting way in one process; the `--security` path is intended to own the mapped subset for that invocation. Implementation reference (source repo): `hosts/cli/src/security.rs` in the finclaw workspace.
+Advanced setups may still set `AI_INFRA_RS_*` by hand. Avoid duplicating the same keys in a conflicting way in one process; the `--security` path is intended to own the mapped subset for that invocation. The exact key matrix matches your installed `finclaw` build; use `finclaw doctor` or your operator docs if you need to confirm values.
 
 ## Policy kinds (on disk)
 
@@ -147,4 +147,3 @@ finclaw doctor --fix
 
 - [configuration.md](configuration.md) — `config.yaml`, env, and global flags such as `--security`
 - [profiles.md](profiles.md) — `profile apply`, backup/import
-- [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) — public wire contract (not a full policy schema dump)

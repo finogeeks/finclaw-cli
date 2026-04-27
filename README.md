@@ -9,7 +9,7 @@
 
 **A lightweight, high-performance CLI built in Rust** — a single **~20 MB** (release/stripped) binary, statically linked, with no Node or Python required to run the tool.
 
-**What it does:** terminal-native work on the **Claw** agent runtime (public wire contract: [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)) — interactive REPL, slash commands, per-machine **profiles**, and optional **daemon** mode (`finclaw serve`).
+**What it does:** terminal-native work on the **Claw** agent runtime — interactive REPL, slash commands, per-machine **profiles**, and optional **daemon** mode (`finclaw serve`). HTTP/API surfaces are defined by the Claw build you run; this repository documents the shipped **CLI** only.
 
 This repository is the **official home** for the `finclaw` command-line tool: install scripts, user documentation, and **release builds** on [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases).
 
@@ -20,7 +20,7 @@ This repository is the **official home** for the `finclaw` command-line tool: in
 
 ## Documentation
 
-All user guides are **self-contained in this repository** (no private source access required). See **[docs/README.md](docs/README.md)** for the full index (English + 中文 for each topic).
+All user guides are **self-contained in this repository**. See **[docs/README.md](docs/README.md)** for the full index (English + 中文 for each topic).
 
 | Topic | English | 中文 |
 | --- | --- | --- |

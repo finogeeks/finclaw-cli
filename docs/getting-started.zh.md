@@ -2,7 +2,7 @@
 
 **完整文档索引（中英文专题）：** [docs/README.md](README.md)
 
-本文面向从 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) **直接安装**的用户。CLI 说明以**本仓库文档**与 `finclaw --help` 为准。策略、profile、技能等深内容见索引中的专题，**不依赖**任何私有源码仓库即可阅读。
+本文面向从 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) **直接安装**的用户。CLI 说明以**本仓库文档**与 `finclaw --help` 为准。策略、profile、技能等深内容见索引中的专题。
 
 **English:** [getting-started.md](getting-started.md)
 
@@ -133,7 +133,7 @@ finclaw doctor
 finclaw chat -m "你好，finclaw"
 ```
 
-**公开合同：** 线路与合同见 [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)；日常子命令以 `finclaw --help` 为准。
+**Claw 线路与 API：** 以你所部署的运行时为准；日常子命令以 `finclaw --help` 为准。
 
 ---
 
@@ -173,7 +173,7 @@ finclaw serve
 
 备份、导入、profile 管理见 `finclaw profile --help`。
 
-**技能包（Skill packs）：** 使用 `finclaw skills` 子命令可配置远程 hub、校验安装、从索引安装/更新/卸载，也可手动放入 `~/.finclaw/profiles/<name>/skills/<id>/`。完整参数以 `finclaw skills --help` 为准；公开合同见 [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)。
+**技能包（Skill packs）：** 使用 `finclaw skills` 子命令可配置远程 hub、校验安装、从索引安装/更新/卸载，也可手动放入 `~/.finclaw/profiles/<name>/skills/<id>/`。完整参数以 `finclaw skills --help` 为准。
 
 ---
 

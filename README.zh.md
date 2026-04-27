@@ -9,7 +9,7 @@
 
 **以 Rust 实现、体积极小、追求高性能的终端 CLI**：默认可为 strip 后**单文件二进制约 20 MB 量级**，静态链接，运行**不依赖 Node / Python**。
 
-**能力概览：** 在 **Claw** 智能体运行时之上工作（公开线路合同见 [`finclaw-contract`](https://github.com/Geeksfino/finclaw-contract)）— 支持交互式 REPL、slash 命令、本机 **profile** 与可选的常驻 **`finclaw serve`**。
+**能力概览：** 在 **Claw** 智能体运行时之上工作 — 支持交互式 REPL、slash 命令、本机 **profile** 与可选的常驻 **`finclaw serve`**。线路与 API 以你实际运行的 Claw 构建为准；本仓库仅说明随 binary 发布的 **CLI**。
 
 本仓库是 `finclaw` 的**官方发布与文档站点**；**正式构建**在 [GitHub Releases](https://github.com/finogeeks/finclaw-cli/releases) 提供。
 
@@ -20,7 +20,7 @@
 
 ## 文档
 
-用户文档**全部位于本公开仓库**（**无需**访问任何私有源码库）。完整索引见 **[docs/README.md](docs/README.md)**（各专题均含中、英文档）。
+用户文档**全部位于本仓库**。完整索引见 **[docs/README.md](docs/README.md)**（各专题均含中、英文档）。
 
 | 专题 | English | 中文 |
 | --- | --- | --- |

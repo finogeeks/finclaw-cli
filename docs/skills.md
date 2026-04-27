@@ -82,9 +82,9 @@ finclaw skills check
 
 Adjust `default` to your profile name.
 
-## Wire contract
+## Skill integration (runtime-specific)
 
-[finclaw-contract](https://github.com/Geeksfino/finclaw-contract) documents integration surfaces; it does not replace the CLI skill UX above.
+Wire-level skill integration depends on your Claw build; the commands above remain the practical interface for end users.
 
 ## See also
 

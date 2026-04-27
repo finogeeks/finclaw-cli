@@ -28,7 +28,7 @@ finclaw chat --security restricted
 finclaw --security isolated chat -m "你好"
 ```
 
-若仍**手动**设置 `AI_INFRA_RS_*`，请避免与同一进程内 `--security` 映射相冲突。实现矩阵见上游源码 `hosts/cli/src/security.rs`（finclaw 仓库）。
+若仍**手动**设置 `AI_INFRA_RS_*`，请避免与同一进程内 `--security` 映射相冲突。具体键值组合以已安装的 `finclaw` 构建为准；需要核对时可参考 `finclaw doctor` 或你们运维提供的说明。
 
 ## 策略类型（磁盘上的 kind）
 
@@ -134,4 +134,3 @@ finclaw doctor --fix
 
 - [configuration.zh.md](configuration.zh.md) — `config.yaml`、环境变量、全局参数 `--security`
 - [profiles.zh.md](profiles.zh.md) — `profile apply`、备份与导入
-- [finclaw-contract](https://github.com/Geeksfino/finclaw-contract) — 公开线路合同

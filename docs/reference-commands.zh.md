@@ -48,4 +48,4 @@
 - [troubleshooting.zh.md](troubleshooting.zh.md)
 - [advanced.zh.md](advanced.zh.md)
 
-**公开线路参考：** [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)
+**线路与 API：** 以所部署的 Claw 运行时为准；需协议级说明时请查阅运维或厂商文档。

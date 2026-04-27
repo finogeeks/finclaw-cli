@@ -48,4 +48,4 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 - [troubleshooting.md](troubleshooting.md)
 - [advanced.md](advanced.md)
 
-**Public wire reference:** [finclaw-contract](https://github.com/Geeksfino/finclaw-contract)
+**HTTP/API integration:** defined by your Claw runtime; use operator or vendor docs when you need wire-level detail beyond this CLI guide.
