@@ -6,6 +6,91 @@ This page describes **how to configure** what the agent is allowed to do: OS com
 
 **Authoritative for flags:** `finclaw policy --help`, `finclaw identity --help`, `finclaw capability --help`.
 
+## Multi-dimensional security control model
+
+Security in `finclaw` is **not** a single switch. Several **independent** mechanisms stack together. Tightening one layer does not automatically fix another—review each dimension for your threat model.
+
+```mermaid
+flowchart TB
+  subgraph host["Host process"]
+    SEC["CLI --security\n(Tier A/B, OS sandbox)"]
+  end
+  subgraph disk["Profile on disk"]
+    POL["policies/*.yaml\n(exec, http, tool-invocation, llm)"]
+    PR["profile.yaml\npresets + capability"]
+  end
+  subgraph runtime["Claw runtime"]
+    CAP["capability → agent loop profile\n(timeouts, max tool calls)"]
+    GOV["Tool governance\n(auto / ask / deny)"]
+    APR["Interactive approval\n(streaming infer)"]
+  end
+  SEC --> runtime
+  POL --> runtime
+  PR --> POL
+  PR --> CAP
+  GOV --> APR
+```
+
+| Dimension | What it controls | Typical user touchpoints |
+| --- | --- | --- |
+| **A. Host execution sandbox** | How strongly the **local** Claw process isolates tool/exec work (seatbelt, bwrap, optional Tier B, etc.) | `finclaw chat --security restricted\|isolated\|yolo` |
+| **B. Exec policy** | Whether `exec` exists at all, program allow/deny lists, sandbox flags, network for subprocesses | `presets.exec`, `policies/exec-policy.yaml`, `finclaw policy apply exec` |
+| **C. HTTP allowlist** | Outbound domains for fetch/browser-style tools; browser SSRF posture | `presets.http`, `policies/http-allowlist.yaml` |
+| **D. Tool invocation policy** | Autonomy **mode** (`readonly` / `supervised` / `full`) and per-tool **auto-approve**, **always-ask**, **deny** sets | `presets.tool`, `policies/tool-invocation-policy.yaml` |
+| **E. Capability (agent loop profile)** | Wall-clock **timeout**, **max tool calls**, research sub-budgets, continuation—selected by **capability string** (`general`, `coding`, `read_only`, …) | `finclaw capability set`, `finclaw chat --capability …` |
+| **F. Identity / persona** | What the model is told about itself (system prompt surface) | `finclaw identity …` |
+| **G. Interactive approval (supervised tools)** | When policy requires it, the runtime may **pause** until a human approves or rejects via the HTTP approval-resolve path; the **line-based** CLI can prompt; **full-screen `--tui`** cannot safely prompt and may **auto-reject** pending approvals with a warning | See *Interactive tool approvals* below |
+
+**How dimensions interact (short):**
+
+- **`--security`** (A) does **not** replace policy files (B–D). You can run with a strong OS sandbox **and** still need `ask_for_writes` if you want human confirmation before file writes—those are separate concerns.
+- **Tool preset `ask_for_writes`** (D) sets **supervised** mode and puts destructive tools (`write_file`, `apply_patch`, `exec`, …) in **always ask**, while read/search/skill-discovery tools can stay on an **auto-approve** allowlist until you edit YAML.
+- **Tool preset `auto_all`** (D) maps to **full** autonomy in the shipped preset—suited only when you already trust the environment and downstream policies.
+- **Capability `read_only`** (E) (often used together with **research-style** profiles) selects a **tighter agent-loop profile** in the runtime (for example shorter wall-clock timeouts, lower default `max_tool_calls`, continuation often off)—this is **about loop budget**, not by itself blocking tools; combine with (D) and **allowed_tools** tweaks on templates if you need hard blocks.
+- **Capability `coding`** (E) selects the **coding** loop profile—typically **higher** iteration/tool budgets and longer per-tool timeouts intended for repo work—not a substitute for reviewing (B)(C)(D).
+
+### Built-in profile templates vs policy (orientation)
+
+Official **templates** (see [profiles.md](profiles.md)) combine presets; they illustrate how product defaults line up—they are **not** a substitute for reading your resolved YAML.
+
+| Template (concept) | Typical `capability` | Typical tool preset | Typical exec preset | Typical HTTP preset | Notes |
+| --- | --- | --- | --- | --- | --- |
+| General-purpose | `general` | `ask_for_writes` | `read_only_safe` | `lan_only` | Conservative defaults for everyday chat |
+| Researcher / read-heavy | **`read_only`** | `ask_for_writes` | `read_only_safe` | **`open_internet`** | Same **tool-invocation** preset expansion as general in many setups; differs by capability, HTTP, and often **explicit tool exclusions** (`!exec`, …) on the template |
+| Coder | `coding` | **`auto_all`** | **`local_power_user`** | `open_internet` | Highest automation preset in the catalogue; strongest **trust boundary** assumptions—use with care |
+
+Always confirm with **`finclaw profile show --resolved`** and **`finclaw policy show <kind> --resolved`** on your machine.
+
+### Tool preset internals (orientation)
+
+Exact tool names evolve with each Claw release. The following **intent** is stable:
+
+| `presets.tool` | Runtime autonomy mode (typical) | User-visible effect |
+| --- | --- | --- |
+| `ask_for_writes` | **supervised** | Explicit **always-ask** list for mutating tools (`edit_file`, `write_file`, `apply_patch`, `exec`, …); read/search/fetch/skills-discovery tools commonly on **auto-approve** until you customize YAML |
+| `auto_all` | **full** | No policy-driven supervised list from the preset—**all tools** gated only by capability, exec/http policy, host sandbox, and model behavior |
+| `deny_all` | **readonly** | Very restrictive posture; see resolved YAML |
+
+### Interactive tool approvals (supervised flows)
+
+When the runtime requires confirmation for a tool call (**always-ask** entry or supervised **Act-class** tools not auto-approved):
+
+1. The streaming inference session may emit an **`approval_required`** event over SSE.
+2. Some client must **`POST`** to **`/ai/infer/approval/resolve`** with `approval_request_id` and **`approved`** true/false. In **automation**, protect this path (for example with `INTERNAL_APPROVAL_RESOLVE_TOKEN` on the runtime and matching bearer on callers).
+3. The **classic** line-based **`finclaw chat`** prompts **y/n** before sending that approve/reject decision when stdin is interactive.
+4. The **fullscreen** **`--tui`** REPL currently **cannot reliably prompt** in all terminal states; builds may **auto-reject** pending approvals **with a runtime warning**. For approval-heavy supervised workflows, prefer **interactive line-based `chat`** (without `--tui`) or reduce reliance on **`auto_all`** until your client build supports reliable prompts in the T UI.
+
+If nothing calls **resolve**, the request may stall until **live approval** times out server-side—a failure mode operators should recognise.
+
+### Operational checklist
+
+- [ ] **`--security`**: Pick `restricted`/`isolated` on untrusted machines; understand `chat` defaults to **yolo** when omitted (`--security` section below).
+- [ ] **Profiles**: Preserve `profile.yaml` + `policies/` in backups; audit **presets** after upgrades.
+- [ ] **`finclaw capability`**: Matches product intent (`general` vs `coding` vs `read_only`).
+- [ ] **`finclaw policy show … --resolved`**: Inspect **effective** YAML before sharing a profile externally.
+- [ ] **`finclaw doctor`**: Resolve drift (`file` vs `live`).
+- [ ] **Supervised approval**: Operators using resolve endpoints automate only with bearer tokens scoped to infra.
+
 ## Host execution sandbox (`--security`)
 
 This is **separate** from the on-disk **policy** files in `<profile_root>/policies/`. The **global** CLI flag `--security` chooses how the Claw **host** isolates local tool and exec work (for example Tier A vs Tier B, Seatbelt, bwrap, Apple Container) by setting `AI_INFRA_RS_*` environment variables in the `finclaw` process before the runtime starts. It does **not** replace `finclaw policy` for auto-approve rules, HTTP allowlists, or exec command allowlists.

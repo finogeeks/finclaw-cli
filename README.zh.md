@@ -29,7 +29,7 @@
 | 安装与更新 | [docs/installation.md](docs/installation.md) | [docs/installation.zh.md](docs/installation.zh.md) |
 | 配置 | [docs/configuration.md](docs/configuration.md) | [docs/configuration.zh.md](docs/configuration.zh.md) |
 | Profile 与备份 | [docs/profiles.md](docs/profiles.md) | [docs/profiles.zh.md](docs/profiles.zh.md) |
-| 安全与策略 | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
+| 安全与策略（多维控制模型、`--security`、监督式审批） | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | 技能 | [docs/skills.md](docs/skills.md) | [docs/skills.zh.md](docs/skills.zh.md) |
 | 对话与运维 | [docs/chat-and-operations.md](docs/chat-and-operations.md) | [docs/chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | 命令索引 | [docs/reference-commands.md](docs/reference-commands.md) | [docs/reference-commands.zh.md](docs/reference-commands.zh.md) |

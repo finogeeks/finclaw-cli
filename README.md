@@ -29,7 +29,7 @@ All user guides are **self-contained in this repository**. See **[docs/README.md
 | Install and updates | [docs/installation.md](docs/installation.md) | [docs/installation.zh.md](docs/installation.zh.md) |
 | Configuration | [docs/configuration.md](docs/configuration.md) | [docs/configuration.zh.md](docs/configuration.zh.md) |
 | Profiles and backup | [docs/profiles.md](docs/profiles.md) | [docs/profiles.zh.md](docs/profiles.zh.md) |
-| Security and policies | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
+| Security (**multi-dimensional** model, `--security`, approvals) | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | Skills | [docs/skills.md](docs/skills.md) | [docs/skills.zh.md](docs/skills.zh.md) |
 | Chat and operations | [docs/chat-and-operations.md](docs/chat-and-operations.md) | [docs/chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | Command index | [docs/reference-commands.md](docs/reference-commands.md) | [docs/reference-commands.zh.md](docs/reference-commands.zh.md) |

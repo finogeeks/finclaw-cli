@@ -6,6 +6,93 @@
 
 **子命令以本机 `finclaw policy --help`、`finclaw identity --help`、`finclaw capability --help` 为准。**
 
+## 多维安全控制模型（总览）
+
+`finclaw` / Claw 的安全策略不是**单一开关**，而是多层机制**叠加**；收紧一层**不会自动**修好另一层的漏洞——请按自身的威胁模型逐层检视。
+
+以下各维相对独立，但共同决定在用户机器上与模型侧的“可观测行为”边界。
+
+```mermaid
+flowchart TB
+  subgraph host["宿主进程"]
+    SEC["CLI --security\nTier A/B、OS 沙箱"]
+  end
+  subgraph disk["磁盘上的 profile"]
+    POL["policies/*.yaml\nexec / http / tool-invocation / llm"]
+    PR["profile.yaml\n预设 presets + capability"]
+  end
+  subgraph runtime["Claw 运行时"]
+    CAP["capability → agent 循环画像\n超时、工具次数上限"]
+    GOV["工具治理 policy\n自动执行 / 询问 / 拒绝"]
+    APR["交互式审批\n流式 infer 会话"]
+  end
+  SEC --> runtime
+  POL --> runtime
+  PR --> POL
+  PR --> CAP
+  GOV --> APR
+```
+
+| 维度 | 控制什么 | 用户常见入口 |
+| --- | --- | --- |
+| **A. 宿主执行沙箱** | **本机进程**如何把工具/exec 与宿主隔离（Seatbelt、bwrap、可选 Tier B 等） | `finclaw chat --security restricted\|isolated\|yolo` |
+| **B. Exec 策略** | `exec` 是否可用、命令白/黑名单、子进程沙箱与网络策略等 | `presets.exec`、`policies/exec-policy.yaml`、`finclaw policy apply exec` |
+| **C. HTTP 白名单** | 出站域名（含浏览器类工具可走的主机范围）、浏览器 SSRF 姿态 | `presets.http`、`policies/http-allowlist.yaml` |
+| **D. 工具调用策略** | **自主度模式**（`readonly` / `supervised` / `full`）以及按工具的 **auto-approve / always-ask / deny** 集合 | `presets.tool`、`policies/tool-invocation-policy.yaml` |
+| **E. Capability（agent 循环画像）** | 单次请求的**墙钟超时**、**最大工具调用次数**、研究与续跑等相关预算——由 **capability 字符串**选择（如 `general`、`coding`、`read_only`） | `finclaw capability set`、`finclaw chat --capability …` |
+| **F. Identity / 人设** | 系统提示中如何描述智能体与用户责任边界（认知层） | `finclaw identity …` |
+| **G. 交互式审批（supervised）** | 策略要求确认时，运行时可**暂停**直至有人调用 **`/ai/infer/approval/resolve`**；**行式 CLI**可在交互 stdin 下 Y/N **提示**；全屏 **`--tui`** 往往无法稳妥追问，可能对挂起审批 **自动拒绝** 并告警 | 详见下文 **交互式审批** |
+
+**维度之间如何分工（简述）：**
+
+- **`--security`**（A）**不能替代**磁盘策略（B–D）。可同时使用较强的 OS 级沙箱 **与** **显式人机确认**：例如仍为 `ask_for_writes`，在执行写文件前走审批。
+- **工具预设 `ask_for_writes`**（D）对应运行时的 **supervised** 语义，并把**破坏性工具**放入 **always ask**（如 `edit_file`、`write_file`、`apply_patch`、`exec`）；读目录/检索/抓取/技能发现等常见于 **auto_approve**，直至你手写 YAML 覆盖。
+- **`auto_all`**（D）在出厂预设上等价 **full**：更偏“自动化”，只适合**已信任**的环境与下层策略均已审查的场景。
+- **`read_only` capability**（E）（常与**研究类**模版一起使用）会选择更**紧缩**的 **agent 循环默认值**（如更短的墙钟超时、默认更少的工具次数、often 关闭续跑等）；这是**会话预算与形态**，**单靠它不会** magically 禁止写入——若需要硬否决，要结合（D）、允许工具列表、`deny` 等。
+- **`coding` capability**（E）选择 **coding** 循环画像：通常**更高**的迭代与工具配额、单次工具超时等，面向仓库级开发；**不等于**可以跳过对（B）（C）（D）的检视。
+
+### 出厂模版与策略的组合（对齐预期）
+
+模版仅把若干 preset **组合展示**给用户；**请以本机解析结果为准**。详见 [profiles.zh.md](profiles.zh.md)。
+
+| 模版含义 | 典型 capability | 典型 tool 预设 | 典型 exec | 典型 HTTP | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| 通用助手 | `general` | `ask_for_writes` | `read_only_safe` | `lan_only` | 日常使用偏保守默认 |
+| 研究 / 偏只读浏览 | **`read_only`** | 常与通用场景同为 **`ask_for_writes`** | `read_only_safe` | **`open_internet`** | 与同 tool 预设的「通用」相比，差异主要在 **capability、HTTP**，以及模版上常见的 **`!exec` / `!shell`** 等显式剔除 |
+| 编程 | `coding` | **`auto_all`** | **`local_power_user`** | `open_internet` | 自动化程度在产品目录中偏高；信任边界要强 |
+
+务必用 **`finclaw profile show --resolved`** 与 **`finclaw policy show <kind> --resolved`** 核对**有效** YAML。
+
+### 工具预设内在语义（方向性说明）
+
+具体工具名单会随 **Claw 版本**演进；下表刻画**语义**相对稳定：
+
+| `presets.tool` | 典型自主度 mode | 对用户的含义 |
+| --- | --- | --- |
+| `ask_for_writes` | **supervised** | **`always_ask`** 显式点名大量“会改磁盘/执行”的工具；读写类检索、联网抓取、技能只读往往在 **auto_approve**，直至你改写 YAML |
+| `auto_all` | **full** | 预设体本身不再列一堆 supervised——仍受 exec/http、宿主沙箱、模型与策略其它部分约束 |
+| `deny_all` | **readonly** | 极紧策略；请以解析 YAML 为准 |
+
+### 交互式审批（supervised）
+
+当某次调用落在 **always-ask**，或在 supervised 模式下对 **Act 类**危险工具且未列入 auto_approve：
+
+1. 流式推理会话可能下发 **`approval_required`** 类 SSE 事件。
+2. 某客户端必须对 **`POST /ai/infer/approval/resolve`** 提交 **`approval_request_id`** 以及 **`approved` true/false**。自动化场景应对该路径施加鉴权（例如运行环境中的 **`INTERNAL_APPROVAL_RESOLVE_TOKEN`** 与 Bearer 一致）。
+3. **经典行式 `finclaw chat`**：在 stdin 为交互 TTY 时，可能先 **询问 Y/N** 再替你提交批复。
+4. **全屏 `--tui` REPL**：在部分环境下**无法稳妥做行追问**，构建可能对挂起审批 **自动拒绝** 并以 **`warn`** 级别提示。若你希望**每次敏感操作都有人眼确认**，在对应 UX 就绪前更应使用**行式交互 `chat`** 或减少 `auto_all` 依赖。
+
+若无人调用 **resolve**，会话可能卡住直至服务端 **实时审批超时**——运维场景需知晓。
+
+### 运维自检清单（可打印）
+
+- [ ] **`--security`**：不信任的本机选型 `restricted` / `isolated`；知晓省略时 `chat` 可能默认等价 **yolo**（见下文专节）。
+- [ ] **Profile**：备份 **`profile.yaml` + `policies/`**；大版本升级后复查 **presets**。
+- [ ] **`finclaw capability`**：与产品与合规预期一致。
+- [ ] **`finclaw policy show … --resolved`**：对外分享的 profile **先过目**解析结果。
+- [ ] **`finclaw doctor`**：消解 **file vs live** 漂移。
+- [ ] **审批自动化**：仅用受控 Bearer，勿把令牌写进不可信会话日志。
+
 ## 宿主执行沙箱（`--security`）
 
 该全局开关与 **profile 下 `policies/*.yaml` 的“策略”** 是不同层面：`--security` 决定在 Claw 启动前，**本进程**为本地 **工具/exec 隔离**（如 Tier A/B、Seatbelt、bwrap、Apple Container 等）写入哪些 `AI_INFRA_RS_*` 环境变量。它不替代 `finclaw policy` 对自动批准、HTTP 白名单、exec 白名单等内容的配置。
