@@ -219,9 +219,11 @@ if command -v finclaw >/dev/null 2>&1; then
   first="$(command -v finclaw)"
   info "installed: $cp_path (first on PATH: $first)"
   "$first" --version || true
+  info "public builds use the stable finclaw-cli release channel by default for 'finclaw update'"
 else
   info "installed: $cp_path, but it is not on your PATH yet"
   info "add this to your shell rc: export PATH=\"$INSTALL_DIR:\$PATH\""
+  info "after PATH is set, 'finclaw update' will use the stable finclaw-cli release channel by default"
 fi
 
 info "done"

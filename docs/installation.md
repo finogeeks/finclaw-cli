@@ -86,7 +86,16 @@ Unsigned binaries can be blocked by **Gatekeeper**. If the binary is quarantined
 
 ## Updating
 
-When a new release is published, download the new archive for your platform, **re-verify** checksums, and **replace** the `finclaw` binary. Run `finclaw update --help` for the behavior of the `update` subcommand in your build (it may only print channel/URL guidance; it does not always replace the binary automatically).
+Public `finclaw-cli` installs use the **stable** GitHub Releases channel by
+default, so `finclaw update` can show the right release URL even if you never
+edited `config.yaml`.
+
+When a new release is published, run `finclaw update --check` to inspect the
+effective channel and latest version without changing files, or run
+`finclaw update` to update in place. The updater downloads the matching
+platform archive, verifies it against `SHA256SUMS` (or the per-asset hash in
+`release.json`), extracts the `finclaw` binary, saves the previous binary as
+`finclaw.old`, and replaces the installed binary.
 
 ## Uninstall
 

@@ -86,7 +86,15 @@ export PATH="$HOME/.local/bin:$PATH"
 
 ## 更新
 
-出新版本时重新下载本机对应包、**再次校验** SHA256 并**覆盖**原 `finclaw` 文件。`finclaw update --help` 可查看你当前构建中 `update` 子命令的行为（可能仅展示渠道/下载说明，不一定会自动覆盖二进制）。
+公开发布的 `finclaw-cli` 安装默认使用 **stable** GitHub Releases 渠道，
+因此即使你从未编辑过 `config.yaml`，`finclaw update` 也能直接给出正确的
+下载 URL。
+
+发布新版本后，可运行 `finclaw update --check` 查看当前生效的渠道和最新版本
+而不修改文件；或直接运行 `finclaw update` 原地升级。更新器会下载本机平台
+对应的归档，使用 `SHA256SUMS`（或 `release.json` 中的单文件哈希）校验，
+解出 `finclaw` 二进制，将旧文件保存为 `finclaw.old`，再替换当前安装的
+二进制。
 
 ## 卸载
 
