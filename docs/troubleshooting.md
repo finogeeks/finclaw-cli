@@ -14,6 +14,8 @@
 
 - **`finclaw doctor` reports config issues** — run `finclaw config check`, fix `config path`, and confirm env/`.env` precedence (see [configuration.md](configuration.md)).
 - **Mock model only** — set `llm.provider`, `llm.model`, and an API key (or compatible `base_url`) via `finclaw config set` or env vars.
+- **Upgrade changed config shape** — run `finclaw config migrate --dry-run`, then `finclaw config migrate` when you are ready to rewrite `config.yaml` in place (see `--help`).
+- **Legacy profiles missing scaffolding** — `finclaw doctor --fix` materializes safe files when advised (TTY vs non-interactive rules in `--help`).
 
 ## Policy drift
 
@@ -24,7 +26,7 @@ If `finclaw doctor` reports that **on-disk** policies disagree with the **live**
 
 ## Identity changes not visible
 
-If you edit `IDENTITY.md` outside `finclaw identity edit`:
+If you edit `IDENTITY.md` by hand or via an external editor instead of `finclaw agent edit identity` (and related layers):
 
 - Run `finclaw identity render`, then `finclaw profile apply`
 

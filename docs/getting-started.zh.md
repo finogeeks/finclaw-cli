@@ -60,7 +60,25 @@ finclaw init
 
 通常会在 Finclaw 主目录（一般为 `~/.finclaw`）下建立 profile 与初始 `config.yaml`；默认 LLM 为 **mock**，便于未配置密钥时也能冒烟自测。
 
-如果当前终端可交互，`finclaw init` 还会询问是否立刻进入引导式 LLM 配置流程。
+如果当前终端可交互，`finclaw init` 会引导模板等选项。**非交互**常见写法：
+
+```bash
+finclaw init --non-interactive                    # CI：无模板类 flag 时常种子 coder 默认
+finclaw init --non-interactive --template researcher --tool-bundle basic
+finclaw init --non-interactive --no-template     # 只脚手架 config；不写入 profile.yaml / IDENTITY
+```
+
+详见 `finclaw init --help`（含 `--force`、模板名 `general` / `coder` / `researcher`、`tool_bundle` 的 `basic` / `standard` / `workspace` / `full`）。
+
+### 可选：用 `setup agent-profile` 调整 profile
+
+目录就绪后，若要从内置模板重生成 `profile.yaml` 而不手改 YAML：
+
+```bash
+finclaw setup agent-profile
+```
+
+非交互参数含 `--seed-profile-template`、`--seed-profile-tool-bundle`、`--seed-profile-force`、`--seed-profile-no-template`，见 `finclaw setup agent-profile --help`。引导式 LLM 配置仍是 `finclaw setup` 或显式 `finclaw setup llm`。
 
 ---
 
@@ -153,13 +171,19 @@ finclaw chat -m "你好，finclaw"
 
 **更强本地沙箱（可选）**：全局参数 `--security` 控制宿主侧工具/exec 隔离（`isolated` / `restricted` / `yolo`），`chat` 在省略时默认等效为 `yolo`。详见 [security-and-policies.zh.md](security-and-policies.zh.md)（**宿主执行沙箱**）。
 
+**脚本化 user id：** 使用 `--user <id>` 或环境变量 `FINCLAW_USER_ID`，便于多账号/测试场景归因一致；留空时 finclaw 通常从操作系统用户名推导。
+
+**单次会话的工具审批倾向：** `--auto-approve-all-tools` 与 `--confirm-all-tools` 互斥，用于单次调用调整 guarded 工具行为，见 [security-and-policies.zh.md](security-and-policies.zh.md) 与 `finclaw chat --help`。
+
 **常驻服务**（本机长进程）：
 
 ```bash
 finclaw serve
 ```
 
-模型与 `finclaw model` 的说明见 `finclaw model --help`。交互式、无参的 `finclaw model` 与 `finclaw setup` 使用**同一套**编号选模型；需已在配置中设置 `llm.provider` 或加 `--provider`。
+模型与 `finclaw model` 的说明见 `finclaw model --help`。交互式、无参的 `finclaw model` 与 `finclaw setup` 使用**同一套**编号选模型；需已在配置中设置 `llm.provider` 或加 `--provider`。只读列出内置目录：`finclaw model --list`（可加 `--json`）。
+
+**CLI 界面语言：** 任意命令加 `--locale en` 或 `--locale zh` 可在不依赖 Shell `LANG` 时固定帮助与共享提示语言。
 
 ---
 

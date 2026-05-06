@@ -24,7 +24,12 @@ finclaw completion powershell
 
 ## 通过 stdio 的 MCP
 
-`finclaw mcp` 可能仅在构建启用 **`mcp` feature** 时存在；若 `finclaw --help` 中无此子命令，则当前二进制未包含该功能。
+`finclaw mcp` 仅在构建启用 **`mcp` feature** 时可用；若 `finclaw --help` 中无此子命令，则当前二进制未包含。
+
+启用时：
+
+- **不写子命令**直接运行 `finclaw mcp` 即通过 **stdio** 提供 MCP，与显式 `finclaw mcp serve` 等价。
+- `finclaw mcp add` / `remove` / `list` / `test` 用于登记本机要转发的**外部** MCP 服务器，供 `chat` 与 REPL 调工具（参数与 `--` 后的 argv 捕获见 `--help`）。
 
 ## 备份子命令与特性矩阵
 

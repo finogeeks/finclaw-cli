@@ -37,7 +37,7 @@ All user guides are **self-contained in this repository**. See **[docs/README.md
 | Advanced (completions, man, optional features) | [docs/advanced.md](docs/advanced.md) | [docs/advanced.zh.md](docs/advanced.zh.md) |
 | Contributor doc maintenance | [docs/MAINTENANCE.md](docs/MAINTENANCE.md) | [docs/MAINTENANCE.md](docs/MAINTENANCE.md) (EN) |
 
-`finclaw --help` and `finclaw <subcommand> --help` remain authoritative for flags on your build.
+`finclaw --help` and `finclaw <subcommand> --help` remain authoritative for flags on your build. Use `--locale en|zh` when you want help text aligned to a language other than your shell defaults.
 
 ## Quick install
 

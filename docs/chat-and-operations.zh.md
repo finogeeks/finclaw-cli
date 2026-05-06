@@ -19,9 +19,15 @@
 
 以 `finclaw chat --help` 为准。
 
-### 流式输出
+### 流式与会话级参数
 
-一般默认**流式**输出到终端；`--no-stream` 或帮助中等价项可只打最终消息。
+一般默认**流式**输出；`--no-stream` 仅输出最终回复。
+
+可选的一次性参数（见 `finclaw chat --help`）：
+
+- `--user <id>` 或 `FINCLAW_USER_ID` —— 脚本/测试中稳定归因用户。
+- `--auto-approve-all-tools` —— 本会话对 guarded 工具倾向「全自动批准」（与 `--confirm-all-tools` 互斥）；仅在策略与环境已符合信任模型时使用（[security-and-policies.zh.md](security-and-policies.zh.md)）。
+- `--confirm-all-tools` —— 本会话要求对 guarded 工具走确认流程。
 
 ### 单次指定 capability
 
@@ -52,6 +58,12 @@ finclaw status
 finclaw stop
 ```
 
+## 诊断（运行 ledger）
+
+```bash
+finclaw diagnose last
+```
+
 ## 日志
 
 ```bash
@@ -69,13 +81,24 @@ finclaw model <model-id>
 
 在交互式终端、且未在命令行写 model id 时，**与 `finclaw setup` 使用同一套**编号列表从内置目录中选模型（按 provider 过滤）。需已在配置中设置 `llm.provider`，或本次命令加 `--provider`；若尚未配置 provider，请先执行 `finclaw setup`。无 TTY 或显式给出 `<model-id>` 时则直接设置该 id。
 
-## 历史记录
+**只读**打印内置目录（不写配置）：
 
 ```bash
-finclaw history --help
+finclaw model --list
+finclaw model --list --json
 ```
 
-## 定时与认证（偏运维）
+## 历史记录
+
+除 `list` / `show` / `search` 外，还支持会话接续、清理与统计：
+
+```bash
+finclaw history resume          # 选择器或 `--session …`
+finclaw history prune --dry-run
+finclaw history stats --json
+```
+
+参数与 `--user`、`prune` 确认等见 `finclaw history --help`。
 
 ```bash
 finclaw cron --help

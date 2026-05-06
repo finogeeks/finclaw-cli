@@ -24,7 +24,12 @@ Install the script using your shell’s plugin mechanism; see the comments at th
 
 ## MCP over stdio
 
-`finclaw mcp` may be available only when the binary is built with the **`mcp` feature** (not all public builds ship it). If the subcommand is missing from `--help`, your build does not include it.
+`finclaw mcp` ships only when the binary is built with the **`mcp` feature**. If the command is missing from `finclaw --help`, your build omits it.
+
+When enabled:
+
+- Running `finclaw mcp` **with no subcommand** speaks MCP over **stdio** — the same as explicit `finclaw mcp serve`.
+- `finclaw mcp add/remove/list/test` manage **external** MCP servers registered in the profile so `chat` and the REPL can call their tools (`--help` lists argv/env capture rules).
 
 ## Backup feature matrix
 

@@ -14,6 +14,8 @@
 
 - **`doctor` 报配置问题** — 执行 `finclaw config check`，检查 `config path`，并核对环境变量与 `.env` 的加载顺序，见 [configuration.zh.md](configuration.zh.md)。
 - **只有 mock 模型** — 通过 `finclaw config set` 或环境变量配置真实 `provider` / `model` / 密钥或兼容 `base_url`。
+- **升级后配置文件结构不匹配** — 先 `finclaw config migrate --dry-run`，确认后再 `finclaw config migrate` 原地改写 `config.yaml`（详见 `--help`）。
+- **旧 profile 缺脚手架文件** — 在 `doctor` 提示下可试 `finclaw doctor --fix`（TTY/非交互细则见 `--help`）。
 
 ## 策略漂移
 
@@ -24,7 +26,7 @@
 
 ## 人设不生效
 
-若直接编辑了 `IDENTITY.md` 而非 `finclaw identity edit`：
+若用外部编辑器手写修改了 `IDENTITY.md`，而未通过 `finclaw agent edit identity`（及其它层）：
 
 - 执行 `finclaw identity render`，再 `finclaw profile apply`
 

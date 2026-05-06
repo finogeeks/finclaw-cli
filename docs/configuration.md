@@ -22,15 +22,22 @@ This records the choice under the finclaw home (for example `active-profile`).
 
 `--security <isolated|restricted|yolo>` is a **global** flag (place it before or after the subcommand; it applies to the whole process). It is **not** stored in `config.yaml`. It sets `AI_INFRA_RS_*` variables for local tool/exec isolation before the runtime starts. This is separate from policy YAML under `policies/` — see [security-and-policies.md](security-and-policies.md) (section *Host execution sandbox*).
 
+## Global flags: config path and locale
+
+| Flag / env | Role |
+| --- | --- |
+| `--config <PATH>` · `FINCLAW_CONFIG` | Use a specific `config.yaml` instead of the default `<profile_root>/config.yaml`. |
+| `--locale <auto|en|zh>` | Language for `--help`, completion/man generators, and shared CLI copy. `auto` follows `LC_ALL` / `LC_MESSAGES` / `LANG` / `LANGUAGE`. |
+
 ## Host config file
 
-The main YAML file for LLM provider, keys, and host toggles lives under the **active profile**:
+The main YAML file for LLM provider, keys, and host toggles lives under the **active profile** unless overridden by `--config`:
 
 ```bash
 finclaw config path
 ```
 
-Use `finclaw config set`, `finclaw config show`, and `finclaw config check` to inspect and change values. For a list of keys, use `finclaw config --help` and subcommand help on your build.
+Use `finclaw config set`, `finclaw config show`, and `finclaw config check` to inspect and change values. For schema bumps across releases, prefer `finclaw config migrate` (supports `--dry-run`). To enumerate environment variables finclaw consults — with masking by default — use `finclaw config env-path`. For keys and verbs, run `finclaw config --help` on your build.
 
 ## Environment variables (LLM)
 
@@ -61,6 +68,12 @@ For API keys that must load **regardless of** which directory you run from, pref
 ```bash
 finclaw config check
 finclaw doctor
+```
+
+Legacy profiles missing safe files may be repairable interactively:
+
+```bash
+finclaw doctor --fix
 ```
 
 ## Claw HTTP/API (deployment-specific)

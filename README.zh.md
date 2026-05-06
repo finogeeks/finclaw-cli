@@ -37,7 +37,7 @@
 | 高级（补全、man、可选特性） | [docs/advanced.md](docs/advanced.md) | [docs/advanced.zh.md](docs/advanced.zh.md) |
 | 文档维护说明（贡献者） | [docs/MAINTENANCE.md](docs/MAINTENANCE.md) | 英文（贡献者通用） |
 
-**权威参数说明**仍以本机 `finclaw --help` 与子命令 `--help` 为准。
+**权威参数说明**仍以本机 `finclaw --help` 与子命令 `--help` 为准。需要固定帮助语言时可加 `--locale en` 或 `--locale zh`。
 
 ## 快速安装
 

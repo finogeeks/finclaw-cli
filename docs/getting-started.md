@@ -60,7 +60,25 @@ finclaw init
 
 This creates the default profile layout under your Finclaw home (usually `~/.finclaw`) and a valid `config.yaml` with the **mock** LLM provider so the CLI is safe to run before you add real API keys.
 
-If stdin is interactive, `finclaw init` now also offers to launch the guided LLM setup flow immediately.
+If stdin is interactive, `finclaw init` prompts for template and related choices. Typical non-interactive patterns:
+
+```bash
+finclaw init --non-interactive                    # CI: seeds coder-style defaults unless you steer with flags
+finclaw init --non-interactive --template researcher --tool-bundle basic
+finclaw init --non-interactive --no-template   # scaffold config only; skip profile.yaml / IDENTITY seeding
+```
+
+See `finclaw init --help` for `--force`, template names (`general`, `coder`, `researcher`), and `tool_bundle` values (`basic`, `standard`, `workspace`, `full`).
+
+### Optional: reshape `profile.yaml` with `setup agent-profile`
+
+Once the tree exists, you can reseed the on-disk agent profile from built-in templates without editing YAML by hand:
+
+```bash
+finclaw setup agent-profile
+```
+
+Non-interactive flags include `--seed-profile-template`, `--seed-profile-tool-bundle`, `--seed-profile-force`, and `--seed-profile-no-template` — see `finclaw setup agent-profile --help`. The guided LLM wizard is still `finclaw setup` or explicit `finclaw setup llm`.
 
 ---
 
@@ -155,13 +173,19 @@ finclaw chat -m "Hello from finclaw"
 
 **Stronger local sandbox** (optional): the global flag `--security` controls host-side tool/exec isolation (`isolated` / `restricted` / `yolo`). `chat` defaults to `yolo` when omitted. See [security-and-policies.md](security-and-policies.md) (*Host execution sandbox*).
 
+**Scripted user id:** pass `--user <id>` or set `FINCLAW_USER_ID` so multi-account tests attribute turns consistently; when empty, finclaw normally derives from your OS username.
+
+**Per-session tool governance hints:** `--auto-approve-all-tools` and `--confirm-all-tools` adjust how guarded tools behave for one invocation — mutually exclusive; see [security-and-policies.md](security-and-policies.md) and `finclaw chat --help`.
+
 **Long-lived process** (when you want a daemon on the machine):
 
 ```bash
 finclaw serve
 ```
 
-Use `finclaw model` / `finclaw model <id>` to change the model id when your provider supports it. Interactive `finclaw model` (no id, TTY) uses the same catalog picker as `finclaw setup`; have `llm.provider` set in config or pass `--provider` for that flow.
+Use `finclaw model` / `finclaw model <id>` to change the model id when your provider supports it. Interactive `finclaw model` (no id, TTY) uses the same catalog picker as `finclaw setup`; have `llm.provider` set in config or pass `--provider` for that flow. Print the bundled catalogue without mutating config: `finclaw model --list` (`--json`).
+
+**CLI language:** pass `--locale en` or `--locale zh` once on any command when you want help text or shared prompts in that language regardless of shell locale.
 
 ---
 

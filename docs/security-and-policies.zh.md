@@ -40,7 +40,7 @@ flowchart TB
 | **C. HTTP 白名单** | 出站域名（含浏览器类工具可走的主机范围）、浏览器 SSRF 姿态 | `presets.http`、`policies/http-allowlist.yaml` |
 | **D. 工具调用策略** | **自主度模式**（`readonly` / `supervised` / `full`）以及按工具的 **auto-approve / always-ask / deny** 集合 | `presets.tool`、`policies/tool-invocation-policy.yaml` |
 | **E. Capability（agent 循环画像）** | 单次请求的**墙钟超时**、**最大工具调用次数**、研究与续跑等相关预算——由 **capability 字符串**选择（如 `general`、`coding`、`read_only`） | `finclaw capability set`、`finclaw chat --capability …` |
-| **F. Identity / 人设** | 系统提示中如何描述智能体与用户责任边界（认知层） | `finclaw identity …` |
+| **F. Identity / 人设** | 系统提示中如何描述智能体与用户责任边界（认知层） | `finclaw identity …`，Markdown 各层可用 `finclaw agent edit …` |
 | **G. 交互式审批（supervised）** | 策略要求确认时，运行时可**暂停**直至有人调用 **`/ai/infer/approval/resolve`**；**行式 CLI**可在交互 stdin 下 Y/N **提示**；全屏 **`--tui`** 往往无法稳妥追问，可能对挂起审批 **自动拒绝** 并告警 | 详见下文 **交互式审批** |
 
 **维度之间如何分工（简述）：**
@@ -83,6 +83,10 @@ flowchart TB
 4. **全屏 `--tui` REPL**：在部分环境下**无法稳妥做行追问**，构建可能对挂起审批 **自动拒绝** 并以 **`warn`** 级别提示。若你希望**每次敏感操作都有人眼确认**，在对应 UX 就绪前更应使用**行式交互 `chat`** 或减少 `auto_all` 依赖。
 
 若无人调用 **resolve**，会话可能卡住直至服务端 **实时审批超时**——运维场景需知晓。
+
+### 单次 CLI 提示（`finclaw chat`）
+
+与磁盘上的策略独立，仍可在**单次** `chat` 调用上附加对 guarded 工具的倾向：`--auto-approve-all-tools`（倾向全自动）与 `--confirm-all-tools`（倾向全部确认），二者互斥。需要长期生效的约束请写在 `policies/*.yaml`；CLI 提示适合已充分信任的临时自动化环境。详见 `finclaw chat --help`。
 
 ### 运维自检清单（可打印）
 

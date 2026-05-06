@@ -2,7 +2,7 @@
 
 User guides for the `finclaw` CLI (release binaries and install scripts in this repository). All guides are self-contained to this repo.
 
-**Authoritative for flags and subcommands:** `finclaw --help` and `finclaw <subcommand> --help` on your machine (match your installed version).
+**Authoritative for flags and subcommands:** `finclaw --help` and `finclaw <subcommand> --help` on your machine (match your installed version). Global `--locale auto|en|zh` controls help/completion language; `--config`/`FINCLAW_CONFIG` can point at a specific `config.yaml`.（中文：`--locale` 影响 `--help` 与 Shell 补全生成文案；`--config`/`FINCLAW_CONFIG` 可指向任意 `config.yaml`。）
 
 **HTTP/API integration** with Claw is defined by the runtime you deploy; these guides focus on the CLI. Use your operator or vendor documentation for wire-level details when needed.
 

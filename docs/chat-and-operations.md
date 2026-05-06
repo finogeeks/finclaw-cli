@@ -19,9 +19,15 @@ By default the CLI may **prefer a running `finclaw serve` daemon** when one is a
 
 Use `finclaw chat --help` for the exact behaviour of your version.
 
-### Streaming
+### Streaming and session hints
 
-Token streaming to the terminal is typically on by default; `--no-stream` (or the equivalent in `--help`) prints only the final message.
+Token streaming to the terminal is on by default; `--no-stream` prints only the final message.
+
+Optional per-invocation knobs (see `finclaw chat --help`):
+
+- `--user <id>` or `FINCLAW_USER_ID` — stable attribution for scripts and tests.
+- `--auto-approve-all-tools` — force auto-approve for guarded tools **for this chat** (mutually exclusive with `--confirm-all-tools`). Use only when policy and environment already match your threat model ([security-and-policies.md](security-and-policies.md)).
+- `--confirm-all-tools` — force confirmation prompts for guarded tools **for this chat**.
 
 ### Capability override for one call
 
@@ -52,6 +58,12 @@ finclaw status
 finclaw stop
 ```
 
+## Diagnostics (run ledger)
+
+```bash
+finclaw diagnose last
+```
+
 ## Logs
 
 ```bash
@@ -69,11 +81,24 @@ finclaw model <model-id>
 
 With a TTY and no model id, the interactive flow uses the **same numbered catalog picker** as `finclaw setup` (provider-scoped entries from the bundled list). You need `llm.provider` in your profile config or `--provider …` on the command line; if neither is set, run `finclaw setup` first. Non-interactive use (no TTY) or a concrete `<model-id>` sets the value directly.
 
-## History
+Print the bundled catalogue **without changing config**:
 
 ```bash
-finclaw history --help
+finclaw model --list
+finclaw model --list --json
 ```
+
+## History
+
+Beyond `list` / `show` / `search`, recent builds expose session pickup, housekeeping, and stats:
+
+```bash
+finclaw history resume          # picker or `--session …`
+finclaw history prune --dry-run
+finclaw history stats --json
+```
+
+See `finclaw history --help` for `--user`, limits, `prune`, and confirmations.
 
 ## Cron and auth (operator)
 

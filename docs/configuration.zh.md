@@ -22,15 +22,22 @@ finclaw profile use <name>
 
 `--security <isolated|restricted|yolo>` 为**全局**参数（与子命令的相对位置可按 `--help` 习惯书写，作用于**整个进程**）。**不会**写入 `config.yaml`；在运行时启动前设置与本地工具/exec 隔离相关的 `AI_INFRA_RS_*` 环境变量。它与 `policies/` 下 YAML 策略是不同层面，详见 [security-and-policies.zh.md](security-and-policies.zh.md#宿主执行沙箱security)。
 
+## 全局参数：配置文件路径与界面语言
+
+| 参数 / 环境变量 | 作用 |
+| --- | --- |
+| `--config <PATH>` · `FINCLAW_CONFIG` | 指定 `config.yaml` 路径，覆盖默认的 `<profile_root>/config.yaml`。 |
+| `--locale <auto|en|zh>` | `--help`、补全/man 生成及共享文案的语言；`auto` 遵从 `LC_ALL` / `LC_MESSAGES` / `LANG` / `LANGUAGE`。 |
+
 ## 宿主配置文件
 
-与 LLM 提供商、密钥、守护进程开关等相关的主配置一般为 **活动 profile** 下的 YAML：
+与 LLM 提供商、密钥、守护进程开关等相关的主配置，默认位于**活动 profile** 下 YAML；若传入 `--config` 则使用该文件：
 
 ```bash
 finclaw config path
 ```
 
-使用 `finclaw config set`、`finclaw config show`、`finclaw config check` 查看与修改。键名以你安装的版本下 `finclaw config --help` 为准。
+使用 `finclaw config set`、`finclaw config show`、`finclaw config check` 查看与修改。跨版本迁移可用 `finclaw config migrate`（支持 `--dry-run`）。罗列 finclaw 会读取的环境变量（默认掩码敏感值）用 `finclaw config env-path`。具体键与子命令见本机 `finclaw config --help`。
 
 ## 环境变量（大模型相关）
 
@@ -61,6 +68,12 @@ finclaw config path
 ```bash
 finclaw config check
 finclaw doctor
+```
+
+旧 profile 缺失安全文件时可尝试修补：
+
+```bash
+finclaw doctor --fix
 ```
 
 ## 与 Claw 的 HTTP/API（依部署而定）

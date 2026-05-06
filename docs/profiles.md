@@ -94,12 +94,25 @@ finclaw chat --capability read_only -m "Summarize this file."
 
 ## Identity (persona)
 
+Inspect and refresh the canonical identity envelope the runtime consumes (`identity.aieos.yaml`):
+
 ```bash
 finclaw identity show
-finclaw identity edit
+finclaw identity show --rendered
 finclaw identity render
 finclaw identity reset
 ```
+
+Edit agent Markdown without typing deep paths under `workspaces/…/agents/<id>/workspace/`:
+
+```bash
+finclaw agent edit identity
+finclaw agent edit soul
+finclaw agent edit agent
+finclaw agent edit tools
+```
+
+The `identity` layer follows the same precedence as `identity show` (workspace candidates, then profile fallbacks) and may scaffold `IDENTITY.md` when missing. See `finclaw agent --help`.
 
 See [security-and-policies.md](security-and-policies.md) for how identity relates to policy and runtime.
 
@@ -110,6 +123,7 @@ finclaw profile validate
 finclaw profile validate --strict
 finclaw profile show --resolved
 finclaw profile active --json
+finclaw profile diff --check   # terse CI-friendly drift summary
 ```
 
 ## Apply changes to a running runtime

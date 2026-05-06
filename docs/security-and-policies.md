@@ -38,7 +38,7 @@ flowchart TB
 | **C. HTTP allowlist** | Outbound domains for fetch/browser-style tools; browser SSRF posture | `presets.http`, `policies/http-allowlist.yaml` |
 | **D. Tool invocation policy** | Autonomy **mode** (`readonly` / `supervised` / `full`) and per-tool **auto-approve**, **always-ask**, **deny** sets | `presets.tool`, `policies/tool-invocation-policy.yaml` |
 | **E. Capability (agent loop profile)** | Wall-clock **timeout**, **max tool calls**, research sub-budgets, continuation—selected by **capability string** (`general`, `coding`, `read_only`, …) | `finclaw capability set`, `finclaw chat --capability …` |
-| **F. Identity / persona** | What the model is told about itself (system prompt surface) | `finclaw identity …` |
+| **F. Identity / persona** | What the model is told about itself (system prompt surface) | `finclaw identity …`, `finclaw agent edit …` for Markdown layers |
 | **G. Interactive approval (supervised tools)** | When policy requires it, the runtime may **pause** until a human approves or rejects via the HTTP approval-resolve path; the **line-based** CLI can prompt; **full-screen `--tui`** cannot safely prompt and may **auto-reject** pending approvals with a warning | See *Interactive tool approvals* below |
 
 **How dimensions interact (short):**
@@ -81,6 +81,10 @@ When the runtime requires confirmation for a tool call (**always-ask** entry or 
 4. The **fullscreen** **`--tui`** REPL currently **cannot reliably prompt** in all terminal states; builds may **auto-reject** pending approvals **with a runtime warning**. For approval-heavy supervised workflows, prefer **interactive line-based `chat`** (without `--tui`) or reduce reliance on **`auto_all`** until your client build supports reliable prompts in the T UI.
 
 If nothing calls **resolve**, the request may stall until **live approval** times out server-side—a failure mode operators should recognise.
+
+### Per-session CLI hints (`finclaw chat`)
+
+Independent of on-disk policy, you can pass **one-shot** hints that bias how the runtime treats **guarded** tools for a single `chat` invocation: `--auto-approve-all-tools` (force auto-approve) and `--confirm-all-tools` (force confirmation). They are mutually exclusive. Prefer durable policy in `policies/*.yaml` for anything that must survive past one command; use CLI hints for automation sandboxes you already trust. See `finclaw chat --help`.
 
 ### Operational checklist
 
