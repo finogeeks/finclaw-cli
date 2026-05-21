@@ -41,14 +41,14 @@ finclaw --version
 ## Manual download and verify
 
 1. Open [Releases](https://github.com/finogeeks/finclaw-cli/releases) and pick a version tag (for example `v0.1.0`).
-2. Download **one** platform archive (`.tar.zst`) and the **`SHA256SUMS`** file for that release.
+2. Download **one** platform archive (`.tar.gz` preferred when available, or `.tar.zst`) and the **`SHA256SUMS`** file for that release.
 
 `SHA256SUMS` lists **every** platform archive in the release. You only have **one** file on disk, so **do not** run `shasum -a 256 -c` or `sha256sum -c` on the full `SHA256SUMS` file (it will look for the other platform archives and fail). Verify **only the line** for the file you downloaded:
 
 ```bash
 cd ~/Downloads
 VER=0.1.0
-FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"   # match your platform triple
+FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.gz"   # match your platform triple
 grep -F "$FILE" SHA256SUMS | shasum -a 256 -c -
 ```
 
@@ -56,21 +56,21 @@ On Linux you can use `sha256sum -c` in the same `grep` pipeline if you prefer.
 
 ## Extract and install the binary
 
-You need **`tar`** and **`zstd`** (archives are `*.tar.zst`).
+You need **`tar`**. Newer releases provide `*.tar.gz`; older releases may only provide `*.tar.zst`, which also requires **`zstd`**.
 
 **Example (Apple Silicon macOS, adjust `VER` and the archive name):**
 
 ```bash
 VER=0.1.0
-FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"
-zstd -dc "$FILE" | tar -xf -
+FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.gz"
+tar -xzf "$FILE"
 install -m 0755 "finclaw-v${VER}-aarch64-apple-darwin/finclaw" "$HOME/.local/bin/finclaw"
 ```
 
-Many Linux distros also support:
+For older `*.tar.zst` archives, install `zstd` and run:
 
 ```bash
-tar --zstd -xf "finclaw-v${VER}-x86_64-unknown-linux-gnu.tar.zst"
+zstd -dc "finclaw-v${VER}-x86_64-unknown-linux-gnu.tar.zst" | tar -xf -
 ```
 
 **PATH** — if `finclaw` is not found:

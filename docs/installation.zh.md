@@ -41,14 +41,14 @@ finclaw --version
 ## 手动下载与校验
 
 1. 打开 [Releases](https://github.com/finogeeks/finclaw-cli/releases) 选择版本（例如 `v0.1.0`）。
-2. 下载**一个**与当前机器匹配的 `*.tar.zst`，并下载同版本的 **`SHA256SUMS`**。
+2. 下载**一个**与当前机器匹配的归档（有 `*.tar.gz` 时优先使用；旧版本可能只有 `*.tar.zst`），并下载同版本的 **`SHA256SUMS`**。
 
 `SHA256SUMS` 中通常包含**所有平台**的条目。你本地只下了一个包，**不要**用整份 `SHA256SUMS` 直接做 `shasum -a 256 -c` / `sha256sum -c`（会找不到其他平台文件而失败）。只校验**你下载文件**那一行，例如：
 
 ```bash
 cd ~/Downloads
 VER=0.1.0
-FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"   # 按实际平台调整
+FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.gz"   # 按实际平台调整
 grep -F "$FILE" SHA256SUMS | shasum -a 256 -c -
 ```
 
@@ -56,21 +56,21 @@ Linux 也可将 `shasum` 换成 `sha256sum`，管道用法相同。
 
 ## 解压与安装二进制
 
-需已安装 **`tar`** 与 **`zstd`**（包名为 `*.tar.zst`）。
+需已安装 **`tar`**。新版发布会提供 `*.tar.gz`；旧版本可能只有 `*.tar.zst`，此时还需要安装 **`zstd`**。
 
 **示例（Apple Silicon，请按版本与包名改）：**
 
 ```bash
 VER=0.1.0
-FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.zst"
-zstd -dc "$FILE" | tar -xf -
+FILE="finclaw-v${VER}-aarch64-apple-darwin.tar.gz"
+tar -xzf "$FILE"
 install -m 0755 "finclaw-v${VER}-aarch64-apple-darwin/finclaw" "$HOME/.local/bin/finclaw"
 ```
 
-部分 Linux 发行版支持：
+旧版 `*.tar.zst` 包请先安装 `zstd`，再执行：
 
 ```bash
-tar --zstd -xf "finclaw-v${VER}-x86_64-unknown-linux-gnu.tar.zst"
+zstd -dc "finclaw-v${VER}-x86_64-unknown-linux-gnu.tar.zst" | tar -xf -
 ```
 
 **PATH** — 若提示找不到 `finclaw`：

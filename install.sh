@@ -136,12 +136,12 @@ else
 fi
 
 version_tag="v${VERSION_STRIP}"
-archive_name="finclaw-v${VERSION_STRIP}-${TRIPLE}.tar.zst"
-inner_dir="finclaw-v${VERSION_STRIP}-${TRIPLE}"
+archive_base="finclaw-v${VERSION_STRIP}-${TRIPLE}"
+archive_name=""
+inner_dir="$archive_base"
 
 # GitHub "download" URLs for release assets
 base="https://github.com/${REPO}/releases/download/${version_tag}"
-archive_url="${base}/${archive_name}"
 sums_url="${base}/SHA256SUMS"
 
 stage="$(mktemp -d)"
@@ -152,8 +152,18 @@ trap cleanup_stage INT TERM EXIT
 
 cd "$stage" || die "could not enter temp directory"
 
-info "downloading ${archive_url}"
-curl -fSL --retry 3 --retry-delay 1 -o "$archive_name" "$archive_url"
+for ext in tar.gz tar.zst; do
+  candidate="${archive_base}.${ext}"
+  candidate_url="${base}/${candidate}"
+  info "downloading ${candidate_url}"
+  if curl -fSL --retry 3 --retry-delay 1 -o "$candidate" "$candidate_url"; then
+    archive_name="$candidate"
+    break
+  fi
+  rm -f "$candidate" >/dev/null 2>&1 || true
+done
+
+[ -n "$archive_name" ] || die "could not download a release archive for ${archive_base} (.tar.gz or .tar.zst)"
 
 if [ "$SKIP_CHECKSUM" = "1" ]; then
   info "WARNING: skipping checksum verification (FINCLAW_INSECURE_SKIP_CHECKSUM=1)"
@@ -161,7 +171,7 @@ else
   info "downloading ${sums_url}"
   curl -fSL --retry 3 --retry-delay 1 "$sums_url" -o SHA256SUMS
 
-  # Multi-platform releases ship one SHA256SUMS listing all tar.zst files. We only
+  # Multi-platform releases ship one SHA256SUMS listing all archive files. We only
   # download one archive. Do not use `shasum -c` / `sha256sum -c` on the full
   # SHA256SUMS: they verify every listed file. Compare the single expected hash
   # to a hash of the downloaded archive only.
@@ -190,15 +200,20 @@ else
   info "checksum OK (${archive_name})"
 fi
 
-if command -v zstd >/dev/null 2>&1; then
-  info "extracting with zstd + tar"
-  zstd -dc "$archive_name" | tar -xf -
-elif [ "$os" = "Linux" ] && command -v grep >/dev/null 2>&1 && tar --help 2>&1 | grep -q -- '--zstd'; then
-  info "extracting with tar --zstd"
-  tar --zstd -xf "$archive_name"
-else
-  die "could not find zstd, and this tar does not support --zstd. Install zstd and retry (macOS: brew install zstd)"
-fi
+case "$archive_name" in
+  *.tar.gz)
+    info "extracting with tar + gzip"
+    tar -xzf "$archive_name"
+    ;;
+  *.tar.zst)
+    command -v zstd >/dev/null 2>&1 || die "this release only has a .tar.zst archive for your platform, but zstd is not installed. Install zstd and retry (Debian/Ubuntu/WSL: sudo apt-get install -y zstd; macOS: brew install zstd)"
+    info "extracting with zstd + tar"
+    zstd -dc "$archive_name" | tar -xf -
+    ;;
+  *)
+    die "unsupported archive format: $archive_name"
+    ;;
+esac
 
 [ -d "$inner_dir" ] || die "expected directory missing after extract: $inner_dir"
 [ -f "$inner_dir/finclaw" ] || die "expected binary missing: $inner_dir/finclaw"
