@@ -114,8 +114,11 @@ finclaw auth --help
 
 在 `finclaw chat` 中输入 `/help` 查看**当前版本**支持的命令。与策略、profile、技能相关的见 [security-and-policies.zh.md](security-and-policies.zh.md)、[profiles.zh.md](profiles.zh.md)。
 
+**A2A 委派：** `/ask <对端> <消息>`（别名 `/delegate`）引导智能体对 `a2a-agents.yaml` 中的对端调用 `a2a_send`。用 `finclaw a2a list|card|probe` 检查对端。完整步骤见 [a2a.zh.md](a2a.zh.md)。
+
 ## 另见
 
 - [getting-started.zh.md](getting-started.zh.md)
 - [configuration.zh.md](configuration.zh.md)
+- [a2a.zh.md](a2a.zh.md) — 智能体互联（本地测试、入站 `serve`）
 - [advanced.zh.md](advanced.zh.md)

@@ -28,6 +28,7 @@
 | man 页生成 | `finclaw man` |
 | systemd/launchd 单元辅助 | `finclaw service` |
 | MCP stdio（可选编译特性） | `finclaw mcp` |
+| A2A 对端（list / card / probe） | `finclaw a2a` — 见 [a2a.zh.md](a2a.zh.md) |
 | 模型 id（交互时与 `finclaw setup` 相同的选择器）/ 目录只读列表 | `finclaw model` · `finclaw model --list`（`--json`） |
 | 日志 | `finclaw logs` |
 | Profile 管理 | `finclaw profile` |
@@ -51,6 +52,7 @@
 - [security-and-policies.zh.md](security-and-policies.zh.md)
 - [skills.zh.md](skills.zh.md)
 - [chat-and-operations.zh.md](chat-and-operations.zh.md)
+- [a2a.zh.md](a2a.zh.md)
 - [troubleshooting.zh.md](troubleshooting.zh.md)
 - [advanced.zh.md](advanced.zh.md)
 
