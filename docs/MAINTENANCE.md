@@ -26,6 +26,7 @@ These notes are for people who edit documentation in the **finclaw-cli** public 
 
 - Keep [topic].md and [topic].zh.md in sync: same structure, same commands; translate prose.
 - If you add a new English doc, add the Chinese counterpart in the same change when possible.
+- **A2A:** [a2a.md](a2a.md) / [a2a.zh.md](a2a.zh.md) and [examples/mock-a2a-peer.py](../examples/mock-a2a-peer.py) ship together; update the index rows in [README.md](../README.md), [README.zh.md](../README.zh.md), and [docs/README.md](README.md) when the guide changes.
 
 ## HTTP/API and the Claw runtime
 

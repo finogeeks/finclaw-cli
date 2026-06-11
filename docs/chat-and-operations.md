@@ -116,8 +116,11 @@ finclaw auth --help
 
 Inside `finclaw chat`, type `/help` for the list supported by **your** binary. Common families include history, session, policy, profile, and skills shortcuts—see [security-and-policies.md](security-and-policies.md) and [profiles.md](profiles.md).
 
+**A2A delegation:** `/ask <peer> <message>` (alias `/delegate`) asks the agent to call the `a2a_send` tool for a peer listed in `a2a-agents.yaml`. Inspect peers with `finclaw a2a list|card|probe`. Full walkthrough: [a2a.md](a2a.md).
+
 ## See also
 
 - [getting-started.md](getting-started.md) — first run
 - [configuration.md](configuration.md) — LLM config
+- [a2a.md](a2a.md) — agent-to-agent (local testing, inbound `serve`)
 - [advanced.md](advanced.md) — shell completions, man page, optional `mcp` feature

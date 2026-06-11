@@ -15,6 +15,7 @@ User guides for the `finclaw` CLI (release binaries and install scripts in this 
 | Security: **multi-dimensional control model**, policies, presets, identity, capability, **`--security` (host sandbox)**, supervised approvals | [security-and-policies.md](security-and-policies.md) | [security-and-policies.zh.md](security-and-policies.zh.md) |
 | Skills: hubs, ClawHub, install and check | [skills.md](skills.md) | [skills.zh.md](skills.zh.md) |
 | Chat, REPL, daemon, logs, operations | [chat-and-operations.md](chat-and-operations.md) | [chat-and-operations.zh.md](chat-and-operations.zh.md) |
+| Agent-to-agent (A2A): local testing, Hermes/chatkit hosts | [a2a.md](a2a.md) | [a2a.zh.md](a2a.zh.md) |
 | Command index (cheat sheet) | [reference-commands.md](reference-commands.md) | [reference-commands.zh.md](reference-commands.zh.md) |
 | Troubleshooting | [troubleshooting.md](troubleshooting.md) | [troubleshooting.zh.md](troubleshooting.zh.md) |
 | Optional features (completions, man page, MCP) | [advanced.md](advanced.md) | [advanced.zh.md](advanced.zh.md) |

@@ -32,6 +32,7 @@ All user guides are **self-contained in this repository**. See **[docs/README.md
 | Security (**multi-dimensional** model, `--security`, approvals) | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | Skills | [docs/skills.md](docs/skills.md) | [docs/skills.zh.md](docs/skills.zh.md) |
 | Chat and operations | [docs/chat-and-operations.md](docs/chat-and-operations.md) | [docs/chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
+| Agent-to-agent (A2A) | [docs/a2a.md](docs/a2a.md) | [docs/a2a.zh.md](docs/a2a.zh.md) |
 | Command index | [docs/reference-commands.md](docs/reference-commands.md) | [docs/reference-commands.zh.md](docs/reference-commands.zh.md) |
 | Troubleshooting | [docs/troubleshooting.md](docs/troubleshooting.md) | [docs/troubleshooting.zh.md](docs/troubleshooting.zh.md) |
 | Advanced (completions, man, optional features) | [docs/advanced.md](docs/advanced.md) | [docs/advanced.zh.md](docs/advanced.zh.md) |
