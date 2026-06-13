@@ -1,0 +1,35 @@
+# Bootstrap issue labels for the finclaw-cli → Geeksfino/finclaw dispatch pipeline.
+# Uses GITHUB_TOKEN (issues:write on this repo). No cross-repo PAT required.
+name: Ensure automation issue labels
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/ensure-automation-labels.yml
+      - .github/workflows/issue-triage-pending.yml
+
+permissions:
+  issues: write
+
+jobs:
+  ensure-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create automation labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="${{ github.repository }}"
+          ensure() {
+            gh label create "$1" --repo "$repo" --description "$2" --color "$3" --force
+          }
+          ensure "triage:pending" "Awaiting automated or maintainer triage" "FBCA04"
+          ensure "triage:needs-info" "Missing version, OS, or reproduction steps" "FEF2C0"
+          ensure "triage:docs-only" "Documentation or install-script scoped" "C5DEF5"
+          ensure "triage:upstream-runtime" "Eligible for upstream runtime fix" "0E8A16"
+          ensure "bot:dispatching" "Cursor cloud agent dispatch in progress" "F9D0C4"
+          ensure "bot:dispatched" "Cursor cloud agent started" "1D76DB"
+          ensure "bot:needs-human" "Automated triage or dispatch blocked" "B60205"
