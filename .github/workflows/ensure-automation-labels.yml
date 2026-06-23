@@ -33,4 +33,5 @@ jobs:
           ensure "bot:dispatching" "Cursor cloud agent dispatch in progress" "F9D0C4"
           ensure "bot:dispatched" "Cursor cloud agent started" "1D76DB"
           ensure "bot:needs-human" "Automated triage or dispatch blocked" "B60205"
+          ensure "bot:priority-blocked" "Trusted priority dispatch blocked; needs maintainer" "E99695"
           ensure "bot:pr-opened" "Fix PR opened from automation" "5319E7"
