@@ -1,4 +1,12 @@
-# Adds triage:pending to new bug reports (zero LLM). Maintainer dispatch runs from finclaw/scripts/issue-dispatch/.
+# Adds triage:pending on new bug reports ($0 LLM). Maintainer dispatch runs from Geeksfino/finclaw.
+#
+# - Real-time priority dispatch for trusted reporters (bug + body quality)
+#
+# Secrets on finogeeks/finclaw-cli:
+#   FINCLAW_PRIORITY_DISPATCH_PAT — Geeksfino PAT with Actions R/W on Geeksfino/finclaw
+#
+# Variables (keep in sync with Geeksfino/finclaw):
+#   PRIORITY_ISSUE_REPORTERS — comma-separated GitHub logins
 name: Issue triage pending
 
 on:
@@ -32,3 +40,49 @@ jobs:
           gh issue edit "${{ github.event.issue.number }}" \
             --repo "${{ github.repository }}" \
             --add-label "triage:pending"
+
+  dispatch-priority:
+    if: >-
+      github.event.action == 'opened' ||
+      (github.event.action == 'labeled' && github.event.label.name == 'bug')
+    needs: label-pending
+    runs-on: ubuntu-latest
+    concurrency:
+      group: finclaw-priority-dispatch-${{ github.event.issue.number }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          repository: Geeksfino/finclaw
+          token: ${{ secrets.FINCLAW_PRIORITY_DISPATCH_PAT }}
+          path: upstream
+          sparse-checkout: scripts/issue-dispatch
+          sparse-checkout-cone-mode: true
+
+      - name: Priority gate + dispatch fix agent
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRIORITY_ISSUE_REPORTERS: ${{ vars.PRIORITY_ISSUE_REPORTERS }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          DISPATCH_PAT: ${{ secrets.FINCLAW_PRIORITY_DISPATCH_PAT }}
+        run: |
+          set -euo pipefail
+          issue_json="$(gh issue view "${ISSUE_NUMBER}" \
+            --repo "${{ github.repository }}" \
+            --json number,title,body,labels,author)"
+          if ! echo "${issue_json}" | python3 upstream/scripts/issue-dispatch/triage.py --priority-gate; then
+            echo "Issue #${ISSUE_NUMBER} not eligible for priority dispatch"
+            exit 0
+          fi
+          if [[ -z "${DISPATCH_PAT}" ]]; then
+            echo "FINCLAW_PRIORITY_DISPATCH_PAT not set; skipping priority dispatch"
+            exit 0
+          fi
+          GH_TOKEN="${DISPATCH_PAT}" gh workflow run issue-dispatch.yml \
+            --repo Geeksfino/finclaw \
+            -f issue="${ISSUE_NUMBER}" \
+            -f limit=1 \
+            -f triage_only=false \
+            -f dry_run=false \
+            -f priority_filter=only
+          echo "Dispatched Geeksfino/finclaw issue-dispatch for #${ISSUE_NUMBER}"
