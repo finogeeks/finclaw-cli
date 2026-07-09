@@ -31,6 +31,7 @@ All user guides are **self-contained in this repository**. See **[docs/README.md
 | Profiles and backup | [docs/profiles.md](docs/profiles.md) | [docs/profiles.zh.md](docs/profiles.zh.md) |
 | Security (**multi-dimensional** model, `--security`, approvals) | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | Skills | [docs/skills.md](docs/skills.md) | [docs/skills.zh.md](docs/skills.zh.md) |
+| Post-turn learning | [docs/learning.md](docs/learning.md) | [docs/learning.zh.md](docs/learning.zh.md) |
 | Chat and operations | [docs/chat-and-operations.md](docs/chat-and-operations.md) | [docs/chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | Agent-to-agent (A2A) | [docs/a2a.md](docs/a2a.md) | [docs/a2a.zh.md](docs/a2a.zh.md) |
 | Command index | [docs/reference-commands.md](docs/reference-commands.md) | [docs/reference-commands.zh.md](docs/reference-commands.zh.md) |

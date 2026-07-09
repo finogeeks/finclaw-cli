@@ -79,3 +79,10 @@ finclaw doctor --fix
 ## Claw HTTP/API (deployment-specific)
 
 For HTTP/API integration details, rely on documentation for **your** Claw deployment and runtime build. CLI flags remain authoritative for what **your** `finclaw` binary supports (`finclaw --help`).
+
+## Post-turn learning
+
+Learning is **off by default**. Enable it in profile `config.yaml` (`learning:` block) or with `AI_INFRA_RS_LEARNING_*` environment variables. There is no `finclaw chat --learning` flag.
+
+Full guide: [learning.md](learning.md) (modes, promote/reject, env table).
+

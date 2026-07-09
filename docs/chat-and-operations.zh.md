@@ -116,9 +116,16 @@ finclaw auth --help
 
 **A2A 委派：** `/ask <对端> <消息>`（别名 `/delegate`）引导智能体对 `a2a-agents.yaml` 中的对端调用 `a2a_send`。用 `finclaw a2a list|card|probe` 检查对端。完整步骤见 [a2a.zh.md](a2a.zh.md)。
 
+## 回合后学习
+
+**默认关闭。** 在 profile `config.yaml` 启用后，普通 `finclaw chat` 可能在后台审阅并持久化记忆或 agent 技能。用新的 `--session` 测试跨会话召回。运维命令：`finclaw learning status`、`promote`、`reject`。
+
+完整说明：[learning.zh.md](learning.zh.md)。
+
 ## 另见
 
 - [getting-started.zh.md](getting-started.zh.md)
 - [configuration.zh.md](configuration.zh.md)
+- [learning.zh.md](learning.zh.md) — 自进化 / 学习循环
 - [a2a.zh.md](a2a.zh.md) — 智能体互联（本地测试、入站 `serve`）
 - [advanced.zh.md](advanced.zh.md)

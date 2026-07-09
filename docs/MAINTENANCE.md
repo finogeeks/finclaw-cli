@@ -19,8 +19,9 @@ These notes are for people who edit documentation in the **finclaw-cli** public 
 2. Update [reference-commands.md](reference-commands.md) (and `.zh.md`) if top-level commands or primary workflows change.
 3. **Global `--security` / host isolation** — if the mapping to `AI_INFRA_RS_*` or default behavior changes upstream, update [security-and-policies.md](security-and-policies.md) and [security-and-policies.zh.md](security-and-policies.zh.md) first, then [configuration.md](configuration.md) / [configuration.zh.md](configuration.zh.md) and [chat-and-operations.md](chat-and-operations.md) / `.zh.md` cross-references as needed.
 4. **Global `--locale` / `--config`** — if help language selection or alternate `config.yaml` paths change, update [configuration.md](configuration.md), [reference-commands.md](reference-commands.md), and [docs/README.md](README.md) (English prose + bilingual note as needed).
-5. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
-6. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
+5. **Post-turn learning** — if `learning:` schema, `finclaw learning` subcommands, or `AI_INFRA_RS_LEARNING_*` env vars change, update [learning.md](learning.md) / [learning.zh.md](learning.zh.md) first, then cross-links in [configuration.md](configuration.md), [chat-and-operations.md](chat-and-operations.md), [skills.md](skills.md), and [reference-commands.md](reference-commands.md) (and `.zh.md` counterparts).
+6. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
+7. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
 
 ## Bilingual files
 

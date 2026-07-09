@@ -86,7 +86,14 @@ finclaw skills check
 
 协议级集成以所部署的 Claw 为准；日常仍以上述 `finclaw skills` 命令与 `--help` 为准。
 
+## Agent 技能与学习循环
+
+启用 [回合后学习](learning.zh.md)（`learning.enabled: true`）时，审阅可能在 workspace `skills/` 下创建 **agent 技能包**。`mode: stage` 时用 `finclaw learning list-pending` 与 `finclaw learning promote`。
+
+**Curator**（`finclaw skills curator`）独立管理闲置/归档，与学习并存。可用 `finclaw skills curator status` 同时查看。
+
 ## 另见
 
 - [configuration.zh.md](configuration.zh.md) — 环境与 `config.yaml`
+- [learning.zh.md](learning.zh.md) — 学习循环配置
 - [profiles.zh.md](profiles.zh.md) — profile 与备份

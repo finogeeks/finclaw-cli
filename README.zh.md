@@ -31,6 +31,7 @@
 | Profile 与备份 | [docs/profiles.md](docs/profiles.md) | [docs/profiles.zh.md](docs/profiles.zh.md) |
 | 安全与策略（多维控制模型、`--security`、监督式审批） | [docs/security-and-policies.md](docs/security-and-policies.md) | [docs/security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | 技能 | [docs/skills.md](docs/skills.md) | [docs/skills.zh.md](docs/skills.zh.md) |
+| 回合后学习 | [docs/learning.md](docs/learning.md) | [docs/learning.zh.md](docs/learning.zh.md) |
 | 对话与运维 | [docs/chat-and-operations.md](docs/chat-and-operations.md) | [docs/chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | 智能体互联（A2A） | [docs/a2a.md](docs/a2a.md) | [docs/a2a.zh.md](docs/a2a.zh.md) |
 | 命令索引 | [docs/reference-commands.md](docs/reference-commands.md) | [docs/reference-commands.zh.md](docs/reference-commands.zh.md) |

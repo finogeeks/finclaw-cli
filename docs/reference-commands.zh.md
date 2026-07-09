@@ -22,6 +22,7 @@
 | 凭据、令牌等 | `finclaw auth` |
 | 定时任务 | `finclaw cron` |
 | 技能（hub、ClawHub、安装） | `finclaw skills` |
+| 回合后学习（记忆/技能审阅） | `finclaw learning` — 见 [learning.zh.md](learning.zh.md) |
 | 工具注册表 | `finclaw tools` |
 | 合同/一致性检查 | `finclaw conformance` |
 | 重置本地状态（慎用） | `finclaw reset` |
@@ -51,6 +52,7 @@
 - [profiles.zh.md](profiles.zh.md)
 - [security-and-policies.zh.md](security-and-policies.zh.md)
 - [skills.zh.md](skills.zh.md)
+- [learning.zh.md](learning.zh.md)
 - [chat-and-operations.zh.md](chat-and-operations.zh.md)
 - [a2a.zh.md](a2a.zh.md)
 - [troubleshooting.zh.md](troubleshooting.zh.md)

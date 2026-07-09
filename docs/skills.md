@@ -86,7 +86,14 @@ Adjust `default` to your profile name.
 
 Wire-level skill integration depends on your Claw build; the commands above remain the practical interface for end users.
 
+## Agent-authored skills and learning
+
+When [post-turn learning](learning.md) is enabled (`learning.enabled: true`), review may create **agent-authored** skill packs under the workspace `skills/` tree. Use `finclaw learning list-pending` and `finclaw learning promote` when `mode: stage`.
+
+**Curator** (`finclaw skills curator`) ages or archives idle skills independently of learning. Run `finclaw skills curator status` to see both systems side by side.
+
 ## See also
 
 - [configuration.md](configuration.md) — env and `config.yaml` layers
+- [learning.md](learning.md) — learning loop configuration
 - [profiles.md](profiles.md) — profile isolation and backup

@@ -118,9 +118,16 @@ Inside `finclaw chat`, type `/help` for the list supported by **your** binary. C
 
 **A2A delegation:** `/ask <peer> <message>` (alias `/delegate`) asks the agent to call the `a2a_send` tool for a peer listed in `a2a-agents.yaml`. Inspect peers with `finclaw a2a list|card|probe`. Full walkthrough: [a2a.md](a2a.md).
 
+## Post-turn learning
+
+Learning is **off by default**. After you enable it in profile `config.yaml`, normal `finclaw chat` turns may trigger background reviews that persist memory or agent-authored skills. Use new `--session` ids to test cross-session recall. Operator commands: `finclaw learning status`, `promote`, `reject`.
+
+Full guide: [learning.md](learning.md).
+
 ## See also
 
 - [getting-started.md](getting-started.md) — first run
 - [configuration.md](configuration.md) — LLM config
+- [learning.md](learning.md) — self-evolution / learning loop
 - [a2a.md](a2a.md) — agent-to-agent (local testing, inbound `serve`)
 - [advanced.md](advanced.md) — shell completions, man page, optional `mcp` feature

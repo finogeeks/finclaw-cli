@@ -22,6 +22,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Tokens / LLM host credentials / cron auth | `finclaw auth` |
 | Scheduled jobs | `finclaw cron` |
 | Skills (hubs, ClawHub, install) | `finclaw skills` |
+| Post-turn learning (memory/skills review) | `finclaw learning` — see [learning.md](learning.md) |
 | Tool registry listing | `finclaw tools` |
 | Contract conformance run | `finclaw conformance` |
 | Wipe local profile state (careful) | `finclaw reset` |
@@ -51,6 +52,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 - [profiles.md](profiles.md)
 - [security-and-policies.md](security-and-policies.md)
 - [skills.md](skills.md)
+- [learning.md](learning.md)
 - [chat-and-operations.md](chat-and-operations.md)
 - [a2a.md](a2a.md)
 - [troubleshooting.md](troubleshooting.md)

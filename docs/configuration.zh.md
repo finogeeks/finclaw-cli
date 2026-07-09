@@ -79,3 +79,10 @@ finclaw doctor --fix
 ## 与 Claw 的 HTTP/API（依部署而定）
 
 协议与集成细节以你所部署的 Claw 运行时及厂商/运维文档为准。子命令与参数以本机 `finclaw --help` 为准。
+
+## 回合后学习
+
+**默认关闭。** 在 profile `config.yaml` 的 `learning:` 段或 `AI_INFRA_RS_LEARNING_*` 环境变量中启用。无 `finclaw chat --learning` 参数。
+
+完整说明：[learning.zh.md](learning.zh.md)（mode、promote/reject、环境变量表）。
+
