@@ -118,7 +118,7 @@ finclaw auth --help
 
 ## 回合后学习
 
-**默认关闭。** 在 profile `config.yaml` 启用后，普通 `finclaw chat` 可能在后台审阅并持久化记忆或 agent 技能。用新的 `--session` 测试跨会话召回。运维命令：`finclaw learning status`、`promote`、`reject`。
+**默认开启**（`mode: promote`）。普通 `finclaw chat` 可能在后台审阅并持久化记忆或 agent 技能。可用 `finclaw learning disable` / `set-mode stage` 调整。用新的 `--session` 测试跨会话召回。运维命令：`finclaw learning status`、`enable`、`disable`、`promote`、`reject`。
 
 完整说明：[learning.zh.md](learning.zh.md)。
 

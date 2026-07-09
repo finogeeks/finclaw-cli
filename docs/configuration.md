@@ -82,7 +82,7 @@ For HTTP/API integration details, rely on documentation for **your** Claw deploy
 
 ## Post-turn learning
 
-Learning is **off by default**. Enable it in profile `config.yaml` (`learning:` block) or with `AI_INFRA_RS_LEARNING_*` environment variables. There is no `finclaw chat --learning` flag.
+Learning is **on by default** with `mode: promote`. Toggle with `finclaw learning enable|disable|set-mode`, `finclaw config set learning.*`, or `AI_INFRA_RS_LEARNING_*`. There is no `finclaw chat --learning` flag.
 
 Full guide: [learning.md](learning.md) (modes, promote/reject, env table).
 

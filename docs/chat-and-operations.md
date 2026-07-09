@@ -120,7 +120,7 @@ Inside `finclaw chat`, type `/help` for the list supported by **your** binary. C
 
 ## Post-turn learning
 
-Learning is **off by default**. After you enable it in profile `config.yaml`, normal `finclaw chat` turns may trigger background reviews that persist memory or agent-authored skills. Use new `--session` ids to test cross-session recall. Operator commands: `finclaw learning status`, `promote`, `reject`.
+Learning is **on by default** (`mode: promote`). Normal `finclaw chat` turns may trigger background reviews that persist memory or agent-authored skills. Toggle with `finclaw learning disable` / `set-mode stage`. Use new `--session` ids to test cross-session recall. Operator commands: `finclaw learning status`, `enable`, `disable`, `promote`, `reject`.
 
 Full guide: [learning.md](learning.md).
 

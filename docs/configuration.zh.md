@@ -82,7 +82,7 @@ finclaw doctor --fix
 
 ## 回合后学习
 
-**默认关闭。** 在 profile `config.yaml` 的 `learning:` 段或 `AI_INFRA_RS_LEARNING_*` 环境变量中启用。无 `finclaw chat --learning` 参数。
+**默认开启**（`mode: promote`）。可用 `finclaw learning enable|disable|set-mode`、`finclaw config set learning.*` 或 `AI_INFRA_RS_LEARNING_*` 调整。无 `finclaw chat --learning` 参数。
 
 完整说明：[learning.zh.md](learning.zh.md)（mode、promote/reject、环境变量表）。
 
