@@ -35,13 +35,9 @@
 finclaw chat --capability read_only -m "用一段话说明本仓库目录结构。"
 ```
 
-### 宿主沙箱（`--security`）
+### 宿主姿态与策略
 
-`--security` 为**全局**参数（不是仅作用于 `chat` 子命令的局部开关），在进程内设置与本地工具/exec 隔离相关的 `AI_INFRA_RS_*`。`finclaw chat` 在省略时默认等效为 `yolo`。说明与示例见 [security-and-policies.zh.md](security-and-policies.zh.md)（**宿主执行沙箱** 一节）。
-
-```bash
-finclaw chat --security restricted
-```
+公开发布的二进制默认以**裸宿主**进程运行。用配置档**策略**与受监督审批收紧能力 — 见 [security-and-policies.zh.md](security-and-policies.zh.md)。IDE 权限 UI 见 [acp.zh.md](acp.zh.md)。
 
 ## 常驻服务
 

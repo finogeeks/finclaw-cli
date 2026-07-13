@@ -169,7 +169,7 @@ finclaw chat
 finclaw chat -m "你好，finclaw"
 ```
 
-**更强本地沙箱（可选）**：全局参数 `--security` 控制宿主侧工具/exec 隔离（`isolated` / `restricted` / `yolo`），`chat` 在省略时默认等效为 `yolo`。详见 [security-and-policies.zh.md](security-and-policies.zh.md)（**宿主执行沙箱**）。
+**策略与审批：** 公开发布的二进制默认以普通进程运行。用配置档策略与受监督提示（或 IDE 中的 ACP）约束破坏性工具。见 [security-and-policies.zh.md](security-and-policies.zh.md) 与 [acp.zh.md](acp.zh.md)。
 
 **脚本化 user id：** 使用 `--user <id>` 或环境变量 `FINCLAW_USER_ID`，便于多账号/测试场景归因一致；留空时 finclaw 通常从操作系统用户名推导。
 
@@ -201,13 +201,24 @@ finclaw serve
 
 ---
 
-## 6. 升级
+## 6. 接下来可以探索
+
+| 目标 | 指南 |
+| --- | --- |
+| 在 **Zed** 中使用 finclaw（ACP） | [acp.zh.md](acp.zh.md) |
+| 让 Agent 在回合后**学习**记忆与技能 | [learning.zh.md](learning.zh.md) · `finclaw learning status` |
+| 与其他 Agent 协作（**A2A**） | [a2a.zh.md](a2a.zh.md) |
+| 收紧策略 / 审批 | [security-and-policies.zh.md](security-and-policies.zh.md) |
+
+---
+
+## 7. 升级
 
 新版本见 [Releases](https://github.com/finogeeks/finclaw-cli)。可再次使用一行安装脚本，或重新手动下载、**再次校验**哈希并覆盖旧二进制。`finclaw update` 的行为以终端提示与你们发行版说明为准。
 
 ---
 
-## 7. 遇到问题？
+## 8. 遇到问题？
 
 - **下载失败、包损坏、校验不通过、无法解压**：到 [Issues](https://github.com/finogeeks/finclaw-cli/issues) 反馈，并附上**版本号**、**文件名**、**系统与 CPU 架构**（如 `macOS 15, arm64`）。
 - **产品行为、私有部署、商业支持**：若有组织内渠道，以该渠道为准；本公开仓库以**发版与安装**为主。

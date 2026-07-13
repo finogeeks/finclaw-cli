@@ -5,8 +5,8 @@
 ## Supported platforms
 
 - **macOS** — arm64 and x86_64 artifacts are published.
-- **Linux** — `x86_64-unknown-linux-gnu` (glibc) is the typical target; WSL2 on Windows uses the same Linux archive.
-- **Windows** — use **WSL2** and the Linux binary until a native Windows artifact is published in [Releases](https://github.com/finogeeks/finclaw-cli/releases).
+- **Linux** — `x86_64-unknown-linux-gnu` (glibc) is the typical target; WSL2 on Windows can use the same Linux archive.
+- **Windows** — native `x86_64-pc-windows-msvc` archives are published on [Releases](https://github.com/finogeeks/finclaw-cli/releases) (`.tar.gz` / `.tar.zst`). The one-liner `install.sh` covers macOS and Linux; on Windows download an archive from Releases, extract `finclaw.exe`, and put it on your `PATH` (or use WSL2 + the Linux package).
 
 ## One-line install (recommended)
 

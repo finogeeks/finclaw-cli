@@ -171,7 +171,7 @@ finclaw chat
 finclaw chat -m "Hello from finclaw"
 ```
 
-**Stronger local sandbox** (optional): the global flag `--security` controls host-side tool/exec isolation (`isolated` / `restricted` / `yolo`). `chat` defaults to `yolo` when omitted. See [security-and-policies.md](security-and-policies.md) (*Host execution sandbox*).
+**Policy & approvals:** published binaries run as a normal process by default. Use profile policies and supervised prompts (or ACP in the IDE) to gate destructive tools. See [security-and-policies.md](security-and-policies.md) and [acp.md](acp.md).
 
 **Scripted user id:** pass `--user <id>` or set `FINCLAW_USER_ID` so multi-account tests attribute turns consistently; when empty, finclaw normally derives from your OS username.
 
@@ -203,13 +203,24 @@ Use `finclaw profile --help` for copy/backup flows.
 
 ---
 
-## 6. Updates
+## 6. What to explore next
+
+| Goal | Guide |
+| --- | --- |
+| Use finclaw inside **Zed** (ACP) | [acp.md](acp.md) |
+| Let the agent **learn** memory & skills after turns | [learning.md](learning.md) · `finclaw learning status` |
+| Talk to other agents (**A2A**) | [a2a.md](a2a.md) |
+| Tighten policies / approvals | [security-and-policies.md](security-and-policies.md) |
+
+---
+
+## 7. Updates
 
 New builds appear on [Releases](https://github.com/finogeeks/finclaw-cli/releases). Re-run the one-liner or download the new archive, **re-verify** checksums, and replace the binary. The `finclaw update` command documents the channel; behavior depends on your edition—read the on-screen help.
 
 ---
 
-## 7. Problems?
+## 8. Problems?
 
 - **Install / download / checksum / extract:** open an [issue](https://github.com/finogeeks/finclaw-cli/issues) with the **release tag**, **file name**, and **OS + CPU** (e.g. macOS 15, arm64).
 - **Product / agent behavior** (private deployments): use your org’s support channel if applicable; this repo focuses on **shipping and installing** the public binary.

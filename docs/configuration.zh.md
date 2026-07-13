@@ -18,16 +18,15 @@ finclaw profile use <name>
 
 会在 finclaw 主目录下记录当前选择（例如 `active-profile` 文件）。
 
-## 全局参数：宿主沙箱（`--security`）
-
-`--security <isolated|restricted|yolo>` 为**全局**参数（与子命令的相对位置可按 `--help` 习惯书写，作用于**整个进程**）。**不会**写入 `config.yaml`；在运行时启动前设置与本地工具/exec 隔离相关的 `AI_INFRA_RS_*` 环境变量。它与 `policies/` 下 YAML 策略是不同层面，详见 [security-and-policies.zh.md](security-and-policies.zh.md#宿主执行沙箱security)。
-
-## 全局参数：配置文件路径与界面语言
+## 全局参数：home、配置路径与语言
 
 | 参数 / 环境变量 | 作用 |
 | --- | --- |
+| `--finclaw-home <DIR>` · `FINCLAW_HOME` | 用户数据根目录（`profiles/`、`active-profile` 等）。默认 `~/.finclaw/`。 |
 | `--config <PATH>` · `FINCLAW_CONFIG` | 指定 `config.yaml` 路径，覆盖默认的 `<profile_root>/config.yaml`。 |
 | `--locale <auto|en|zh>` | `--help`、补全/man 生成及共享文案的语言；`auto` 遵从 `LC_ALL` / `LC_MESSAGES` / `LANG` / `LANGUAGE`。 |
+
+**宿主姿态：** 公开发布的二进制默认以普通进程运行。策略与审批见 [security-and-policies.zh.md](security-and-policies.zh.md) — 当前 Releases **没有**全局 `--security`，除非本机 `finclaw --help` 再次列出。
 
 ## 宿主配置文件
 

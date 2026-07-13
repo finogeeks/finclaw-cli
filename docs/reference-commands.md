@@ -11,8 +11,9 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Run ledger peek (latest chat) | `finclaw diagnose last` |
 | Help / completions language | `finclaw --locale <auto\|en\|zh>` (also affects shared CLI messages) |
 | Explicit config file | `finclaw --config <path>` · env `FINCLAW_CONFIG` |
-| Host execution sandbox (global) | `finclaw --security <isolated\|restricted\|yolo> …` — see [security-and-policies.md](security-and-policies.md) |
+| User-data root | `finclaw --finclaw-home <dir>` · env `FINCLAW_HOME` |
 | Chat (REPL or one-shot) | `finclaw chat` · `finclaw chat -m "…"` |
+| **ACP / IDE (e.g. Zed)** | `finclaw acp` — see [acp.md](acp.md) |
 | Long-lived process | `finclaw serve` |
 | Runtime status / stop | `finclaw status` · `finclaw stop` |
 | Read/write `config.yaml` | `finclaw config` (includes `check`, `migrate`, `env-path` — see `--help`) |
@@ -42,7 +43,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Uninstall | `finclaw uninstall` |
 | First-time profile bootstrap | `finclaw init` |
 
-**Global options (all subcommands):** `--profile`, `-v`/`--verbose`, `-q`/`--quiet`, `--config`, `--security`, `--locale` — see `finclaw --help`.
+**Global options (all subcommands):** `--finclaw-home`, `--profile`, `-v`/`--verbose`, `-q`/`--quiet`, `--config`, `--locale` — see `finclaw --help`.
 
 **Topic guides in this repository:**
 
@@ -54,8 +55,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 - [skills.md](skills.md)
 - [learning.md](learning.md)
 - [chat-and-operations.md](chat-and-operations.md)
+- [acp.md](acp.md)
 - [a2a.md](a2a.md)
 - [troubleshooting.md](troubleshooting.md)
 - [advanced.md](advanced.md)
-
-**HTTP/API integration:** defined by your Claw runtime; use operator or vendor docs when you need wire-level detail beyond this CLI guide.

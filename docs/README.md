@@ -1,10 +1,8 @@
 # finclaw documentation
 
-User guides for the `finclaw` CLI (release binaries and install scripts in this repository). All guides are self-contained to this repo.
+User guides for the `finclaw` CLI (release binaries and install scripts in this repository). All guides are self-contained in this repo.
 
 **Authoritative for flags and subcommands:** `finclaw --help` and `finclaw <subcommand> --help` on your machine (match your installed version). Global `--locale auto|en|zh` controls help/completion language; `--config`/`FINCLAW_CONFIG` can point at a specific `config.yaml`.（中文：`--locale` 影响 `--help` 与 Shell 补全生成文案；`--config`/`FINCLAW_CONFIG` 可指向任意 `config.yaml`。）
-
-**HTTP/API integration** with Claw is defined by the runtime you deploy; these guides focus on the CLI. Use your operator or vendor documentation for wire-level details when needed.
 
 | Topic | English | 中文 |
 | --- | --- | --- |
@@ -12,13 +10,16 @@ User guides for the `finclaw` CLI (release binaries and install scripts in this 
 | Installation and binary updates | [installation.md](installation.md) | [installation.zh.md](installation.zh.md) |
 | Configuration, env, paths | [configuration.md](configuration.md) | [configuration.zh.md](configuration.zh.md) |
 | Profiles, templates, backup and import | [profiles.md](profiles.md) | [profiles.zh.md](profiles.zh.md) |
-| Security: **multi-dimensional control model**, policies, presets, identity, capability, **`--security` (host sandbox)**, supervised approvals | [security-and-policies.md](security-and-policies.md) | [security-and-policies.zh.md](security-and-policies.zh.md) |
+| Security: policies, presets, identity, capability, supervised approvals | [security-and-policies.md](security-and-policies.md) | [security-and-policies.zh.md](security-and-policies.zh.md) |
 | Skills: hubs, ClawHub, install and check | [skills.md](skills.md) | [skills.zh.md](skills.zh.md) |
 | Post-turn learning (memory, skills, promote) | [learning.md](learning.md) | [learning.zh.md](learning.zh.md) |
 | Chat, REPL, daemon, logs, operations | [chat-and-operations.md](chat-and-operations.md) | [chat-and-operations.zh.md](chat-and-operations.zh.md) |
-| Agent-to-agent (A2A): local testing, Hermes/chatkit hosts | [a2a.md](a2a.md) | [a2a.zh.md](a2a.zh.md) |
+| **ACP / Zed** (Agent Client Protocol) | [acp.md](acp.md) | [acp.zh.md](acp.zh.md) |
+| Agent-to-agent (A2A) | [a2a.md](a2a.md) | [a2a.zh.md](a2a.zh.md) |
 | Command index (cheat sheet) | [reference-commands.md](reference-commands.md) | [reference-commands.zh.md](reference-commands.zh.md) |
 | Troubleshooting | [troubleshooting.md](troubleshooting.md) | [troubleshooting.zh.md](troubleshooting.zh.md) |
 | Optional features (completions, man page, MCP) | [advanced.md](advanced.md) | [advanced.zh.md](advanced.zh.md) |
+
+**Start here for product overview:** [../README.md](../README.md) · [../README.zh.md](../README.zh.md)
 
 **Maintaining these docs (contributors):** [MAINTENANCE.md](MAINTENANCE.md)

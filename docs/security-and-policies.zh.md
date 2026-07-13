@@ -15,7 +15,7 @@
 ```mermaid
 flowchart TB
   subgraph host["宿主进程"]
-    SEC["CLI --security\nTier A/B、OS 沙箱"]
+    NAKED["公开发布 CLI 默认：\n裸宿主进程"]
   end
   subgraph disk["磁盘上的 profile"]
     POL["policies/*.yaml\nexec / http / tool-invocation / llm"]
@@ -24,9 +24,9 @@ flowchart TB
   subgraph runtime["Claw 运行时"]
     CAP["capability → agent 循环画像\n超时、工具次数上限"]
     GOV["工具治理 policy\n自动执行 / 询问 / 拒绝"]
-    APR["交互式审批\n流式 infer 会话"]
+    APR["交互式审批\nCLI 提示或 ACP UI"]
   end
-  SEC --> runtime
+  NAKED --> runtime
   POL --> runtime
   PR --> POL
   PR --> CAP
@@ -35,17 +35,17 @@ flowchart TB
 
 | 维度 | 控制什么 | 用户常见入口 |
 | --- | --- | --- |
-| **A. 宿主执行沙箱** | **本机进程**如何把工具/exec 与宿主隔离（Seatbelt、bwrap、可选 Tier B 等） | `finclaw chat --security restricted\|isolated\|yolo` |
+| **A. 宿主进程姿态** | 公开发布的二进制以**普通本机进程**运行（“裸宿主”）。当前版本**没有**全局 `--security` 开关 — 请用 `finclaw --help` 核对 | OS 账号权限；你自行外层包装的沙箱 |
 | **B. Exec 策略** | `exec` 是否可用、命令白/黑名单、子进程沙箱与网络策略等 | `presets.exec`、`policies/exec-policy.yaml`、`finclaw policy apply exec` |
 | **C. HTTP 白名单** | 出站域名（含浏览器类工具可走的主机范围）、浏览器 SSRF 姿态 | `presets.http`、`policies/http-allowlist.yaml` |
 | **D. 工具调用策略** | **自主度模式**（`readonly` / `supervised` / `full`）以及按工具的 **auto-approve / always-ask / deny** 集合 | `presets.tool`、`policies/tool-invocation-policy.yaml` |
-| **E. Capability（agent 循环画像）** | 单次请求的**墙钟超时**、**最大工具调用次数**、研究与续跑等相关预算——由 **capability 字符串**选择（如 `general`、`coding`、`read_only`） | `finclaw capability set`、`finclaw chat --capability …` |
+| **E. Capability（agent 循环画像）** | 单次请求的**墙钟超时**、**最大工具调用次数**、研究与续跑等相关预算——由 **capability 字符串**选择（如 `general`、`coding`、`read_only`） | `finclaw capability set`、`finclaw chat --capability …`、`finclaw acp --capability …` |
 | **F. Identity / 人设** | 系统提示中如何描述智能体与用户责任边界（认知层） | `finclaw identity …`，Markdown 各层可用 `finclaw agent edit …` |
-| **G. 交互式审批（supervised）** | 策略要求确认时，运行时可**暂停**直至有人调用 **`/ai/infer/approval/resolve`**；**行式 CLI**可在交互 stdin 下 Y/N **提示**；全屏 **`--tui`** 往往无法稳妥追问，可能对挂起审批 **自动拒绝** 并告警 | 详见下文 **交互式审批** |
+| **G. 交互式审批（supervised）** | 策略要求确认时，运行时**暂停**直至有人批准：行式 CLI 可提示；**ACP** 走编辑器权限 UI；全屏 `--tui` 可能自动拒绝并告警 | 详见下文 **交互式审批** |
 
 **维度之间如何分工（简述）：**
 
-- **`--security`**（A）**不能替代**磁盘策略（B–D）。可同时使用较强的 OS 级沙箱 **与** **显式人机确认**：例如仍为 `ask_for_writes`，在执行写文件前走审批。
+- **裸宿主（A）不能替代**磁盘策略（B–D）。即使没有 OS 沙箱，`ask_for_writes` 与 deny 列表仍然重要。
 - **工具预设 `ask_for_writes`**（D）对应运行时的 **supervised** 语义，并把**破坏性工具**放入 **always ask**（如 `edit_file`、`write_file`、`apply_patch`、`exec`）；读目录/检索/抓取/技能发现等常见于 **auto_approve**，直至你手写 YAML 覆盖。
 - **`auto_all`**（D）在出厂预设上等价 **full**：更偏“自动化”，只适合**已信任**的环境与下层策略均已审查的场景。
 - **`read_only` capability**（E）（常与**研究类**模版一起使用）会选择更**紧缩**的 **agent 循环默认值**（如更短的墙钟超时、默认更少的工具次数、often 关闭续跑等）；这是**会话预算与形态**，**单靠它不会** magically 禁止写入——若需要硬否决，要结合（D）、允许工具列表、`deny` 等。
@@ -90,36 +90,25 @@ flowchart TB
 
 ### 运维自检清单（可打印）
 
-- [ ] **`--security`**：不信任的本机选型 `restricted` / `isolated`；知晓省略时 `chat` 可能默认等价 **yolo**（见下文专节）。
+- [ ] **宿主姿态**：把公开发布的 CLI 当作**裸进程**；在不信任的工作上收紧**策略**与 **supervised** 工具。
 - [ ] **Profile**：备份 **`profile.yaml` + `policies/`**；大版本升级后复查 **presets**。
 - [ ] **`finclaw capability`**：与产品与合规预期一致。
 - [ ] **`finclaw policy show … --resolved`**：对外分享的 profile **先过目**解析结果。
 - [ ] **`finclaw doctor`**：消解 **file vs live** 漂移。
 - [ ] **审批自动化**：仅用受控 Bearer，勿把令牌写进不可信会话日志。
 
-## 宿主执行沙箱（`--security`）
+## 宿主执行姿态（公开发布 CLI）
 
-该全局开关与 **profile 下 `policies/*.yaml` 的“策略”** 是不同层面：`--security` 决定在 Claw 启动前，**本进程**为本地 **工具/exec 隔离**（如 Tier A/B、Seatbelt、bwrap、Apple Container 等）写入哪些 `AI_INFRA_RS_*` 环境变量。它不替代 `finclaw policy` 对自动批准、HTTP 白名单、exec 白名单等内容的配置。
+本仓库发布的 `finclaw` 二进制默认以**普通用户进程**运行（“裸宿主”）。当前版本**不提供**全局 `--security` 参数 — 请始终用本机 `finclaw --help` 核对。
 
-| 取值 | 概要 |
-| --- | --- |
-| `isolated` | 在**当前系统与构建**上能落地的**最强本地隔离**（例如 macOS 上在栈可用时走 Apple Container；在映射到 Linux 的环境变量中对应更偏 “cloud / fail-closed” 的 bwrap 姿态）。 |
-| `restricted` | 典型**桌面**沙箱：macOS 上为 Seatbelt；Linux 为偏桌面的 bwrap 组合。 |
-| `yolo` | **兼容优先**的 “legacy” 宿主执行姿态；该映射会关闭所覆盖变量中的 Tier B 等。 |
+仍然起作用的保护：
 
-**默认与提示**
+- **磁盘策略** `<profile_root>/policies/`（exec 白名单、HTTP 白名单、工具 auto/ask/deny）
+- **受监督审批**（CLI 提示或 ACP 客户端 / Zed 权限 UI）
+- **Capability / 循环预算**（`finclaw capability`、`--capability`）
+- 你的 **OS 账号**权限，以及你在二进制外层自行包装的沙箱
 
-- **`finclaw chat`** 在未显式传 `--security` 时，等效为 **`yolo`**，以便本地使用习惯与 OpenClaw / Hermes 系宿主相近。可打印 **stderr 提示**，建议需要更强沙箱时使用 `--security restricted` 或 `--security isolated`。
-- **其他子命令** 不会在省略 `--security` 时套用这个 chat 专用默认；以本机构建/宿主基线为准（见本机 `finclaw --help`）。
-
-**示例**
-
-```bash
-finclaw chat --security restricted
-finclaw --security isolated chat -m "你好"
-```
-
-若仍**手动**设置 `AI_INFRA_RS_*`，请避免与同一进程内 `--security` 映射相冲突。具体键值组合以已安装的 `finclaw` 构建为准；需要核对时可参考 `finclaw doctor` 或你们运维提供的说明。
+若旧文档仍写 `finclaw --security …`，对当前 Releases 视为过时，除非 `finclaw --help` 再次列出该参数。
 
 ## 策略类型（磁盘上的 kind）
 
@@ -223,5 +212,7 @@ finclaw doctor --fix
 
 ## 另见
 
-- [configuration.zh.md](configuration.zh.md) — `config.yaml`、环境变量、全局参数 `--security`
+- [configuration.zh.md](configuration.zh.md) — `config.yaml`、环境变量、全局参数（`--finclaw-home`、`--config`、`--locale`）
+- [acp.zh.md](acp.zh.md) — IDE / ACP 审批
+- [profiles.zh.md](profiles.zh.md) — `profile apply`、备份/导入
 - [profiles.zh.md](profiles.zh.md) — `profile apply`、备份与导入

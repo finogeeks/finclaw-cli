@@ -2,9 +2,9 @@
 
 **English:** [a2a.md](a2a.md)
 
-本文说明 **A2A（Agent2Agent，智能体互联）** 在 finclaw 中的工作方式、与 **FinSAFE Hermes 适配器** 的对比，以及在 **CLI 宿主** 与 **chatkit-middleware 宿主** 下的差异。文首的动手实验只需已发布的 `finclaw` 二进制与 Python 3 即可完成。
+本文说明如何用公开发布的 **finclaw** CLI 使用 **A2A（Agent2Agent）**：配置出站对等体、探活，并在聊天中用 `/ask` / `/delegate` 引导模型。文首动手实验只需 `finclaw` 二进制与 Python 3。
 
-线路级约定（方法名、错误码、跳数头）见公开的 [A2A 互操作说明](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)。
+线路级约定（方法名、错误码、跳数头）见公开的 [A2A 互操作说明](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)（若你可访问该仓库）；否则以 `finclaw a2a --help` 与下文示例为准。
 
 ---
 

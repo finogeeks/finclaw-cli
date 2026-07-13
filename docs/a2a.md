@@ -2,9 +2,9 @@
 
 **Chinese:** [a2a.zh.md](a2a.zh.md)
 
-This guide explains how **A2A (Agent2Agent)** works in finclaw, how it compares to the **FinSAFE Hermes adapter**, and how behaviour differs when finclaw is the **CLI host** versus when agents run behind **chatkit-middleware**. The hands-on section at the top is written so you can try A2A with only the published `finclaw` binary and Python 3.
+This guide explains how **A2A (Agent2Agent)** works with the published `finclaw` CLI: configure outbound peers, probe them, and steer the model with `/ask` / `/delegate` in chat. The hands-on section at the top needs only the `finclaw` binary and Python 3.
 
-Wire-level conventions (method names, error codes, hop headers) follow the public [A2A interop note](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md).
+Wire-level conventions (method names, error codes, hop headers) follow the public [A2A interop note](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md) when that repository is available to you; otherwise treat `finclaw a2a --help` and the examples below as the operator surface.
 
 ---
 

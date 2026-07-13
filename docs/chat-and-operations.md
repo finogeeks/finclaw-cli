@@ -35,13 +35,9 @@ Optional per-invocation knobs (see `finclaw chat --help`):
 finclaw chat --capability read_only -m "Explain this repository layout."
 ```
 
-### Host sandbox (`--security`)
+### Host posture and policy
 
-`--security` is a **global** flag (not a `chat`-only option) that sets process-level `AI_INFRA_RS_*` variables for how strongly local tools and exec are isolated. `finclaw chat` defaults to `yolo` when you omit it. Full table and examples: [security-and-policies.md](security-and-policies.md) (*Host execution sandbox*).
-
-```bash
-finclaw chat --security restricted
-```
+Published binaries run as a **naked** host process by default. Tighten what the agent may do with profile **policies** and supervised approvals — see [security-and-policies.md](security-and-policies.md). For IDE permission UI, use [acp.md](acp.md).
 
 ## Long-lived daemon
 

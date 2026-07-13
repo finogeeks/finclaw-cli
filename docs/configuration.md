@@ -18,16 +18,15 @@ finclaw profile use <name>
 
 This records the choice under the finclaw home (for example `active-profile`).
 
-## Global flag: host sandbox (`--security`)
-
-`--security <isolated|restricted|yolo>` is a **global** flag (place it before or after the subcommand; it applies to the whole process). It is **not** stored in `config.yaml`. It sets `AI_INFRA_RS_*` variables for local tool/exec isolation before the runtime starts. This is separate from policy YAML under `policies/` — see [security-and-policies.md](security-and-policies.md) (section *Host execution sandbox*).
-
-## Global flags: config path and locale
+## Global flags: home, config path, and locale
 
 | Flag / env | Role |
 | --- | --- |
+| `--finclaw-home <DIR>` · `FINCLAW_HOME` | User-data root (`profiles/`, `active-profile`, …). Default `~/.finclaw/`. |
 | `--config <PATH>` · `FINCLAW_CONFIG` | Use a specific `config.yaml` instead of the default `<profile_root>/config.yaml`. |
 | `--locale <auto|en|zh>` | Language for `--help`, completion/man generators, and shared CLI copy. `auto` follows `LC_ALL` / `LC_MESSAGES` / `LANG` / `LANGUAGE`. |
+
+**Host posture:** published binaries run as a normal process by default. Policy and approvals are documented in [security-and-policies.md](security-and-policies.md) — there is no global `--security` flag on current Releases unless `finclaw --help` lists one.
 
 ## Host config file
 

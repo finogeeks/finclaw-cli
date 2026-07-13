@@ -17,17 +17,19 @@ These notes are for people who edit documentation in the **finclaw-cli** public 
 
 1. Update the topic guide (English + Chinese) for the affected area.
 2. Update [reference-commands.md](reference-commands.md) (and `.zh.md`) if top-level commands or primary workflows change.
-3. **Global `--security` / host isolation** — if the mapping to `AI_INFRA_RS_*` or default behavior changes upstream, update [security-and-policies.md](security-and-policies.md) and [security-and-policies.zh.md](security-and-policies.zh.md) first, then [configuration.md](configuration.md) / [configuration.zh.md](configuration.zh.md) and [chat-and-operations.md](chat-and-operations.md) / `.zh.md` cross-references as needed.
-4. **Global `--locale` / `--config`** — if help language selection or alternate `config.yaml` paths change, update [configuration.md](configuration.md), [reference-commands.md](reference-commands.md), and [docs/README.md](README.md) (English prose + bilingual note as needed).
-5. **Post-turn learning** — if `learning:` schema, `finclaw learning` subcommands, or `AI_INFRA_RS_LEARNING_*` env vars change, update [learning.md](learning.md) / [learning.zh.md](learning.zh.md) first, then cross-links in [configuration.md](configuration.md), [chat-and-operations.md](chat-and-operations.md), [skills.md](skills.md), and [reference-commands.md](reference-commands.md) (and `.zh.md` counterparts).
-6. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
-7. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
+3. **Host execution posture** — published binaries default to a **naked** host (no built-in OS sandbox CLI switch). Document policy / approval layers in [security-and-policies.md](security-and-policies.md) / `.zh.md`; do not reintroduce removed flags such as `--security` unless `finclaw --help` shows them again.
+4. **Global `--locale` / `--config` / `--finclaw-home`** — if help language selection or config/home paths change, update [configuration.md](configuration.md), [reference-commands.md](reference-commands.md), and [docs/README.md](README.md) (English prose + bilingual note as needed).
+5. **Post-turn learning** — if `learning:` schema, `finclaw learning` subcommands, or related env vars change, update [learning.md](learning.md) / [learning.zh.md](learning.zh.md) first, then cross-links in [configuration.md](configuration.md), [chat-and-operations.md](chat-and-operations.md), [skills.md](skills.md), and [reference-commands.md](reference-commands.md) (and `.zh.md` counterparts).
+6. **ACP** — if `finclaw acp` flags, Zed setup, or protocol limits change, update [acp.md](acp.md) / [acp.zh.md](acp.zh.md) and the index rows in [README.md](../README.md), [README.zh.md](../README.zh.md), and [docs/README.md](README.md).
+7. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
+8. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
 
 ## Bilingual files
 
 - Keep [topic].md and [topic].zh.md in sync: same structure, same commands; translate prose.
 - If you add a new English doc, add the Chinese counterpart in the same change when possible.
 - **A2A:** [a2a.md](a2a.md) / [a2a.zh.md](a2a.zh.md) and [examples/mock-a2a-peer.py](../examples/mock-a2a-peer.py) ship together; update the index rows in [README.md](../README.md), [README.zh.md](../README.zh.md), and [docs/README.md](README.md) when the guide changes.
+- **ACP:** [acp.md](acp.md) / [acp.zh.md](acp.zh.md) ship together; keep README and docs index rows aligned.
 
 ## HTTP/API and the Claw runtime
 

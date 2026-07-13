@@ -11,8 +11,9 @@
 | 运行 ledger 速览（最近 chat） | `finclaw diagnose last` |
 | 帮助与补全语言 | `finclaw --locale <auto\|en\|zh>`（亦影响部分 CLI 文案） |
 | 显式指定配置文件 | `finclaw --config <path>` · 环境变量 `FINCLAW_CONFIG` |
-| 全局宿主执行沙箱 | `finclaw --security <isolated\|restricted\|yolo> …`（见 [security-and-policies.zh.md](security-and-policies.zh.md)） |
+| 用户数据根目录 | `finclaw --finclaw-home <dir>` · 环境变量 `FINCLAW_HOME` |
 | 对话（REPL 或一次性） | `finclaw chat` · `finclaw chat -m "…"` |
+| **ACP / IDE（如 Zed）** | `finclaw acp` — 见 [acp.zh.md](acp.zh.md) |
 | 常驻进程 | `finclaw serve` |
 | 状态 / 停止 | `finclaw status` · `finclaw stop` |
 | 读写 `config.yaml` | `finclaw config`（含 `check`、`migrate`、`env-path` 等，见 `--help`） |
@@ -42,7 +43,7 @@
 | 卸载 | `finclaw uninstall` |
 | 首次 profile 初始化 | `finclaw init` |
 
-**全局参数（各子命令通用）：** `--profile`、`-v`/`--verbose`、`-q`/`--quiet`、`--config`、`--security`、`--locale` — 见 `finclaw --help`。
+**全局参数（各子命令通用）：** `--finclaw-home`、`--profile`、`-v`/`--verbose`、`-q`/`--quiet`、`--config`、`--locale` — 见 `finclaw --help`。
 
 **本仓库中的专题文档：**
 
@@ -54,8 +55,7 @@
 - [skills.zh.md](skills.zh.md)
 - [learning.zh.md](learning.zh.md)
 - [chat-and-operations.zh.md](chat-and-operations.zh.md)
+- [acp.zh.md](acp.zh.md)
 - [a2a.zh.md](a2a.zh.md)
 - [troubleshooting.zh.md](troubleshooting.zh.md)
 - [advanced.zh.md](advanced.zh.md)
-
-**线路与 API：** 以所部署的 Claw 运行时为准；需协议级说明时请查阅运维或厂商文档。

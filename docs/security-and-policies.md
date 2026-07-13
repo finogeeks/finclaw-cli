@@ -13,7 +13,7 @@ Security in `finclaw` is **not** a single switch. Several **independent** mechan
 ```mermaid
 flowchart TB
   subgraph host["Host process"]
-    SEC["CLI --security\n(Tier A/B, OS sandbox)"]
+    NAKED["Published CLI default:\nnaked host process"]
   end
   subgraph disk["Profile on disk"]
     POL["policies/*.yaml\n(exec, http, tool-invocation, llm)"]
@@ -22,9 +22,9 @@ flowchart TB
   subgraph runtime["Claw runtime"]
     CAP["capability → agent loop profile\n(timeouts, max tool calls)"]
     GOV["Tool governance\n(auto / ask / deny)"]
-    APR["Interactive approval\n(streaming infer)"]
+    APR["Interactive approval\n(CLI prompt or ACP UI)"]
   end
-  SEC --> runtime
+  NAKED --> runtime
   POL --> runtime
   PR --> POL
   PR --> CAP
@@ -33,17 +33,17 @@ flowchart TB
 
 | Dimension | What it controls | Typical user touchpoints |
 | --- | --- | --- |
-| **A. Host execution sandbox** | How strongly the **local** Claw process isolates tool/exec work (seatbelt, bwrap, optional Tier B, etc.) | `finclaw chat --security restricted\|isolated\|yolo` |
+| **A. Host process posture** | Published binaries run the agent as a **normal local process** (“naked” host). There is **no** global `--security` switch on current releases — confirm with `finclaw --help` | OS account permissions; optional external sandboxes you wrap yourself |
 | **B. Exec policy** | Whether `exec` exists at all, program allow/deny lists, sandbox flags, network for subprocesses | `presets.exec`, `policies/exec-policy.yaml`, `finclaw policy apply exec` |
 | **C. HTTP allowlist** | Outbound domains for fetch/browser-style tools; browser SSRF posture | `presets.http`, `policies/http-allowlist.yaml` |
 | **D. Tool invocation policy** | Autonomy **mode** (`readonly` / `supervised` / `full`) and per-tool **auto-approve**, **always-ask**, **deny** sets | `presets.tool`, `policies/tool-invocation-policy.yaml` |
-| **E. Capability (agent loop profile)** | Wall-clock **timeout**, **max tool calls**, research sub-budgets, continuation—selected by **capability string** (`general`, `coding`, `read_only`, …) | `finclaw capability set`, `finclaw chat --capability …` |
+| **E. Capability (agent loop profile)** | Wall-clock **timeout**, **max tool calls**, research sub-budgets, continuation—selected by **capability string** (`general`, `coding`, `read_only`, …) | `finclaw capability set`, `finclaw chat --capability …`, `finclaw acp --capability …` |
 | **F. Identity / persona** | What the model is told about itself (system prompt surface) | `finclaw identity …`, `finclaw agent edit …` for Markdown layers |
-| **G. Interactive approval (supervised tools)** | When policy requires it, the runtime may **pause** until a human approves or rejects via the HTTP approval-resolve path; the **line-based** CLI can prompt; **full-screen `--tui`** cannot safely prompt and may **auto-reject** pending approvals with a warning | See *Interactive tool approvals* below |
+| **G. Interactive approval (supervised tools)** | When policy requires it, the runtime **pauses** until a human approves: line-based CLI can prompt; **ACP** uses the editor permission UI; full-screen `--tui` may auto-reject with a warning | See *Interactive tool approvals* below |
 
 **How dimensions interact (short):**
 
-- **`--security`** (A) does **not** replace policy files (B–D). You can run with a strong OS sandbox **and** still need `ask_for_writes` if you want human confirmation before file writes—those are separate concerns.
+- **Naked host (A)** does **not** replace policy files (B–D). Even without an OS sandbox, `ask_for_writes` and deny lists still matter.
 - **Tool preset `ask_for_writes`** (D) sets **supervised** mode and puts destructive tools (`write_file`, `apply_patch`, `exec`, …) in **always ask**, while read/search/skill-discovery tools can stay on an **auto-approve** allowlist until you edit YAML.
 - **Tool preset `auto_all`** (D) maps to **full** autonomy in the shipped preset—suited only when you already trust the environment and downstream policies.
 - **Capability `read_only`** (E) (often used together with **research-style** profiles) selects a **tighter agent-loop profile** in the runtime (for example shorter wall-clock timeouts, lower default `max_tool_calls`, continuation often off)—this is **about loop budget**, not by itself blocking tools; combine with (D) and **allowed_tools** tweaks on templates if you need hard blocks.
@@ -88,36 +88,25 @@ Independent of on-disk policy, you can pass **one-shot** hints that bias how the
 
 ### Operational checklist
 
-- [ ] **`--security`**: Pick `restricted`/`isolated` on untrusted machines; understand `chat` defaults to **yolo** when omitted (`--security` section below).
+- [ ] **Host posture**: Treat the published CLI as a **naked** process; tighten **policy** + **supervised** tools on untrusted work.
 - [ ] **Profiles**: Preserve `profile.yaml` + `policies/` in backups; audit **presets** after upgrades.
 - [ ] **`finclaw capability`**: Matches product intent (`general` vs `coding` vs `read_only`).
 - [ ] **`finclaw policy show … --resolved`**: Inspect **effective** YAML before sharing a profile externally.
 - [ ] **`finclaw doctor`**: Resolve drift (`file` vs `live`).
 - [ ] **Supervised approval**: Operators using resolve endpoints automate only with bearer tokens scoped to infra.
 
-## Host execution sandbox (`--security`)
+## Host execution posture (published CLI)
 
-This is **separate** from the on-disk **policy** files in `<profile_root>/policies/`. The **global** CLI flag `--security` chooses how the Claw **host** isolates local tool and exec work (for example Tier A vs Tier B, Seatbelt, bwrap, Apple Container) by setting `AI_INFRA_RS_*` environment variables in the `finclaw` process before the runtime starts. It does **not** replace `finclaw policy` for auto-approve rules, HTTP allowlists, or exec command allowlists.
+Published `finclaw` binaries from this repository run as a **normal user process** by default (“naked” host). Current releases **do not** ship a global `--security` flag — always verify with `finclaw --help` on your install.
 
-| Value | Summary |
-| --- | --- |
-| `isolated` | Strongest local isolation the build can apply on your OS (for example Apple Container on macOS when available; a fail-closed, bwrap-oriented “cloud” profile on Linux in the mapped env). |
-| `restricted` | Desktop sandboxing: Seatbelt on macOS; a desktop-oriented bwrap profile on Linux. |
-| `yolo` | Compatibility-first “legacy” host posture; Tier B stays off in the variables this flag sets. |
+What still protects you:
 
-**Defaults and reminders**
+- **On-disk policies** under `<profile_root>/policies/` (exec allowlists, HTTP allowlists, tool auto/ask/deny)
+- **Supervised approvals** in the CLI or ACP client (Zed permission UI)
+- **Capability / loop budgets** (`finclaw capability`, `--capability`)
+- Your **OS account** permissions and any outer sandbox *you* wrap around the binary
 
-- **`finclaw chat`** uses **`yolo`** when you omit `--security` (so local CLI use matches common OpenClaw/Hermes-style access). The binary may print a **stderr notice** suggesting `--security restricted` or `--security isolated` if you want a stronger sandbox.
-- **Other subcommands** do not apply that chat default; omitting the flag leaves the host/runtime defaults for your OS (see `finclaw --help` on your build).
-
-**Examples**
-
-```bash
-finclaw chat --security restricted
-finclaw --security isolated chat -m "Hello"
-```
-
-Advanced setups may still set `AI_INFRA_RS_*` by hand. Avoid duplicating the same keys in a conflicting way in one process; the `--security` path is intended to own the mapped subset for that invocation. The exact key matrix matches your installed `finclaw` build; use `finclaw doctor` or your operator docs if you need to confirm values.
+If an older guide mentions `finclaw --security …`, treat it as outdated for current Releases unless `finclaw --help` lists that flag again.
 
 ## Policy kinds (on disk)
 
@@ -234,5 +223,6 @@ finclaw doctor --fix
 
 ## See also
 
-- [configuration.md](configuration.md) — `config.yaml`, env, and global flags such as `--security`
+- [configuration.md](configuration.md) — `config.yaml`, env, and global flags (`--finclaw-home`, `--config`, `--locale`)
+- [acp.md](acp.md) — IDE / ACP approvals
 - [profiles.md](profiles.md) — `profile apply`, backup/import
