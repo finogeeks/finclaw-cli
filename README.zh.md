@@ -22,7 +22,7 @@
 
 | 你想要… | finclaw 提供… |
 | --- | --- |
-| 终端里可靠的编码 / 研究 Agent | 交互式 REPL + 一次性 `chat`、配置档、技能、MCP |
+| 终端里可靠的编码 / 研究 Agent | 交互式 REPL、可选全屏 `--tui`、一次性 `chat`、配置档、技能、MCP |
 | 同一套 Agent 进编辑器 | **`finclaw acp`** — Agent Client Protocol，适配 Zed 等 ACP 客户端 |
 | Agent 与 Agent 协作 | **A2A** 出站对等体（`a2a-agents.yaml` + `finclaw a2a` / `/ask`） |
 | 用得越久越懂你 | **回合后学习**（默认开启）：写入记忆事实 + Agent 自写技能 |
@@ -37,6 +37,7 @@
 
 ### 终端原生 Agent
 - 一次性或交互聊天：`finclaw chat` / `finclaw chat -m "…"`
+- 可选全屏 TUI：`finclaw chat --tui`（实验性；同一 Agent，ratatui 界面）
 - 斜杠命令：会话控制、切模型、技能、A2A 引导等
 - 可选常驻守护：`finclaw serve`
 
@@ -81,7 +82,8 @@ finclaw --version
 finclaw init          # 创建 ~/.finclaw 配置档（可用 mock LLM 冒烟）
 finclaw setup         # 引导配置 LLM 提供商 / 模型（或手改 config.yaml）
 finclaw doctor        # 自检
-finclaw chat          # 交互 REPL
+finclaw chat          # 行式交互 REPL
+finclaw chat --tui    # 可选全屏 TUI（实验性）
 # 或：
 finclaw chat -m "总结一下你能做什么"
 ```

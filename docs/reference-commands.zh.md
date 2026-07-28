@@ -12,7 +12,7 @@
 | 帮助与补全语言 | `finclaw --locale <auto\|en\|zh>`（亦影响部分 CLI 文案） |
 | 显式指定配置文件 | `finclaw --config <path>` · 环境变量 `FINCLAW_CONFIG` |
 | 用户数据根目录 | `finclaw --finclaw-home <dir>` · 环境变量 `FINCLAW_HOME` |
-| 对话（REPL 或一次性） | `finclaw chat` · `finclaw chat -m "…"` |
+| 对话（REPL、可选 TUI、或一次性） | `finclaw chat` · `finclaw chat --tui` · `finclaw chat -m "…"` |
 | **ACP / IDE（如 Zed）** | `finclaw acp` — 见 [acp.zh.md](acp.zh.md) |
 | 常驻进程 | `finclaw serve` |
 | 状态 / 停止 | `finclaw status` · `finclaw stop` |

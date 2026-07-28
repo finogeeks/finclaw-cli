@@ -8,7 +8,9 @@
 | --- | --- | --- |
 | 交互式 REPL | `finclaw chat` | 在 TTY 上通常支持多行输入与 slash 命令 |
 | 一次性 | `finclaw chat -m "..."` | 得到回复后退出，适合脚本/CI |
-| 实验性 TUI | `finclaw chat --tui` | 全屏界面；以 `--help` 为准 |
+| 实验性 TUI | `finclaw chat --tui` | 全屏 ratatui REPL（字标、滚动、`/` 菜单）。需要 TTY；与 `-m` 联用时忽略。与行式 chat 走同一 Claw/调度路径。 |
+
+**TUI 注意：** 需要交互式审批提示的受监督工具在 `--tui` 下可能**自动拒绝**（raw mode 无法与行式提示安全共享 stdin）。审批密集时请用行式 `finclaw chat` 或 IDE 中的 ACP — 见 [security-and-policies.zh.md](security-and-policies.zh.md)。以本机 `finclaw chat --help` 为准。
 
 ### 内嵌 与 常驻守护进程
 

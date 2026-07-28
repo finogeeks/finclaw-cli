@@ -8,7 +8,9 @@
 | --- | --- | --- |
 | Interactive REPL | `finclaw chat` | Multiline input and slash commands when stdin is a TTY |
 | One-shot (script/CI) | `finclaw chat -m "..."` | Exits after the assistant reply |
-| Experimental TUI | `finclaw chat --tui` | Full-screen TUI; see `--help` |
+| Experimental TUI | `finclaw chat --tui` | Full-screen ratatui REPL (wordmark, scrollback, `/` menu). Requires a TTY; ignored with `-m`. Same Claw/dispatch path as line chat. |
+
+**TUI caveats:** supervised tools that need an interactive approval prompt may **auto-reject** under `--tui` (raw mode cannot safely share stdin with line prompts). For approval-heavy workflows, use line-based `finclaw chat` or ACP in the IDE — see [security-and-policies.md](security-and-policies.md). Run `finclaw chat --help` for the flag text on your build.
 
 ### Dispatch: embedded vs daemon
 

@@ -22,7 +22,7 @@
 
 | You want… | finclaw gives you… |
 | --- | --- |
-| A serious coding / research agent in the terminal | Interactive REPL + one-shot `chat`, profiles, skills, MCP |
+| A serious coding / research agent in the terminal | Interactive REPL, optional full-screen `--tui`, one-shot `chat`, profiles, skills, MCP |
 | The same agent inside your editor | **`finclaw acp`** — Agent Client Protocol for Zed and other ACP clients |
 | Agents that talk to agents | **A2A** outbound peers (`a2a-agents.yaml` + `finclaw a2a` / `/ask`) |
 | An agent that improves over time | **Post-turn learning** (default on): memory facts + agent-authored skills |
@@ -37,6 +37,7 @@ This repository is the **official public home** for the `finclaw` binary: instal
 
 ### Terminal-native agent
 - One-shot or interactive chat: `finclaw chat` / `finclaw chat -m "…"`
+- Optional full-screen TUI: `finclaw chat --tui` (experimental; same agent, ratatui UI)
 - Slash commands for session control, model switch, skills, A2A steers, and more
 - Optional long-lived daemon: `finclaw serve`
 
@@ -81,7 +82,8 @@ finclaw --version
 finclaw init          # create ~/.finclaw profile (mock LLM is fine to smoke-test)
 finclaw setup         # guided LLM provider / model (or edit config.yaml)
 finclaw doctor        # sanity check
-finclaw chat          # interactive REPL
+finclaw chat          # interactive line-based REPL
+finclaw chat --tui    # optional full-screen TUI (experimental)
 # or:
 finclaw chat -m "Summarize what you can do"
 ```

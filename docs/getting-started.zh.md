@@ -163,6 +163,14 @@ finclaw chat -m "你好，finclaw"
 finclaw chat
 ```
 
+**全屏 TUI**（实验性；与行式 chat 同一 Agent，ratatui 界面 — 需要 TTY；与 `-m` 联用时忽略）：
+
+```bash
+finclaw chat --tui
+```
+
+需要在 stdin 上确认的受监督工具审批在 `--tui` 下可能自动拒绝；审批密集时请用行式 chat — 见 [security-and-policies.zh.md](security-and-policies.zh.md)。更多说明：[chat-and-operations.zh.md](chat-and-operations.zh.md)。
+
 **单轮**（脚本/CI，回复后退出）：
 
 ```bash

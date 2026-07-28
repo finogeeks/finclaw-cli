@@ -165,6 +165,14 @@ finclaw chat -m "Hello from finclaw"
 finclaw chat
 ```
 
+**Full-screen TUI** (experimental; same agent as line chat, ratatui UI — needs a TTY; ignored with `-m`):
+
+```bash
+finclaw chat --tui
+```
+
+Supervised tool approvals that need a stdin prompt may auto-reject in `--tui`; prefer line chat for approval-heavy sessions — see [security-and-policies.md](security-and-policies.md). Details: [chat-and-operations.md](chat-and-operations.md).
+
 **One shot** (script / CI, exits after the reply):
 
 ```bash

@@ -12,7 +12,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Help / completions language | `finclaw --locale <auto\|en\|zh>` (also affects shared CLI messages) |
 | Explicit config file | `finclaw --config <path>` · env `FINCLAW_CONFIG` |
 | User-data root | `finclaw --finclaw-home <dir>` · env `FINCLAW_HOME` |
-| Chat (REPL or one-shot) | `finclaw chat` · `finclaw chat -m "…"` |
+| Chat (REPL, optional TUI, or one-shot) | `finclaw chat` · `finclaw chat --tui` · `finclaw chat -m "…"` |
 | **ACP / IDE (e.g. Zed)** | `finclaw acp` — see [acp.md](acp.md) |
 | Long-lived process | `finclaw serve` |
 | Runtime status / stop | `finclaw status` · `finclaw stop` |
