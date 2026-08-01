@@ -66,14 +66,26 @@ bash scripts/04-p2p-redeem-smoke.sh
 
 ## 附录：真实 LLM + `/ask`
 
-HTTP（或 P2P）就绪后：
+正式版 `finclaw` 始终读 profile 下的 `a2a-agents.yaml`（`00` 之后默认是
+本机 HTTP）。peer share **不是** chat 的另一种模式——`share redeem` 之后把隧道
+peer 写进同一文件（`--write-agents-yaml` 或手改），再用 `/ask`。
+
+HTTP（默认 agents 文件）：
 
 ```bash
 LLM_PROVIDER=openai LLM_API_KEY=… LLM_MODEL=gpt-4o-mini \
   bash scripts/05-chat-ask-optional.sh
 ```
 
-走隧道时设 `USE_P2P_AGENTS=1`。未配置真实模型时脚本会 `SKIP`。
+Share 隧道（先跑完 `03`/`04`；把 `a2a-agents.p2p.yaml` 装进默认 agents 文件，
+等价于 `finclaw share redeem --write-agents-yaml`）：
+
+```bash
+LLM_PROVIDER=openai LLM_API_KEY=… LLM_MODEL=gpt-4o-mini \
+  bash scripts/05-chat-ask-optional.sh --via-share
+```
+
+未配置真实模型时脚本会 `SKIP`。
 
 ## 清理
 
