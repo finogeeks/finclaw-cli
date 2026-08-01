@@ -340,9 +340,22 @@ share 的版本，或联系分发方。
 同一局域网或 VPN 可用 `--relay disabled`。自建中继：
 `--relay custom --relay-url https://relay.example/`（可重复）。双方设置需兼容。
 
-**HTTP 与共享并用：** 保持一份入站 `finclaw serve`。局域网可用真实
-`http://host:port/a2a/v1`；跨 NAT 则 redeem ticket 使用 `local_a2a_base`。可在
-`a2a-agents.yaml` 中配置两个不同 id 的 peer（同一 bearer）。
+**HTTP 与共享并用：** 保持一份入站 `finclaw serve`。推荐在 `a2a-agents.yaml`
+里只配一个 peer：`url` 写局域网/`serve` 地址，`fallback_url` 写 redeem 得到的
+`local_a2a_base/a2a/v1`。finclaw 会探测 Agent Card，选用第一个可达 URL（约 3s
+超时；约 30s 内粘滞）。只有单一 URL 时不做额外探测。若希望模型显式选择路径，
+仍可配置两个不同 id 的 peer（同一 bearer）。
+
+```yaml
+agents:
+  - id: callee
+    url: http://192.168.1.10:18789/a2a/v1
+    fallback_url: http://127.0.0.1:PORT/a2a/v1
+    allow_private: true
+    auth_token_env: CALLEE_A2A_TOKEN
+```
+
+`redeem` 结束后请刷新或删除 `fallback_url`——该 localhost 基址会失效。
 
 ### 试一下（两个终端）
 
