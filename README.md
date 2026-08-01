@@ -2,14 +2,12 @@
   <img src="assets/finclaw-wordmark.svg" width="560" alt="FINCLAW" />
 </p>
 
-# finclaw
+# Peer-to-peer. No server needed. Agents on different PCs talk over A2A.
 
-[![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
+**finclaw** — [![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
 ![P2P](https://img.shields.io/badge/peer--to--peer-no%20server%20needed-0A7A3E)
 ![A2A](https://img.shields.io/badge/protocol-A2A-informational)
-
-**Peer-to-peer. No server needed. Agents on different PCs talk over A2A.**
 
 Run `finclaw` on **your** machine and on a friend’s — two personal agents, two
 PCs, **no cloud agent broker and no public URL you have to host**. Hand them a
