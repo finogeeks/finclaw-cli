@@ -320,12 +320,16 @@ finclaw share status
 
 | 命令 | 作用 |
 | --- | --- |
-| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--json]` | 共享本机入站 Agent；打印 ticket |
-| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--json]` | 兑换 ticket；打印 `local_a2a_base` |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--relay …] [--json]` | 共享本机入站 Agent；打印 ticket |
+| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--relay …] [--json]` | 兑换 ticket；打印 `local_a2a_base` |
 | `finclaw share status [--json]` | 列出本配置档下的共享 |
 | `finclaw share revoke --grant-id <id>` | 在本机吊销一份共享 |
 
 复制字段时建议加 `--json`。ticket 是**密钥**（含访问令牌）——私下传递，勿发到公开渠道。
+
+**跨网络中继：** `offer` / `redeem` 默认 `--relay default`，便于不同家庭网络下连通。
+同一局域网或 VPN 可用 `--relay disabled`。自建中继：
+`--relay custom --relay-url https://relay.example/`（可重复）。双方设置需兼容。
 
 ### 试一下（两个终端）
 
@@ -356,6 +360,8 @@ bearer），再用 `finclaw a2a` 或 `/ask`。
 - 共享期间双方必须在线（不会离线投递）。
 - ticket 当密码对待；用完后吊销或等它过期。
 - 你自己的 profile 策略仍约束 Agent 能做什么。
+- 跨网络失败时，确认双方使用 `--relay default`（或相同的 `--relay custom`），
+  而不是 `--relay disabled`。
 
 ---
 
@@ -371,6 +377,7 @@ bearer），再用 `finclaw a2a` 或 `/ask`。
 | 跳数超限 | 链路过深；仅在理解环路风险后提高 `max_hops` |
 | `share` 不可用 | 当前安装不支持对端共享；见 [是否可用](#是否可用) |
 | redeem 成功但 card 404 | 拼接路径前去掉 `local_a2a_base` 末尾 `/`；确认 offer/redeem 仍在运行 |
+| 跨网络共享失败 | 双方应使用 `--relay default`（或相同的自建中继 URL），不要用 `--relay disabled` |
 
 ```bash
 finclaw doctor

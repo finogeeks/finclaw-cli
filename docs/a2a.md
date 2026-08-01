@@ -323,13 +323,19 @@ finclaw share status
 
 | Command | Purpose |
 | --- | --- |
-| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--json]` | Share your local inbound agent; print a ticket |
-| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--json]` | Accept a ticket; print `local_a2a_base` |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--relay …] [--json]` | Share your local inbound agent; print a ticket |
+| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--relay …] [--json]` | Accept a ticket; print `local_a2a_base` |
 | `finclaw share status [--json]` | List active shares for this profile |
 | `finclaw share revoke --grant-id <id>` | Revoke a share on this machine |
 
 Prefer `--json` when copying fields into scripts. The ticket is a **secret**
 (it includes the access token) — send it privately, not in a public channel.
+
+**Relays (beyond the same network):** by default both `offer` and `redeem` use
+`--relay default` so peers behind different home networks can usually connect.
+Use `--relay disabled` on a trusted LAN or VPN. To use your own relay servers:
+`--relay custom --relay-url https://relay.example/` (repeat `--relay-url` as
+needed). Both sides should use a compatible setting.
 
 ### Try it (two terminals)
 
@@ -361,6 +367,8 @@ Keep both `offer` and `redeem` running. Stop with Ctrl-C when finished.
 - Both machines must stay online for the share to work (no offline delivery).
 - Treat the ticket like a password; revoke or let it expire when done.
 - Profile policies still control what *your* agent is allowed to do.
+- If share fails across networks, confirm both sides use `--relay default` (or
+  the same `--relay custom` URLs), not `--relay disabled`.
 
 ---
 
@@ -376,6 +384,7 @@ Keep both `offer` and `redeem` running. Stop with Ctrl-C when finished.
 | Hop limit errors | Chain too deep; raise `max_hops` only if you understand loop risk |
 | `share` not supported | This install lacks peer share; see [Availability](#is-it-available) |
 | Redeem works but card 404 | Drop trailing slash on `local_a2a_base` before joining paths; both offer and redeem still running |
+| Share fails across networks | Both sides should use `--relay default` (or the same custom relay URLs), not `--relay disabled` |
 
 ```bash
 finclaw doctor
