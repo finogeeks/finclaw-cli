@@ -71,14 +71,25 @@ Both sides must stay online while the share runs.
 
 ## Appendix: real LLM + `/ask`
 
-After HTTP (or P2P) is up:
+Published `finclaw` always reads the profile’s `a2a-agents.yaml` (HTTP by
+default after `00-prepare-homes.sh`). Peer share is not a separate CLI mode for
+chat — after `share redeem`, put the tunnel peer in that same file
+(`--write-agents-yaml` or edit), then `/ask` works as usual.
+
+HTTP path (default agents file):
 
 ```bash
 LLM_PROVIDER=openai LLM_API_KEY=… LLM_MODEL=gpt-4o-mini \
   bash scripts/05-chat-ask-optional.sh
 ```
 
-For the tunnel path, set `USE_P2P_AGENTS=1` so Caller reads `a2a-agents.p2p.yaml`.
+Share tunnel (after `03`/`04`; installs `a2a-agents.p2p.yaml` into the default
+agents file, same idea as `finclaw share redeem --write-agents-yaml`):
+
+```bash
+LLM_PROVIDER=openai LLM_API_KEY=… LLM_MODEL=gpt-4o-mini \
+  bash scripts/05-chat-ask-optional.sh --via-share
+```
 
 Without a real provider, this script exits with `SKIP`.
 
