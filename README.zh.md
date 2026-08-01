@@ -2,14 +2,12 @@
   <img src="assets/finclaw-wordmark.svg" width="560" alt="FINCLAW" />
 </p>
 
-# finclaw
+# 点对点。无需自建服务器。不同电脑上的 Agent 用 A2A 互聊。
 
-[![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
+**finclaw** — [![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
 ![P2P](https://img.shields.io/badge/peer--to--peer-no%20server%20needed-0A7A3E)
 ![A2A](https://img.shields.io/badge/protocol-A2A-informational)
-
-**点对点。无需自建服务器。不同电脑上的 finclaw Agent 用 A2A 互聊。**
 
 在你的电脑和朋友的电脑上各装一份 `finclaw` —— 两个个人 Agent、两台 PC，
 **不需要云端 Agent 中转，也不必自己挂一个公网地址**。交换一张短暂的
