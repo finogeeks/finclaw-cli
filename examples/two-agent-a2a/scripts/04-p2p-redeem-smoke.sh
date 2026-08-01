@@ -48,9 +48,11 @@ pf="$(pid_file share-redeem)"
 )
 
 local_base=""
+grant=""
 for _ in $(seq 1 150); do
-  if [[ -s "$redeem_out" ]] && python3 -c 'import json,sys; json.load(open(sys.argv[1]))["local_a2a_base"]' "$redeem_out" 2>/dev/null; then
+  if [[ -s "$redeem_out" ]] && python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); d["local_a2a_base"]; d["a2a_bearer"]' "$redeem_out" 2>/dev/null; then
     local_base="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["local_a2a_base"].rstrip("/"))' "$redeem_out")"
+    grant="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["a2a_bearer"])' "$redeem_out")"
     break
   fi
   if ! kill -0 "$(cat "$pf")" 2>/dev/null; then
@@ -59,18 +61,18 @@ for _ in $(seq 1 150); do
   sleep 0.2
 done
 
-if [[ -z "$local_base" ]]; then
-  echo "error: share redeem did not emit local_a2a_base" >&2
+if [[ -z "$local_base" || -z "$grant" ]]; then
+  echo "error: share redeem did not emit local_a2a_base + a2a_bearer" >&2
   tail -40 "$redeem_err" >&2 || true
   exit 1
 fi
 
 printf '%s\n' "$local_base" >"$DEMO_ROOT/local_a2a_base.txt"
 
-# Fill caller P2P agents yaml (optional; HTTP yaml remains default until overwritten).
+# Fill caller P2P agents yaml with grant bearer (not inbound DEMO_TOKEN).
 python3 - "$EXAMPLE_ROOT/caller/a2a-agents.p2p.yaml.tmpl" \
   "$(caller_config_dir)/a2a-agents.p2p.yaml" \
-  "$local_base" "$DEMO_TOKEN" <<'PY'
+  "$local_base" "$grant" <<'PY'
 import pathlib, sys
 src, dst, base, token = sys.argv[1:5]
 text = pathlib.Path(src).read_text(encoding="utf-8")
@@ -96,7 +98,7 @@ print(f"OK p2p agent card name={got}")
 
 rpc_out="$(mktemp)"
 trap 'rm -f "$rpc_out"' EXIT
-jsonrpc_send_message "$local_base" "$DEMO_TOKEN" "ping via peer share" >"$rpc_out"
+jsonrpc_send_message "$local_base" "$grant" "ping via peer share" >"$rpc_out"
 python3 "$SCRIPT_DIR/assert_a2a_reply.py" <"$rpc_out"
 
 echo "OK p2p redeem smoke"

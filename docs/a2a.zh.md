@@ -340,22 +340,13 @@ share 的版本，或联系分发方。
 同一局域网或 VPN 可用 `--relay disabled`。自建中继：
 `--relay custom --relay-url https://relay.example/`（可重复）。双方设置需兼容。
 
-**HTTP 与共享并用：** 保持一份入站 `finclaw serve`。推荐在 `a2a-agents.yaml`
-里只配一个 peer：`url` 写局域网/`serve` 地址，`fallback_url` 写 redeem 得到的
-`local_a2a_base/a2a/v1`。finclaw 会探测 Agent Card，选用第一个可达 URL（约 3s
-超时；约 30s 内粘滞）。只有单一 URL 时不做额外探测。若希望模型显式选择路径，
-仍可配置两个不同 id 的 peer（同一 bearer）。
+**HTTP 与共享并用：** 保持一份入站 `finclaw serve`。共享 ticket 携带的是
+**短期 grant** 令牌（`a2a_bearer` / `fcshare_…`），不是入站 `--bearer`。局域网
+调用使用入站 token；共享路径使用 grant。需要双路径时配置**两个** peer（不同
+`auth_token`），或仅用共享时使用 `--write-agents-yaml`。
 
-```yaml
-agents:
-  - id: callee
-    url: http://192.168.1.10:18789/a2a/v1
-    fallback_url: http://127.0.0.1:PORT/a2a/v1
-    allow_private: true
-    auth_token_env: CALLEE_A2A_TOKEN
-```
-
-`redeem` 结束后请刷新或删除 `fallback_url`——该 localhost 基址会失效。
+不要在同一 peer 上把局域网 `url` 与共享 `fallback_url` 配同一个
+`auth_token`——两边凭证不同。
 
 ### 试一下（两个终端）
 
@@ -371,13 +362,14 @@ finclaw share offer --upstream "http://127.0.0.1:PORT" --bearer TOKEN --json
 
 ```bash
 finclaw share redeem --ticket '<ticket>' --json
-# 使用输出中的 local_a2a_base：
+# 使用输出中的 local_a2a_base 与 a2a_bearer（grant 令牌）：
 curl -fsS "${LOCAL}/.well-known/agent-card.json"
-# POST ${LOCAL}/a2a/v1，Authorization: Bearer TOKEN
+# POST ${LOCAL}/a2a/v1，Authorization: Bearer <a2a_bearer>
 ```
 
-对端可把 `${LOCAL}/a2a/v1` 写入 `a2a-agents.yaml`（`allow_private: true` + 同一
-bearer），再用 `finclaw a2a` 或 `/ask`。
+对端可把 `${LOCAL}/a2a/v1` 写入 `a2a-agents.yaml`（`allow_private: true` +
+redeem 得到的 **grant** 令牌，或 `--write-agents-yaml`），再用 `finclaw a2a`
+或 `/ask`。
 
 `offer` 与 `redeem` 都要保持运行；结束后 Ctrl-C。
 

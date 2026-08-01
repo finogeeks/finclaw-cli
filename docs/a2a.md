@@ -347,22 +347,14 @@ Use `--relay disabled` on a trusted LAN or VPN. To use your own relay servers:
 `--relay custom --relay-url https://relay.example/` (repeat `--relay-url` as
 needed). Both sides should use a compatible setting.
 
-**HTTP and share together:** keep one inbound `finclaw serve`. Prefer a **single**
-peer with LAN/`serve` as `url` and redeem `local_a2a_base/a2a/v1` as
-`fallback_url` — finclaw probes the Agent Card and picks the first reachable
-URL (≈3s timeout; sticky ~30s). Single-URL peers skip probing. You can still
-list two peer ids (same bearer) if you want the model to choose explicitly.
+**HTTP and share together:** keep one inbound `finclaw serve`. Share tickets
+carry a **short-lived grant** bearer (`a2a_bearer` / `fcshare_…`), not your
+inbound `--bearer`. LAN callers use the inbound token; share callers use the
+grant. List **two** peers (different `auth_token`s) when you want both paths,
+or use share-only via `--write-agents-yaml`.
 
-```yaml
-agents:
-  - id: callee
-    url: http://192.168.1.10:18789/a2a/v1
-    fallback_url: http://127.0.0.1:PORT/a2a/v1
-    allow_private: true
-    auth_token_env: CALLEE_A2A_TOKEN
-```
-
-When redeem exits, refresh or remove `fallback_url` — that localhost base is stale.
+Do **not** put LAN `url` + share `fallback_url` on one peer with a single
+`auth_token` — the credentials differ.
 
 ### Try it (two terminals)
 
@@ -379,13 +371,14 @@ finclaw share offer --upstream "http://127.0.0.1:PORT" --bearer TOKEN --json
 
 ```bash
 finclaw share redeem --ticket '<ticket>' --json
-# use local_a2a_base from the output:
+# use local_a2a_base and a2a_bearer (grant token) from the output:
 curl -fsS "${LOCAL}/.well-known/agent-card.json"
-# POST ${LOCAL}/a2a/v1 with Authorization: Bearer TOKEN
+# POST ${LOCAL}/a2a/v1 with Authorization: Bearer <a2a_bearer>
 ```
 
 They can add `${LOCAL}/a2a/v1` to their `a2a-agents.yaml` with
-`allow_private: true` and the same bearer, then use `finclaw a2a` or `/ask`.
+`allow_private: true` and the **grant** bearer from redeem JSON (or
+`--write-agents-yaml`), then use `finclaw a2a` or `/ask`.
 
 Keep both `offer` and `redeem` running. Stop with Ctrl-C when finished.
 
