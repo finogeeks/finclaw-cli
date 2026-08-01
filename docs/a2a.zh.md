@@ -10,7 +10,10 @@
 
 ## 快速上手：在本地测试 A2A（建议第一步）
 
-仅用只读 CLI 命令与一个简易 mock 对端，即可在**无需真实 LLM** 的情况下验证出站 A2A。
+**两个真实 FinClaw Agent：** 见 [`examples/two-agent-a2a/`](../examples/two-agent-a2a/)
+（Callee 入站 + Caller 出站；默认 mock LLM 做 HTTP 冒烟，可选对端共享）。
+
+也可以**不启第二个 finclaw**，只用只读 CLI 与一个简易 mock 对端验证出站 A2A。
 
 ### 前置条件
 
@@ -389,6 +392,7 @@ finclaw a2a list --json
 
 ## 延伸阅读
 
+- [`examples/two-agent-a2a/`](../examples/two-agent-a2a/) — 双 Agent HTTP + 可选对端共享示例
 - [chat-and-operations.zh.md](chat-and-operations.zh.md) — REPL、`finclaw serve`、slash 命令
 - [configuration.zh.md](configuration.zh.md) — profile 路径与环境变量
 - [reference-commands.zh.md](reference-commands.zh.md) — `finclaw a2a` / `finclaw share` 速查

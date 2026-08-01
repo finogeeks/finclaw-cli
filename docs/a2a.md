@@ -10,7 +10,10 @@ Wire-level conventions (method names, error codes, hop headers) follow the publi
 
 ## Quick start: test A2A locally (recommended first step)
 
-You can verify outbound A2A **without a real LLM** using the read-only CLI and a tiny mock peer.
+**Two real FinClaw agents:** see [`examples/two-agent-a2a/`](../examples/two-agent-a2a/)
+(Callee inbound + Caller outbound; HTTP smoke, optional peer share, mock LLM by default).
+
+You can also verify outbound A2A **without a second finclaw** using the read-only CLI and a tiny mock peer.
 
 ### Prerequisites
 
@@ -396,6 +399,7 @@ finclaw a2a list --json
 
 ## See also
 
+- [`examples/two-agent-a2a/`](../examples/two-agent-a2a/) — two-agent HTTP + optional peer-share demo
 - [chat-and-operations.md](chat-and-operations.md) — REPL, `finclaw serve`, slash commands
 - [configuration.md](configuration.md) — profile paths and env
 - [reference-commands.md](reference-commands.md) — `finclaw a2a` / `finclaw share` cheat sheet

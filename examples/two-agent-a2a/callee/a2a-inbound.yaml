@@ -1,0 +1,19 @@
+# Callee inbound A2A (template)
+
+# Copied/adjusted by scripts/00-prepare-homes.sh with the demo port + token.
+enabled: true
+base_url: http://127.0.0.1:28701
+tenant: a2a-peers
+max_hops: 4
+card:
+  name: two-agent-callee
+  description: Callee agent for finclaw-cli two-agent A2A demo
+  skills:
+    - id: default
+      name: General
+      description: Answers inbound A2A demo calls
+peers:
+  - id: caller
+    auth_token: two-agent-a2a-demo-token
+    allowed_agents: [default]
+    allow_default: true
