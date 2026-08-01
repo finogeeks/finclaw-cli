@@ -15,7 +15,7 @@ User guides for the `finclaw` CLI (release binaries and install scripts in this 
 | Post-turn learning (memory, skills, promote) | [learning.md](learning.md) | [learning.zh.md](learning.zh.md) |
 | Chat, REPL, optional `--tui`, daemon, logs, operations | [chat-and-operations.md](chat-and-operations.md) | [chat-and-operations.zh.md](chat-and-operations.zh.md) |
 | **ACP / Zed** (Agent Client Protocol) | [acp.md](acp.md) | [acp.zh.md](acp.zh.md) |
-| Agent-to-agent (A2A), optional P2P `share` | [a2a.md](a2a.md) | [a2a.zh.md](a2a.zh.md) |
+| Agent-to-agent (A2A), optional peer share | [a2a.md](a2a.md) | [a2a.zh.md](a2a.zh.md) |
 | Command index (cheat sheet) | [reference-commands.md](reference-commands.md) | [reference-commands.zh.md](reference-commands.zh.md) |
 | Troubleshooting | [troubleshooting.md](troubleshooting.md) | [troubleshooting.zh.md](troubleshooting.zh.md) |
 | Optional features (completions, man page, MCP) | [advanced.md](advanced.md) | [advanced.zh.md](advanced.zh.md) |

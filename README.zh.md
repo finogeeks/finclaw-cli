@@ -24,7 +24,7 @@
 | --- | --- |
 | 终端里可靠的编码 / 研究 Agent | 交互式 REPL、可选全屏 `--tui`、一次性 `chat`、配置档、技能、MCP |
 | 同一套 Agent 进编辑器 | **`finclaw acp`** — Agent Client Protocol，适配 Zed 等 ACP 客户端 |
-| Agent 与 Agent 协作 | **A2A** 出站对等体（`a2a-agents.yaml` + `finclaw a2a` / `/ask`）；可选 **P2P**（`finclaw share`，需带 `share` 的二进制） |
+| Agent 与 Agent 协作 | **A2A** 出站对等体（`a2a-agents.yaml` + `finclaw a2a` / `/ask`）；可选与对端共享（`finclaw share`） |
 | 用得越久越懂你 | **回合后学习**（默认开启）：写入记忆事实 + Agent 自写技能 |
 | 干净的本地状态 | 按配置档隔离的 `~/.finclaw/` — 配置、技能、历史、密钥分开 |
 | 安装与升级省心 | 一键安装 + `finclaw update`（GitHub Releases） |
@@ -45,7 +45,7 @@
 通过 stdio 使用 [Agent Client Protocol](https://agentclientprotocol.com/)。在 Zed 中把 `finclaw` 注册为自定义 Agent —— 提示词、工具权限 UI、取消、带历史的会话重开。详见 **[docs/acp.zh.md](docs/acp.zh.md)**。
 
 ### Agent 到 Agent（A2A）
-在 `a2a-agents.yaml` 配置对等体，用 `finclaw a2a list|card|probe` 探活，在聊天里用 `/ask` / `/delegate` 引导模型。可选 **P2P**：`finclaw share offer|redeem` 在两台在线主机之间用 iroh 隧道承载 A2A HTTP（需二进制包含 `share` feature）。完整说明：**[docs/a2a.zh.md](docs/a2a.zh.md)**。
+在 `a2a-agents.yaml` 配置对等体，用 `finclaw a2a list|card|probe` 探活，在聊天里用 `/ask` / `/delegate` 引导模型。若希望别人访问**你的**入站 Agent 又不开公网端口，可用 `finclaw share offer|redeem`（需安装包支持）。完整说明：**[docs/a2a.zh.md](docs/a2a.zh.md)**。
 
 ### 自学习（Hermes 风格）
 足够轮次后，后台审阅可把**事实写入记忆**、把**流程写成技能**。默认 **`promote`**（直接写入）。可用 `stage` / `observe` 放缓，或 `finclaw learning disable`。指南：**[docs/learning.zh.md](docs/learning.zh.md)**。
@@ -140,13 +140,13 @@ finclaw a2a list
 finclaw a2a card <peer-id>
 finclaw a2a probe <peer-id>
 
-# 可选 P2P（需 share 启用的二进制）：本机 offer，对端 redeem
+# 可选：与对端共享你的入站 Agent（需安装包支持）
 finclaw share status
 # finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
 # finclaw share redeem --ticket '…' --json
 ```
 
-聊天 REPL 中：`/ask <peer> <message>` 会引导模型走 outbound A2A。见 [docs/a2a.zh.md](docs/a2a.zh.md)（含 [P2P 共享](docs/a2a.zh.md#基于-iroh-的-p2p-共享finclaw-share)）与本地 mock：[`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py)。
+聊天 REPL 中：`/ask <peer> <message>` 会引导模型走 outbound A2A。见 [docs/a2a.zh.md](docs/a2a.zh.md)（含 [对端共享](docs/a2a.zh.md#与对端共享你的-agentfinclaw-share)）与本地 mock：[`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py)。
 
 ---
 

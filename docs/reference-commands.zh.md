@@ -31,7 +31,7 @@
 | systemd/launchd 单元辅助 | `finclaw service` |
 | MCP stdio（可选编译特性） | `finclaw mcp` |
 | A2A 对端（list / card / probe） | `finclaw a2a` — 见 [a2a.zh.md](a2a.zh.md) |
-| A2A 经 iroh 的 P2P 共享（offer / redeem） | `finclaw share` — 见 [a2a.zh.md](a2a.zh.md#基于-iroh-的-p2p-共享finclaw-share)（需带 `share` feature 的二进制） |
+| 与对端共享 Agent（offer / redeem） | `finclaw share` — 见 [a2a.zh.md](a2a.zh.md#与对端共享你的-agentfinclaw-share) |
 | 模型 id（交互时与 `finclaw setup` 相同的选择器）/ 目录只读列表 | `finclaw model` · `finclaw model --list`（`--json`） |
 | 日志 | `finclaw logs` |
 | Profile 管理 | `finclaw profile` |
