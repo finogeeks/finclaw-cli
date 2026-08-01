@@ -6,10 +6,20 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
+![P2P](https://img.shields.io/badge/peer--to--peer-no%20server%20needed-0A7A3E)
+![A2A](https://img.shields.io/badge/protocol-A2A-informational)
 
-**Your personal AI agent — in the terminal, in the IDE, and across agents.**
+**Peer-to-peer. No server needed. Agents on different PCs talk over A2A.**
 
-`finclaw` is a fast Rust CLI that hosts a full agent runtime in a single binary (~20–30 MB). Chat in a rich REPL, plug into **[Zed](https://zed.dev/)** via **[ACP](https://agentclientprotocol.com/)**, delegate work to other agents with **A2A**, and grow lasting memory and skills through a **Hermes-style learning loop** — without Node or Python to run the tool itself.
+Run `finclaw` on **your** machine and on a friend’s — two personal agents, two
+PCs, **no cloud agent broker and no public URL you have to host**. Hand them a
+short-lived **share ticket**; they connect **peer-to-peer** and keep speaking
+standard **[A2A](docs/a2a.md)** (Agent Card + JSON-RPC). Same protocol on a LAN
+over plain HTTP when you already share a network.
+
+Also: a fast Rust CLI (~20–30 MB) for terminal chat, **[Zed](https://zed.dev/)**
+via **[ACP](https://agentclientprotocol.com/)**, skills, and a Hermes-style
+learning loop — no Node or Python to run the tool itself.
 
 | | |
 | --- | --- |
@@ -22,9 +32,10 @@
 
 | You want… | finclaw gives you… |
 | --- | --- |
+| **finclaw on PC A ↔ finclaw on PC B** | **Peer-to-peer** `finclaw share` — ticket in, A2A out; **no server / no public port** you must run |
+| Same house / same VPN | **A2A over HTTP** — `serve` + `a2a-agents.yaml`, `/ask` / `/delegate` |
 | A serious coding / research agent in the terminal | Interactive REPL, optional full-screen `--tui`, one-shot `chat`, profiles, skills, MCP |
 | The same agent inside your editor | **`finclaw acp`** — Agent Client Protocol for Zed and other ACP clients |
-| Agents that talk to agents | **A2A** outbound peers (`a2a-agents.yaml` + `finclaw a2a` / `/ask`); optional peer share (`finclaw share`) |
 | An agent that improves over time | **Post-turn learning** (default on): memory facts + agent-authored skills |
 | Clean local state | Profile-scoped `~/.finclaw/` — config, skills, history, secrets stay isolated |
 | Easy install & updates | One-liner install + `finclaw update` from GitHub Releases |
@@ -35,6 +46,26 @@ This repository is the **official public home** for the `finclaw` binary: instal
 
 ## Highlights
 
+### Peer-to-peer agents on different PCs (A2A)
+
+**The differentiator:** two finclaw installs can delegate to each other across
+machines **without standing up an agent server**. Protocol stays **A2A**;
+`finclaw share` is only how peers find each other when there is no public HTTP
+endpoint.
+
+```text
+PC A:  finclaw serve  +  finclaw share offer   ──ticket──►  PC B:  finclaw share redeem
+                                                              └─► localhost A2A ──► /ask
+```
+
+| Path | When | What you run |
+| --- | --- | --- |
+| **Peer share** | Different PCs, no public server | `share offer` / `redeem` → put `local_a2a_base` in `a2a-agents.yaml` |
+| **HTTP** | Same LAN / known URL | `finclaw serve` + peer URL in `a2a-agents.yaml` |
+
+- Inspect: `finclaw a2a list|card|probe` · chat: `/ask` / `/delegate`
+- Lab: [`examples/two-agent-a2a/`](examples/two-agent-a2a/) · guide: **[docs/a2a.md](docs/a2a.md)**
+
 ### Terminal-native agent
 - One-shot or interactive chat: `finclaw chat` / `finclaw chat -m "…"`
 - Optional full-screen TUI: `finclaw chat --tui` (experimental; same agent, ratatui UI)
@@ -43,9 +74,6 @@ This repository is the **official public home** for the `finclaw` binary: instal
 
 ### IDE via ACP (Zed)
 Speak [Agent Client Protocol](https://agentclientprotocol.com/) over stdio. Register `finclaw` as a custom agent in Zed — prompts, tool permission UI, cancel, and session reopen with history. See **[docs/acp.md](docs/acp.md)**.
-
-### Agent-to-agent (A2A)
-Configure peers in `a2a-agents.yaml`, inspect with `finclaw a2a list|card|probe`, and steer the model with `/ask` / `/delegate` in chat. To let someone reach **your** inbound agent without a public port, use `finclaw share offer|redeem` (when your install supports it). Full guide: **[docs/a2a.md](docs/a2a.md)**.
 
 ### Self-learning (Hermes-style)
 After enough turns, a background review can write **facts to memory** and **procedures as skills**. Default mode is **`promote`** (write-through). Dial it back with `stage` / `observe`, or `finclaw learning disable`. Guide: **[docs/learning.md](docs/learning.md)**.
@@ -70,6 +98,7 @@ Put `$HOME/.local/bin` on your `PATH`, then:
 
 ```bash
 finclaw --version
+finclaw share status   # peer share is included in release builds (v0.11+)
 ```
 
 **Details:** [docs/installation.md](docs/installation.md) (manual download, checksums, `finclaw update`).
@@ -88,6 +117,22 @@ finclaw chat --tui    # optional full-screen TUI (experimental)
 finclaw chat -m "Summarize what you can do"
 ```
 
+### Try agent-to-agent next
+
+**Outbound only (no second finclaw):** run the mock peer, point `a2a-agents.yaml` at it, then `finclaw a2a probe` / `/ask` — see [docs/a2a.md](docs/a2a.md#quick-start-test-a2a-locally-recommended-first-step).
+
+**Two real agents (HTTP, then peer share):**
+
+```bash
+cd examples/two-agent-a2a
+bash scripts/00-prepare-homes.sh
+bash scripts/01-start-callee.sh
+bash scripts/02-http-smoke.sh          # A2A over local HTTP
+# optional peer share (leave offer/redeem running):
+bash scripts/03-p2p-offer.sh
+bash scripts/04-p2p-redeem-smoke.sh
+```
+
 Learning starts **on** by default (`mode: promote`). Check or change it anytime:
 
 ```bash
@@ -95,6 +140,28 @@ finclaw learning status
 finclaw learning set-mode stage    # review before writes
 finclaw learning disable           # turn the loop off
 ```
+
+---
+
+## Agent-to-agent in one glance
+
+**Different PCs, no server you host:** share a ticket. **Same LAN:** plain A2A HTTP.
+
+```bash
+# Peer share (PC A offers, PC B redeems) — no public inbound port
+finclaw share status
+finclaw share doctor --upstream http://127.0.0.1:PORT
+# A:  finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
+# B:  finclaw share redeem --ticket '…' --json
+#     → put local_a2a_base + grant bearer in a2a-agents.yaml (or --write-agents-yaml)
+
+# HTTP peers when you already have a reachable URL
+finclaw a2a list
+finclaw a2a card <peer-id>
+finclaw a2a probe <peer-id>
+```
+
+In chat: `/ask <peer> <message>`. Same A2A tools on LAN HTTP or after peer share. Details: [docs/a2a.md](docs/a2a.md), [`examples/two-agent-a2a/`](examples/two-agent-a2a/), mock [`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py).
 
 ---
 
@@ -132,24 +199,6 @@ finclaw learning disable           # turn the loop off
 
 ---
 
-## Agent-to-agent in one glance
-
-```bash
-# edit peers under the active profile, then:
-finclaw a2a list
-finclaw a2a card <peer-id>
-finclaw a2a probe <peer-id>
-
-# optional: share your inbound agent with a peer (when supported)
-finclaw share status
-# finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
-# finclaw share redeem --ticket '…' --json
-```
-
-In the chat REPL: `/ask <peer> <message>` steers the model toward outbound A2A. See [docs/a2a.md](docs/a2a.md) (including [peer share](docs/a2a.md#share-your-agent-with-a-peer-finclaw-share)) and the local mock peer under [`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py).
-
----
-
 ## Documentation
 
 Everything end users need lives **in this repository**. Index: **[docs/README.md](docs/README.md)**.
@@ -166,7 +215,7 @@ Everything end users need lives **in this repository**. Index: **[docs/README.md
 | Post-turn learning | [learning.md](docs/learning.md) | [learning.zh.md](docs/learning.zh.md) |
 | Chat & operations | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | **ACP / Zed** | [acp.md](docs/acp.md) | [acp.zh.md](docs/acp.zh.md) |
-| Agent-to-agent (A2A) | [a2a.md](docs/a2a.md) | [a2a.zh.md](docs/a2a.zh.md) |
+| **A2A (HTTP + peer share)** | [a2a.md](docs/a2a.md) | [a2a.zh.md](docs/a2a.zh.md) |
 | Command index | [reference-commands.md](docs/reference-commands.md) | [reference-commands.zh.md](docs/reference-commands.zh.md) |
 | Troubleshooting | [troubleshooting.md](docs/troubleshooting.md) | [troubleshooting.zh.md](docs/troubleshooting.zh.md) |
 | Advanced | [advanced.md](docs/advanced.md) | [advanced.zh.md](docs/advanced.zh.md) |
@@ -178,6 +227,7 @@ Everything end users need lives **in this repository**. Index: **[docs/README.md
 ## Honest defaults (read this)
 
 - **Execution:** by default the CLI runs **without a built-in OS sandbox** (“naked” host). Policy files (exec / HTTP / tool-invocation) and supervised approvals still apply. See [security-and-policies.md](docs/security-and-policies.md).
+- **Peer share:** included in default release builds from **v0.11**. **No agent server you must host** — two PCs exchange a ticket and talk A2A peer-to-peer. Tickets/grants are secrets; both peers must stay online; after redeem stops, localhost peer URLs go stale.
 - **Learning:** default **on** with `promote`. Use `stage` / `observe` / `disable` if you want a slower or quieter loop.
 - **ACP:** strong IDE interop; not a claim of full ACP v1 conformance (see [acp.md](docs/acp.md)).
 
