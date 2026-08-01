@@ -347,10 +347,22 @@ Use `--relay disabled` on a trusted LAN or VPN. To use your own relay servers:
 `--relay custom --relay-url https://relay.example/` (repeat `--relay-url` as
 needed). Both sides should use a compatible setting.
 
-**HTTP and share together:** keep one inbound `finclaw serve`. LAN callers can
-use the real `http://host:port/a2a/v1` peer; remote callers redeem a ticket and
-use `local_a2a_base`. You can list both peers in `a2a-agents.yaml` with different
-ids (same bearer).
+**HTTP and share together:** keep one inbound `finclaw serve`. Prefer a **single**
+peer with LAN/`serve` as `url` and redeem `local_a2a_base/a2a/v1` as
+`fallback_url` — finclaw probes the Agent Card and picks the first reachable
+URL (≈3s timeout; sticky ~30s). Single-URL peers skip probing. You can still
+list two peer ids (same bearer) if you want the model to choose explicitly.
+
+```yaml
+agents:
+  - id: callee
+    url: http://192.168.1.10:18789/a2a/v1
+    fallback_url: http://127.0.0.1:PORT/a2a/v1
+    allow_private: true
+    auth_token_env: CALLEE_A2A_TOKEN
+```
+
+When redeem exits, refresh or remove `fallback_url` — that localhost base is stale.
 
 ### Try it (two terminals)
 
