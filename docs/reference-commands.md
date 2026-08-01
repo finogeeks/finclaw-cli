@@ -31,6 +31,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | systemd / launchd unit helper | `finclaw service` |
 | MCP stdio (optional build feature) | `finclaw mcp` |
 | A2A peers (list / card / probe) | `finclaw a2a` — see [a2a.md](a2a.md) |
+| A2A P2P share over iroh (offer / redeem) | `finclaw share` — see [a2a.md](a2a.md#p2p-share-over-iroh-finclaw-share) (requires `share`-enabled binary) |
 | Model id (picker matches `finclaw setup` when interactive) / catalogue | `finclaw model` · `finclaw model --list` (`--json`) |
 | Log tailing | `finclaw logs` |
 | Profiles (list, create, apply, …) | `finclaw profile` |

@@ -2,7 +2,7 @@
 
 **Chinese:** [a2a.zh.md](a2a.zh.md)
 
-This guide explains how **A2A (Agent2Agent)** works with the published `finclaw` CLI: configure outbound peers, probe them, and steer the model with `/ask` / `/delegate` in chat. The hands-on section at the top needs only the `finclaw` binary and Python 3.
+This guide explains how **A2A (Agent2Agent)** works with the published `finclaw` CLI: configure outbound peers, probe them, steer the model with `/ask` / `/delegate` in chat, and (when available) use **`finclaw share`** for P2P reachability over iroh. The hands-on section at the top needs only the `finclaw` binary and Python 3.
 
 Wire-level conventions (method names, error codes, hop headers) follow the public [A2A interop note](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md) when that repository is available to you; otherwise treat `finclaw a2a --help` and the examples below as the operator surface.
 
@@ -295,6 +295,83 @@ Callers must send `Authorization: Bearer <token>` on `POST /a2a/v1`. Optional `s
 
 ---
 
+## P2P share over iroh (`finclaw share`)
+
+Optional **peer-to-peer reachability** when two finclaw hosts are not on the same
+LAN and you do not want to expose inbound A2A on a public IP. The **application
+protocol stays A2A HTTP** (Agent Card + JSON-RPC). iroh only tunnels bytes
+between two **live** processes (no offline queue).
+
+```text
+Peer B                         Peer A
+finclaw share redeem  ──iroh──►  finclaw share offer
+       │                              │
+ localhost A2A base            reverse-proxy to
+ (use in a2a-agents.yaml)      finclaw serve (inbound)
+```
+
+### Availability
+
+`finclaw share` is present in help on all recent builds, but the tunnel only
+works when the binary was **compiled with the `share` feature**.
+
+```bash
+finclaw share status
+```
+
+- If you get a short usage error mentioning the `share` Cargo feature, your
+  installed release does **not** include P2P yet — wait for a release that
+  enables it, or build from source with that feature.
+- If `status` runs (even with an empty grant list), the feature is on.
+
+### Commands
+
+| Command | Purpose |
+| --- | --- |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--json]` | Publish your local inbound A2A base; print a ticket |
+| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--json]` | Dial the ticket; print `local_a2a_base` |
+| `finclaw share status [--json]` | List grants under the profile share state dir |
+| `finclaw share revoke --grant-id <id>` | Mark a grant revoked locally |
+
+Use `--json` for machine-readable output. Tickets **embed the bearer** — treat
+them like passwords; do not paste into public channels.
+
+### Quick manual test (two terminals)
+
+**Peer A** — inbound serve (same pattern as [Inbound](#inbound-a2a-inboundyaml)),
+then offer:
+
+```bash
+# after finclaw serve is listening on PORT with inbound auth_token=TOKEN
+finclaw share offer --upstream "http://127.0.0.1:PORT" --bearer TOKEN --json
+# leave running; copy the "ticket" field
+```
+
+**Peer B** — redeem and call A2A over localhost:
+
+```bash
+finclaw share redeem --ticket '<ticket>' --json
+# copy local_a2a_base, then:
+curl -fsS "${LOCAL}/.well-known/agent-card.json"
+# POST ${LOCAL}/a2a/v1 with Authorization: Bearer TOKEN
+```
+
+Register `${LOCAL}/a2a/v1` in B’s `a2a-agents.yaml` with `allow_private: true`
+and the same bearer to use `finclaw a2a` / `/ask` through the tunnel.
+
+Both `offer` and `redeem` processes must stay up for the tunnel to work. Stop
+with Ctrl-C. Grants are stored under
+`<profile>/runtime_home/share/grants.json`.
+
+### Security
+
+- Live-both-sides only; revoke/expiry are best-effort local bookkeeping.
+- The iroh pipe is **not** inspected by an HTTP allowlist/MITM sandbox. Bound
+  what the agent may do with profile policies; treat the ticket as the
+  capability to reach that inbound peer.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Things to check |
@@ -305,6 +382,8 @@ Callers must send `Authorization: Bearer <token>` on `POST /a2a/v1`. Optional `s
 | `ask` policy stuck | Approve the delegation prompt; second infer should set `pre_approved` |
 | Inbound 401 | Bearer matches `auth_token` / env; `enabled: true` on peer |
 | Hop limit errors | Chain too deep; raise `max_hops` only if you understand loop risk |
+| `share` says feature required | Binary built without `share`; see [Availability](#availability) |
+| Redeem works but card 404 | Strip trailing slash on `local_a2a_base` before joining paths; both offer/redeem still running |
 
 ```bash
 finclaw doctor
@@ -318,5 +397,5 @@ finclaw a2a list --json
 
 - [chat-and-operations.md](chat-and-operations.md) — REPL, `finclaw serve`, slash commands
 - [configuration.md](configuration.md) — profile paths and env
-- [reference-commands.md](reference-commands.md) — `finclaw a2a` cheat sheet
+- [reference-commands.md](reference-commands.md) — `finclaw a2a` / `finclaw share` cheat sheet
 - [A2A interop (contract)](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)

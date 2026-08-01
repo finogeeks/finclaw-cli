@@ -2,7 +2,7 @@
 
 **English:** [a2a.md](a2a.md)
 
-本文说明如何用公开发布的 **finclaw** CLI 使用 **A2A（Agent2Agent）**：配置出站对等体、探活，并在聊天中用 `/ask` / `/delegate` 引导模型。文首动手实验只需 `finclaw` 二进制与 Python 3。
+本文说明如何用公开发布的 **finclaw** CLI 使用 **A2A（Agent2Agent）**：配置出站对等体、探活，在聊天中用 `/ask` / `/delegate` 引导模型，并在可用时用 **`finclaw share`** 走 iroh 做 P2P 可达。文首动手实验只需 `finclaw` 二进制与 Python 3。
 
 线路级约定（方法名、错误码、跳数头）见公开的 [A2A 互操作说明](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)（若你可访问该仓库）；否则以 `finclaw a2a --help` 与下文示例为准。
 
@@ -295,6 +295,76 @@ peers:
 
 ---
 
+## 基于 iroh 的 P2P 共享（`finclaw share`）
+
+当两台 finclaw **不在同一局域网**、又不想把入站 A2A 暴露到公网 IP 时，可用可选的
+**点对点可达性**。**应用层协议仍是 A2A HTTP**（Agent Card + JSON-RPC）；iroh 只在两台
+**同时在线**的进程之间传字节（无离线队列）。
+
+```text
+对端 B                          对端 A
+finclaw share redeem  ──iroh──►  finclaw share offer
+       │                              │
+ 本机 A2A base                 反代到本机
+ (写入 a2a-agents.yaml)         finclaw serve（入站）
+```
+
+### 是否可用
+
+较新版本的 `--help` 里都有 `share` 子命令，但隧道只有在二进制 **编译时打开
+`share` feature** 时才真正可用。
+
+```bash
+finclaw share status
+```
+
+- 若提示需要 `share` Cargo feature，说明当前安装包 **尚未** 带 P2P — 等待启用该
+  feature 的发行版，或自行带该 feature 编译。
+- 若 `status` 能跑（即使 grant 列表为空），说明 feature 已打开。
+
+### 命令
+
+| 命令 | 作用 |
+| --- | --- |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--json]` | 发布本机入站 A2A；打印 ticket |
+| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--json]` | 兑换 ticket；打印 `local_a2a_base` |
+| `finclaw share status [--json]` | 列出 profile 下 share 状态目录中的 grant |
+| `finclaw share revoke --grant-id <id>` | 在本地标记 grant 已吊销 |
+
+`--json` 便于脚本解析。ticket **内含 bearer**，请当密码对待，勿发到公开渠道。
+
+### 两终端手工冒烟
+
+**对端 A** — 先按 [入站配置](#入站a2a-inboundyaml) 启动 `finclaw serve`，再 offer：
+
+```bash
+finclaw share offer --upstream "http://127.0.0.1:PORT" --bearer TOKEN --json
+# 保持运行；复制 "ticket" 字段
+```
+
+**对端 B** — redeem 后走本机 HTTP 调 A2A：
+
+```bash
+finclaw share redeem --ticket '<ticket>' --json
+# 使用 local_a2a_base：
+curl -fsS "${LOCAL}/.well-known/agent-card.json"
+# POST ${LOCAL}/a2a/v1，Authorization: Bearer TOKEN
+```
+
+把 `${LOCAL}/a2a/v1` 写入 B 的 `a2a-agents.yaml`（`allow_private: true` + 同一
+bearer）即可用 `finclaw a2a` / `/ask` 走隧道。
+
+`offer` 与 `redeem` 进程都必须保持运行。Ctrl-C 结束。grant 存在
+`<profile>/runtime_home/share/grants.json`。
+
+### 安全
+
+- 双方必须同时在线；吊销/过期主要是本地记账。
+- iroh 管道 **不会** 被 HTTP 白名单/MITM 沙箱检查。用 profile 策略约束 agent
+  能做什么；把 ticket 当作到达该入站对端的能力凭证。
+
+---
+
 ## 排错
 
 | 现象 | 检查项 |
@@ -305,6 +375,8 @@ peers:
 | `ask` 策略卡住 | 在对话中批准委派；第二次 infer 应带 `pre_approved` |
 | 入站 401 | Bearer 与 `auth_token`/环境变量一致；对端 `enabled: true` |
 | 跳数超限 | 链路过深；仅在理解环路风险后提高 `max_hops` |
+| `share` 提示需要 feature | 二进制未带 `share`；见 [是否可用](#是否可用) |
+| redeem 成功但 card 404 | 拼接路径前去掉 `local_a2a_base` 末尾 `/`；确认 offer/redeem 仍在运行 |
 
 ```bash
 finclaw doctor
@@ -318,5 +390,5 @@ finclaw a2a list --json
 
 - [chat-and-operations.zh.md](chat-and-operations.zh.md) — REPL、`finclaw serve`、slash 命令
 - [configuration.zh.md](configuration.zh.md) — profile 路径与环境变量
-- [reference-commands.zh.md](reference-commands.zh.md) — `finclaw a2a` 速查
+- [reference-commands.zh.md](reference-commands.zh.md) — `finclaw a2a` / `finclaw share` 速查
 - [A2A 互操作（合约）](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)
