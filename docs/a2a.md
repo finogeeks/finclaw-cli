@@ -2,7 +2,7 @@
 
 **Chinese:** [a2a.zh.md](a2a.zh.md)
 
-This guide explains how **A2A (Agent2Agent)** works with the published `finclaw` CLI: configure outbound peers, probe them, and steer the model with `/ask` / `/delegate` in chat. The hands-on section at the top needs only the `finclaw` binary and Python 3.
+This guide explains how **A2A (Agent2Agent)** works with the published `finclaw` CLI: configure outbound peers, probe them, steer the model with `/ask` / `/delegate` in chat, and (when available) **share your agent with a peer** via `finclaw share`. The hands-on section at the top needs only the `finclaw` binary and Python 3.
 
 Wire-level conventions (method names, error codes, hop headers) follow the public [A2A interop note](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md) when that repository is available to you; otherwise treat `finclaw a2a --help` and the examples below as the operator surface.
 
@@ -10,7 +10,10 @@ Wire-level conventions (method names, error codes, hop headers) follow the publi
 
 ## Quick start: test A2A locally (recommended first step)
 
-You can verify outbound A2A **without a real LLM** using the read-only CLI and a tiny mock peer.
+**Two real FinClaw agents:** see [`examples/two-agent-a2a/`](../examples/two-agent-a2a/)
+(Callee inbound + Caller outbound; HTTP smoke, optional peer share, mock LLM by default).
+
+You can also verify outbound A2A **without a second finclaw** using the read-only CLI and a tiny mock peer.
 
 ### Prerequisites
 
@@ -295,6 +298,95 @@ Callers must send `Authorization: Bearer <token>` on `POST /a2a/v1`. Optional `s
 
 ---
 
+## Share your agent with a peer (`finclaw share`)
+
+Use this when another person should call **your** inbound agent without you
+opening a public port on the internet. You create a short-lived **ticket**; they
+redeem it and get a local URL that talks to your agent. Both sides must stay
+online while sharing.
+
+```text
+You (offer)                         Peer (redeem)
+finclaw serve (inbound)             finclaw share redeem --ticket …
+finclaw share offer  ── ticket ──►  local URL → use in a2a-agents.yaml / curl
+```
+
+### Is it available?
+
+```bash
+finclaw share status
+```
+
+- If the command lists grants (or an empty list) and does not error, sharing is
+  available on your install.
+- If it says sharing is not supported in this build, upgrade to a release that
+  includes it (see release notes) or ask your distributor.
+
+### Commands
+
+| Command | Purpose |
+| --- | --- |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 1h] [--relay …] [--json]` | Share your local inbound agent; print a ticket |
+| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--relay …] [--json]` | Accept a ticket; print `local_a2a_base` |
+| `finclaw share status [--json]` | List active shares for this profile |
+| `finclaw share doctor [--upstream <url>] [--json]` | Check share support, grants, optional upstream card |
+| `finclaw share revoke --grant-id <id>` | Revoke a share on this machine |
+
+Prefer `--json` when copying fields into scripts. The ticket is a **secret**
+(it includes the access token) — send it privately, not in a public channel.
+Default ticket lifetime is **1h** (max 7d). After redeem stops, any peer URL
+pointing at that localhost base is **stale** — remove it or redeem again.
+
+**Packaging:** not every release binary includes peer share (it pulls extra
+networking code). Run `finclaw share status` or `finclaw share doctor`. If the
+build lacks share, upgrade to a share-enabled release or ask your distributor.
+
+**Relays (beyond the same network):** by default both `offer` and `redeem` use
+`--relay default` so peers behind different home networks can usually connect.
+Use `--relay disabled` on a trusted LAN or VPN. To use your own relay servers:
+`--relay custom --relay-url https://relay.example/` (repeat `--relay-url` as
+needed). Both sides should use a compatible setting.
+
+**HTTP and share together:** keep one inbound `finclaw serve`. LAN callers can
+use the real `http://host:port/a2a/v1` peer; remote callers redeem a ticket and
+use `local_a2a_base`. You can list both peers in `a2a-agents.yaml` with different
+ids (same bearer).
+
+### Try it (two terminals)
+
+**You** — start inbound `finclaw serve` ([Inbound](#inbound-a2a-inboundyaml)),
+then share:
+
+```bash
+# serve listening on PORT; inbound auth_token=TOKEN
+finclaw share offer --upstream "http://127.0.0.1:PORT" --bearer TOKEN --json
+# leave running; copy the "ticket" field and send it to your peer
+```
+
+**Peer** — redeem and call your agent:
+
+```bash
+finclaw share redeem --ticket '<ticket>' --json
+# use local_a2a_base from the output:
+curl -fsS "${LOCAL}/.well-known/agent-card.json"
+# POST ${LOCAL}/a2a/v1 with Authorization: Bearer TOKEN
+```
+
+They can add `${LOCAL}/a2a/v1` to their `a2a-agents.yaml` with
+`allow_private: true` and the same bearer, then use `finclaw a2a` or `/ask`.
+
+Keep both `offer` and `redeem` running. Stop with Ctrl-C when finished.
+
+### Security tips
+
+- Both machines must stay online for the share to work (no offline delivery).
+- Treat the ticket like a password; revoke or let it expire when done.
+- Profile policies still control what *your* agent is allowed to do.
+- If share fails across networks, confirm both sides use `--relay default` (or
+  the same `--relay custom` URLs), not `--relay disabled`.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Things to check |
@@ -305,6 +397,9 @@ Callers must send `Authorization: Bearer <token>` on `POST /a2a/v1`. Optional `s
 | `ask` policy stuck | Approve the delegation prompt; second infer should set `pre_approved` |
 | Inbound 401 | Bearer matches `auth_token` / env; `enabled: true` on peer |
 | Hop limit errors | Chain too deep; raise `max_hops` only if you understand loop risk |
+| `share` not supported | This install lacks peer share; see [Availability](#is-it-available) |
+| Redeem works but card 404 | Drop trailing slash on `local_a2a_base` before joining paths; both offer and redeem still running |
+| Share fails across networks | Both sides should use `--relay default` (or the same custom relay URLs), not `--relay disabled` |
 
 ```bash
 finclaw doctor
@@ -316,7 +411,8 @@ finclaw a2a list --json
 
 ## See also
 
+- [`examples/two-agent-a2a/`](../examples/two-agent-a2a/) — two-agent HTTP + optional peer-share demo
 - [chat-and-operations.md](chat-and-operations.md) — REPL, `finclaw serve`, slash commands
 - [configuration.md](configuration.md) — profile paths and env
-- [reference-commands.md](reference-commands.md) — `finclaw a2a` cheat sheet
+- [reference-commands.md](reference-commands.md) — `finclaw a2a` / `finclaw share` cheat sheet
 - [A2A interop (contract)](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)

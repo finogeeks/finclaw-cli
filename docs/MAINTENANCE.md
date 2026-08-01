@@ -21,15 +21,16 @@ These notes are for people who edit documentation in the **finclaw-cli** public 
 4. **Global `--locale` / `--config` / `--finclaw-home`** — if help language selection or config/home paths change, update [configuration.md](configuration.md), [reference-commands.md](reference-commands.md), and [docs/README.md](README.md) (English prose + bilingual note as needed).
 5. **Post-turn learning** — if `learning:` schema, `finclaw learning` subcommands, or related env vars change, update [learning.md](learning.md) / [learning.zh.md](learning.zh.md) first, then cross-links in [configuration.md](configuration.md), [chat-and-operations.md](chat-and-operations.md), [skills.md](skills.md), and [reference-commands.md](reference-commands.md) (and `.zh.md` counterparts).
 6. **ACP** — if `finclaw acp` flags, Zed setup, or protocol limits change, update [acp.md](acp.md) / [acp.zh.md](acp.zh.md) and the index rows in [README.md](../README.md), [README.zh.md](../README.zh.md), and [docs/README.md](README.md).
-7. **Chat TUI (`--tui`)** — if the experimental full-screen REPL changes, update [chat-and-operations.md](chat-and-operations.md) / `.zh.md`, [getting-started.md](getting-started.md) / `.zh.md`, [reference-commands.md](reference-commands.md) / `.zh.md`, and the terminal-agent bullets in [README.md](../README.md) / [README.zh.md](../README.zh.md). Keep the supervised-approval caveat aligned with [security-and-policies.md](security-and-policies.md).
-8. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
-9. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
+7. **A2A / peer share** — if `finclaw a2a` or `finclaw share` (offer/redeem) behavior changes, update [a2a.md](a2a.md) / [a2a.zh.md](a2a.zh.md), [reference-commands.md](reference-commands.md) / `.zh.md`, and the A2A bullets in [README.md](../README.md) / [README.zh.md](../README.zh.md). Keep public copy usage-focused (no transport internals); document availability via `finclaw share status`.
+8. **Chat TUI (`--tui`)** — if the experimental full-screen REPL changes, update [chat-and-operations.md](chat-and-operations.md) / `.zh.md`, [getting-started.md](getting-started.md) / `.zh.md`, [reference-commands.md](reference-commands.md) / `.zh.md`, and the terminal-agent bullets in [README.md](../README.md) / [README.zh.md](../README.zh.md). Keep the supervised-approval caveat aligned with [security-and-policies.md](security-and-policies.md).
+9. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
+10. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
 
 ## Bilingual files
 
 - Keep [topic].md and [topic].zh.md in sync: same structure, same commands; translate prose.
 - If you add a new English doc, add the Chinese counterpart in the same change when possible.
-- **A2A:** [a2a.md](a2a.md) / [a2a.zh.md](a2a.zh.md) and [examples/mock-a2a-peer.py](../examples/mock-a2a-peer.py) ship together; update the index rows in [README.md](../README.md), [README.zh.md](../README.zh.md), and [docs/README.md](README.md) when the guide changes.
+- **A2A:** [a2a.md](a2a.md) / [a2a.zh.md](a2a.zh.md) and [examples/mock-a2a-peer.py](../examples/mock-a2a-peer.py) ship together; update the index rows in [README.md](../README.md), [README.zh.md](../README.zh.md), and [docs/README.md](README.md) when the guide changes (including `finclaw share`).
 - **ACP:** [acp.md](acp.md) / [acp.zh.md](acp.zh.md) ship together; keep README and docs index rows aligned.
 
 ## HTTP/API and the Claw runtime

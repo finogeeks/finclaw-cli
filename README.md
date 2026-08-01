@@ -24,7 +24,7 @@
 | --- | --- |
 | A serious coding / research agent in the terminal | Interactive REPL, optional full-screen `--tui`, one-shot `chat`, profiles, skills, MCP |
 | The same agent inside your editor | **`finclaw acp`** — Agent Client Protocol for Zed and other ACP clients |
-| Agents that talk to agents | **A2A** outbound peers (`a2a-agents.yaml` + `finclaw a2a` / `/ask`) |
+| Agents that talk to agents | **A2A** outbound peers (`a2a-agents.yaml` + `finclaw a2a` / `/ask`); optional peer share (`finclaw share`) |
 | An agent that improves over time | **Post-turn learning** (default on): memory facts + agent-authored skills |
 | Clean local state | Profile-scoped `~/.finclaw/` — config, skills, history, secrets stay isolated |
 | Easy install & updates | One-liner install + `finclaw update` from GitHub Releases |
@@ -45,7 +45,7 @@ This repository is the **official public home** for the `finclaw` binary: instal
 Speak [Agent Client Protocol](https://agentclientprotocol.com/) over stdio. Register `finclaw` as a custom agent in Zed — prompts, tool permission UI, cancel, and session reopen with history. See **[docs/acp.md](docs/acp.md)**.
 
 ### Agent-to-agent (A2A)
-Configure peers in `a2a-agents.yaml`, inspect with `finclaw a2a list|card|probe`, and steer the model with `/ask` / `/delegate` in chat. Full guide: **[docs/a2a.md](docs/a2a.md)**.
+Configure peers in `a2a-agents.yaml`, inspect with `finclaw a2a list|card|probe`, and steer the model with `/ask` / `/delegate` in chat. To let someone reach **your** inbound agent without a public port, use `finclaw share offer|redeem` (when your install supports it). Full guide: **[docs/a2a.md](docs/a2a.md)**.
 
 ### Self-learning (Hermes-style)
 After enough turns, a background review can write **facts to memory** and **procedures as skills**. Default mode is **`promote`** (write-through). Dial it back with `stage` / `observe`, or `finclaw learning disable`. Guide: **[docs/learning.md](docs/learning.md)**.
@@ -139,9 +139,14 @@ finclaw learning disable           # turn the loop off
 finclaw a2a list
 finclaw a2a card <peer-id>
 finclaw a2a probe <peer-id>
+
+# optional: share your inbound agent with a peer (when supported)
+finclaw share status
+# finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
+# finclaw share redeem --ticket '…' --json
 ```
 
-In the chat REPL: `/ask <peer> <message>` steers the model toward outbound A2A. See [docs/a2a.md](docs/a2a.md) and the local mock peer under [`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py).
+In the chat REPL: `/ask <peer> <message>` steers the model toward outbound A2A. See [docs/a2a.md](docs/a2a.md) (including [peer share](docs/a2a.md#share-your-agent-with-a-peer-finclaw-share)) and the local mock peer under [`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py).
 
 ---
 

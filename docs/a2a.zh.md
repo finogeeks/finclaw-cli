@@ -2,7 +2,7 @@
 
 **English:** [a2a.md](a2a.md)
 
-本文说明如何用公开发布的 **finclaw** CLI 使用 **A2A（Agent2Agent）**：配置出站对等体、探活，并在聊天中用 `/ask` / `/delegate` 引导模型。文首动手实验只需 `finclaw` 二进制与 Python 3。
+本文说明如何用公开发布的 **finclaw** CLI 使用 **A2A（Agent2Agent）**：配置出站对等体、探活，在聊天中用 `/ask` / `/delegate` 引导模型，并在可用时用 **`finclaw share`** 与对端共享你的 Agent。文首动手实验只需 `finclaw` 二进制与 Python 3。
 
 线路级约定（方法名、错误码、跳数头）见公开的 [A2A 互操作说明](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)（若你可访问该仓库）；否则以 `finclaw a2a --help` 与下文示例为准。
 
@@ -10,7 +10,10 @@
 
 ## 快速上手：在本地测试 A2A（建议第一步）
 
-仅用只读 CLI 命令与一个简易 mock 对端，即可在**无需真实 LLM** 的情况下验证出站 A2A。
+**两个真实 FinClaw Agent：** 见 [`examples/two-agent-a2a/`](../examples/two-agent-a2a/)
+（Callee 入站 + Caller 出站；默认 mock LLM 做 HTTP 冒烟，可选对端共享）。
+
+也可以**不启第二个 finclaw**，只用只读 CLI 与一个简易 mock 对端验证出站 A2A。
 
 ### 前置条件
 
@@ -295,6 +298,86 @@ peers:
 
 ---
 
+## 与对端共享你的 Agent（`finclaw share`）
+
+当你希望别人调用**你的**入站 Agent、又不想在公网开端口时，可用共享：你生成一份
+短期 **ticket**，对方兑换后得到一个本机 URL，即可访问你的 Agent。共享期间双方都要
+保持在线。
+
+```text
+你（offer）                          对端（redeem）
+finclaw serve（入站）                 finclaw share redeem --ticket …
+finclaw share offer  ── ticket ──►  本机 URL → 写入 a2a-agents.yaml / curl
+```
+
+### 是否可用
+
+```bash
+finclaw share status
+```
+
+- 若命令能跑（即使列表为空）且无报错，说明当前安装支持共享。
+- 若提示本版本不支持共享，请升级到包含该能力的发行版（见发行说明），或联系分发方。
+
+### 命令
+
+| 命令 | 作用 |
+| --- | --- |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 1h] [--relay …] [--json]` | 共享本机入站 Agent；打印 ticket |
+| `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--relay …] [--json]` | 兑换 ticket；打印 `local_a2a_base` |
+| `finclaw share status [--json]` | 列出本配置档下的共享 |
+| `finclaw share doctor [--upstream <url>] [--json]` | 检查是否支持共享、本地 grants，可选探测上游 Agent Card |
+| `finclaw share revoke --grant-id <id>` | 在本机吊销一份共享 |
+
+复制字段时建议加 `--json`。ticket 是**密钥**（含访问令牌）——私下传递，勿发到公开渠道。
+默认有效期 **1 小时**（最长 7 天）。redeem 结束后，指向该本机 URL 的 peer 会**失效**，需删除或重新兑换。
+
+**发行包装：** 并非每个发行版二进制都包含对端共享（会引入额外网络依赖）。用
+`finclaw share status` 或 `finclaw share doctor` 确认。若不支持，请升级到启用
+share 的版本，或联系分发方。
+
+**跨网络中继：** `offer` / `redeem` 默认 `--relay default`，便于不同家庭网络下连通。
+同一局域网或 VPN 可用 `--relay disabled`。自建中继：
+`--relay custom --relay-url https://relay.example/`（可重复）。双方设置需兼容。
+
+**HTTP 与共享并用：** 保持一份入站 `finclaw serve`。局域网可用真实
+`http://host:port/a2a/v1`；跨 NAT 则 redeem ticket 使用 `local_a2a_base`。可在
+`a2a-agents.yaml` 中配置两个不同 id 的 peer（同一 bearer）。
+
+### 试一下（两个终端）
+
+**你** — 先按 [入站配置](#入站a2a-inboundyaml) 启动 `finclaw serve`，再共享：
+
+```bash
+# serve 监听 PORT；入站 auth_token=TOKEN
+finclaw share offer --upstream "http://127.0.0.1:PORT" --bearer TOKEN --json
+# 保持运行；复制 "ticket" 字段发给对端
+```
+
+**对端** — 兑换并调用你的 Agent：
+
+```bash
+finclaw share redeem --ticket '<ticket>' --json
+# 使用输出中的 local_a2a_base：
+curl -fsS "${LOCAL}/.well-known/agent-card.json"
+# POST ${LOCAL}/a2a/v1，Authorization: Bearer TOKEN
+```
+
+对端可把 `${LOCAL}/a2a/v1` 写入 `a2a-agents.yaml`（`allow_private: true` + 同一
+bearer），再用 `finclaw a2a` 或 `/ask`。
+
+`offer` 与 `redeem` 都要保持运行；结束后 Ctrl-C。
+
+### 安全提示
+
+- 共享期间双方必须在线（不会离线投递）。
+- ticket 当密码对待；用完后吊销或等它过期。
+- 你自己的 profile 策略仍约束 Agent 能做什么。
+- 跨网络失败时，确认双方使用 `--relay default`（或相同的 `--relay custom`），
+  而不是 `--relay disabled`。
+
+---
+
 ## 排错
 
 | 现象 | 检查项 |
@@ -305,6 +388,9 @@ peers:
 | `ask` 策略卡住 | 在对话中批准委派；第二次 infer 应带 `pre_approved` |
 | 入站 401 | Bearer 与 `auth_token`/环境变量一致；对端 `enabled: true` |
 | 跳数超限 | 链路过深；仅在理解环路风险后提高 `max_hops` |
+| `share` 不可用 | 当前安装不支持对端共享；见 [是否可用](#是否可用) |
+| redeem 成功但 card 404 | 拼接路径前去掉 `local_a2a_base` 末尾 `/`；确认 offer/redeem 仍在运行 |
+| 跨网络共享失败 | 双方应使用 `--relay default`（或相同的自建中继 URL），不要用 `--relay disabled` |
 
 ```bash
 finclaw doctor
@@ -316,7 +402,8 @@ finclaw a2a list --json
 
 ## 延伸阅读
 
+- [`examples/two-agent-a2a/`](../examples/two-agent-a2a/) — 双 Agent HTTP + 可选对端共享示例
 - [chat-and-operations.zh.md](chat-and-operations.zh.md) — REPL、`finclaw serve`、slash 命令
 - [configuration.zh.md](configuration.zh.md) — profile 路径与环境变量
-- [reference-commands.zh.md](reference-commands.zh.md) — `finclaw a2a` 速查
+- [reference-commands.zh.md](reference-commands.zh.md) — `finclaw a2a` / `finclaw share` 速查
 - [A2A 互操作（合约）](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)

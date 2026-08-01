@@ -1,0 +1,12 @@
+# Caller → Callee after peer share redeem (template)
+
+# scripts/04-p2p-redeem-smoke.sh replaces __LOCAL_A2A_BASE__ with redeem's
+# local_a2a_base (no trailing slash). URL must end with /a2a/v1.
+agents:
+  - id: callee
+    url: __LOCAL_A2A_BASE__/a2a/v1
+    description: two-agent callee (via peer share tunnel)
+    auth_token: two-agent-a2a-demo-token
+    allow_private: true
+    policy: allow
+    enabled: true

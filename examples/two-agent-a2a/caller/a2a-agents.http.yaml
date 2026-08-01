@@ -1,0 +1,11 @@
+# Caller → Callee over local HTTP (template)
+
+# Copied/adjusted by scripts/00-prepare-homes.sh.
+agents:
+  - id: callee
+    url: http://127.0.0.1:28701/a2a/v1
+    description: two-agent callee (HTTP on this machine)
+    auth_token: two-agent-a2a-demo-token
+    allow_private: true
+    policy: allow
+    enabled: true
