@@ -323,16 +323,26 @@ finclaw share status
 
 | 命令 | 作用 |
 | --- | --- |
-| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--relay …] [--json]` | 共享本机入站 Agent；打印 ticket |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 1h] [--relay …] [--json]` | 共享本机入站 Agent；打印 ticket |
 | `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--relay …] [--json]` | 兑换 ticket；打印 `local_a2a_base` |
 | `finclaw share status [--json]` | 列出本配置档下的共享 |
+| `finclaw share doctor [--upstream <url>] [--json]` | 检查是否支持共享、本地 grants，可选探测上游 Agent Card |
 | `finclaw share revoke --grant-id <id>` | 在本机吊销一份共享 |
 
 复制字段时建议加 `--json`。ticket 是**密钥**（含访问令牌）——私下传递，勿发到公开渠道。
+默认有效期 **1 小时**（最长 7 天）。redeem 结束后，指向该本机 URL 的 peer 会**失效**，需删除或重新兑换。
+
+**发行包装：** 并非每个发行版二进制都包含对端共享（会引入额外网络依赖）。用
+`finclaw share status` 或 `finclaw share doctor` 确认。若不支持，请升级到启用
+share 的版本，或联系分发方。
 
 **跨网络中继：** `offer` / `redeem` 默认 `--relay default`，便于不同家庭网络下连通。
 同一局域网或 VPN 可用 `--relay disabled`。自建中继：
 `--relay custom --relay-url https://relay.example/`（可重复）。双方设置需兼容。
+
+**HTTP 与共享并用：** 保持一份入站 `finclaw serve`。局域网可用真实
+`http://host:port/a2a/v1`；跨 NAT 则 redeem ticket 使用 `local_a2a_base`。可在
+`a2a-agents.yaml` 中配置两个不同 id 的 peer（同一 bearer）。
 
 ### 试一下（两个终端）
 

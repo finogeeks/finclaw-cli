@@ -326,19 +326,31 @@ finclaw share status
 
 | Command | Purpose |
 | --- | --- |
-| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 2h] [--relay …] [--json]` | Share your local inbound agent; print a ticket |
+| `finclaw share offer --upstream <http://127.0.0.1:PORT> --bearer <token> [--ttl 1h] [--relay …] [--json]` | Share your local inbound agent; print a ticket |
 | `finclaw share redeem --ticket <blob> [--write-agents-yaml] [--relay …] [--json]` | Accept a ticket; print `local_a2a_base` |
 | `finclaw share status [--json]` | List active shares for this profile |
+| `finclaw share doctor [--upstream <url>] [--json]` | Check share support, grants, optional upstream card |
 | `finclaw share revoke --grant-id <id>` | Revoke a share on this machine |
 
 Prefer `--json` when copying fields into scripts. The ticket is a **secret**
 (it includes the access token) — send it privately, not in a public channel.
+Default ticket lifetime is **1h** (max 7d). After redeem stops, any peer URL
+pointing at that localhost base is **stale** — remove it or redeem again.
+
+**Packaging:** not every release binary includes peer share (it pulls extra
+networking code). Run `finclaw share status` or `finclaw share doctor`. If the
+build lacks share, upgrade to a share-enabled release or ask your distributor.
 
 **Relays (beyond the same network):** by default both `offer` and `redeem` use
 `--relay default` so peers behind different home networks can usually connect.
 Use `--relay disabled` on a trusted LAN or VPN. To use your own relay servers:
 `--relay custom --relay-url https://relay.example/` (repeat `--relay-url` as
 needed). Both sides should use a compatible setting.
+
+**HTTP and share together:** keep one inbound `finclaw serve`. LAN callers can
+use the real `http://host:port/a2a/v1` peer; remote callers redeem a ticket and
+use `local_a2a_base`. You can list both peers in `a2a-agents.yaml` with different
+ids (same bearer).
 
 ### Try it (two terminals)
 
