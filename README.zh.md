@@ -2,7 +2,7 @@
   <img src="assets/finclaw-wordmark.svg" width="560" alt="FINCLAW" />
 </p>
 
-# 点对点。无需自建服务器。不同电脑上的 Agent 用 A2A 互聊。
+# 点对点。无需自建服务器。不同PC上的 Agent 用 A2A 互聊。
 
 **finclaw** — [![GitHub release](https://img.shields.io/github/v/release/finogeeks/finclaw-cli?label=release&sort=semver)](https://github.com/finogeeks/finclaw-cli/releases)
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
