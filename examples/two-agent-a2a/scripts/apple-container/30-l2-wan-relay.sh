@@ -23,7 +23,9 @@ BIN="$(bash "$SCRIPT_DIR/00-fetch-linux-finclaw.sh" | tail -1)"
 }
 
 # Match guest arch to the Linux binary (aarch64 native or amd64+Rosetta).
-mapfile -t ARCH_ARGS < <(apple_guest_arch_args "$BIN")
+# Word-split is intentional; apple_guest_arch_args emits safe flag tokens only.
+# shellcheck disable=SC2206
+ARCH_ARGS=($(apple_guest_arch_args "$BIN"))
 echo "==> guest arch: ${ARCH_ARGS[*]}"
 
 rm -rf "$DEMO_ROOT"
