@@ -57,7 +57,10 @@ bash scripts/apple-container/20-l1-lan.sh      # 同一网络，--relay disabled
 bash scripts/apple-container/30-l2-wan-relay.sh # 两个网络，--relay default
 ```
 
-说明见 [scripts/apple-container/README.md](scripts/apple-container/README.md)。
+宾客之间走 **share offer/redeem**（caller 本机 localhost），不是宿主机直连 guest IP。
+L2 起来后可用本机 `finclaw` 兑换 `.demo-homes-l2/ticket.txt` — 见
+[scripts/apple-container/README.md](scripts/apple-container/README.md)。产品心智模型：
+[docs/a2a.zh.md](../../docs/a2a.zh.md#与对端共享你的-agentfinclaw-share)。
 
 ## 人设（markdown）
 

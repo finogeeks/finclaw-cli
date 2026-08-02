@@ -310,6 +310,26 @@ finclaw serve（入站）                 finclaw share redeem --ticket …
 finclaw share offer  ── ticket ──►  本机 URL → 写入 a2a-agents.yaml / curl
 ```
 
+### 心智模型（为什么是 localhost？）
+
+对端共享**不是**「把你的机器 IP 告诉对方」。redeem 之后，**调用方**在**自己的**
+本机回环上得到一个短期 HTTP 监听（`local_a2a_base`，例如
+`http://127.0.0.1:59400`）。`curl` / `a2a-agents.yaml` / `/ask` 访问的是这个 URL；
+redeem 再经共享隧道转发到你仍在运行的 `serve` + `offer`。
+
+| 需保持运行 | 位置 | 作用 |
+| --- | --- | --- |
+| `finclaw serve` + `share offer` | 你的机器 | 发布 ticket；提供真实 A2A |
+| `finclaw share redeem` | 同事的机器 | 在**对方**本机打开 localhost 代理 |
+
+关掉 redeem 终端后，即使你的 Agent 仍在线，本机代理也会消失——这是预期行为。
+同事不能跳过 redeem、直接打你的局域网/容器 IP，除非你另外暴露了普通 HTTP
+（端口映射、VPN、公网 URL）。那条 HTTP 路径与对端共享是分开的（同网
+`a2a-agents.yaml` URL vs ticket 隧道）。
+
+**鉴权：** 对本机隧道 URL 使用 redeem JSON 里的 `a2a_bearer`（`fcshare_…`）。
+不要在隧道上使用入站 `--bearer` / demo token。
+
 ### 是否可用
 
 ```bash
@@ -373,6 +393,16 @@ redeem 得到的 **grant** 令牌，或 `--write-agents-yaml`），再用 `fincl
 
 `offer` 与 `redeem` 都要保持运行；结束后 Ctrl-C。
 
+### 异地同事接入（清单）
+
+1. **你：** 入站 `serve` + `share offer --json`（默认 `--relay default`）；私下发送 ticket。
+2. **对方：** 安装带 share 的 `finclaw`（`finclaw share status`），运行
+   `share redeem --ticket '…' --json`，**保持该进程不退出**。
+3. **对方：** 用 `local_a2a_base` + `a2a_bearer` 做 `curl` / 写入 `a2a-agents.yaml`，
+   或 `redeem --write-agents-yaml`，再 `/ask`。
+
+共享路径下对方**不需要**你的公网 IP、VPN 或端口转发。
+
 ### 安全提示
 
 - 共享期间双方必须在线（不会离线投递）。
@@ -395,7 +425,10 @@ redeem 得到的 **grant** 令牌，或 `--write-agents-yaml`），再用 `fincl
 | 跳数超限 | 链路过深；仅在理解环路风险后提高 `max_hops` |
 | `share` 不可用 | 当前安装不支持对端共享；见 [是否可用](#是否可用) |
 | redeem 成功但 card 404 | 拼接路径前去掉 `local_a2a_base` 末尾 `/`；确认 offer/redeem 仍在运行 |
+| `curl: Failed to connect` 到 `127.0.0.1:<port>` | redeem 进程已退出（端口是临时的）。重新 redeem，使用**新的** `local_a2a_base` |
+| 打 offer 方局域网/容器 IP 失败 | 仅共享场景下属预期。在调用方 redeem，不要直连 offer 侧 guest IP |
 | 跨网络共享失败 | 双方应使用 `--relay default`（或相同的自建中继 URL），不要用 `--relay disabled` |
+| 隧道上用入站 token 得到 401 | 使用 redeem 的 `a2a_bearer`，不要用 offer 的 `--bearer` / 入站 demo token |
 
 ```bash
 finclaw doctor

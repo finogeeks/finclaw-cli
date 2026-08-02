@@ -62,7 +62,10 @@ bash scripts/apple-container/20-l1-lan.sh      # one network, --relay disabled
 bash scripts/apple-container/30-l2-wan-relay.sh # two nets, --relay default
 ```
 
-See [scripts/apple-container/README.md](scripts/apple-container/README.md).
+Guests talk via **share offer/redeem** (caller localhost), not host→guest IP HTTP.
+After L2 is up you can redeem `.demo-homes-l2/ticket.txt` with host `finclaw` — see
+[scripts/apple-container/README.md](scripts/apple-container/README.md). Product
+mental model: [docs/a2a.md](../../docs/a2a.md#share-your-agent-with-a-peer-finclaw-share).
 
 ## Personas (markdown)
 

@@ -311,6 +311,27 @@ finclaw serve (inbound)             finclaw share redeem --ticket …
 finclaw share offer  ── ticket ──►  local URL → use in a2a-agents.yaml / curl
 ```
 
+### Mental model (why localhost?)
+
+Peer share is **not** “give the caller your machine’s IP.” After redeem, the
+**caller** gets a short-lived HTTP listener on **their** loopback
+(`local_a2a_base`, e.g. `http://127.0.0.1:59400`). `curl` / `a2a-agents.yaml` /
+`/ask` talk to that URL. Redeem forwards those requests over the share tunnel to
+your still-running `serve` + `offer`.
+
+| What stays up | Where | Role |
+| --- | --- | --- |
+| `finclaw serve` + `share offer` | Your machine | Publishes the ticket; serves real A2A |
+| `finclaw share redeem` | Colleague’s machine | Opens **their** localhost proxy |
+
+Closing the redeem terminal drops the proxy even if your agent is still online —
+that is expected. The colleague cannot skip redeem and hit your LAN/container IP
+unless you also expose plain HTTP (port publish, VPN, public URL). That HTTP path
+is separate from peer share (same-LAN `a2a-agents.yaml` URL vs ticket tunnel).
+
+**Auth:** use the redeem JSON `a2a_bearer` (`fcshare_…`) on the localhost URL.
+Do not use your inbound `--bearer` / demo token on the tunnel.
+
 ### Is it available?
 
 ```bash
@@ -382,6 +403,14 @@ They can add `${LOCAL}/a2a/v1` to their `a2a-agents.yaml` with
 
 Keep both `offer` and `redeem` running. Stop with Ctrl-C when finished.
 
+### Colleague at another site (checklist)
+
+1. **You:** inbound `serve` + `share offer --json` (default `--relay default`); send the ticket privately.
+2. **Them:** install a share-enabled `finclaw` (`finclaw share status`), run `share redeem --ticket '…' --json`, **leave that process open**.
+3. **Them:** `curl` / configure `a2a-agents.yaml` with `local_a2a_base` + `a2a_bearer`, or `redeem --write-agents-yaml`, then `/ask`.
+
+They do **not** need your public IP, VPN, or port-forward for the share path.
+
 ### Security tips
 
 - Both machines must stay online for the share to work (no offline delivery).
@@ -404,7 +433,10 @@ Keep both `offer` and `redeem` running. Stop with Ctrl-C when finished.
 | Hop limit errors | Chain too deep; raise `max_hops` only if you understand loop risk |
 | `share` not supported | This install lacks peer share; see [Availability](#is-it-available) |
 | Redeem works but card 404 | Drop trailing slash on `local_a2a_base` before joining paths; both offer and redeem still running |
+| `curl: Failed to connect` to `127.0.0.1:<port>` | Redeem process exited (port was ephemeral). Re-run redeem and use the **new** `local_a2a_base` |
+| Curl to offerer’s LAN/container IP fails | Expected for share-only setups. Redeem on the caller; do not target the offerer’s guest IP |
 | Share fails across networks | Both sides should use `--relay default` (or the same custom relay URLs), not `--relay disabled` |
+| 401 on tunnel with inbound token | Use redeem `a2a_bearer`, not the offer `--bearer` / inbound demo token |
 
 ```bash
 finclaw doctor
