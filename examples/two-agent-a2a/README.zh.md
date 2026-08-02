@@ -47,6 +47,18 @@ bash scripts/04-p2p-redeem-smoke.sh
 
 共享期间两端进程需保持在线。
 
+### Apple Container（本机模拟 LAN / WAN）
+
+用 Apple Container 把 caller / callee 放进两个 Linux 虚拟机（发布物目前只有
+`x86_64` Linux，需 `--arch amd64 --rosetta`）：
+
+```bash
+bash scripts/apple-container/20-l1-lan.sh      # 同一网络，--relay disabled
+bash scripts/apple-container/30-l2-wan-relay.sh # 两个网络，--relay default
+```
+
+说明见 [scripts/apple-container/README.md](scripts/apple-container/README.md)。
+
 ## 人设（markdown）
 
 | 角色 | 文件 | 作用 |
