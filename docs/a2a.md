@@ -2,9 +2,48 @@
 
 **Chinese:** [a2a.zh.md](a2a.zh.md)
 
-This guide explains how **A2A (Agent2Agent)** works with the published `finclaw` CLI: configure outbound peers, probe them, steer the model with `/ask` / `/delegate` in chat, and (when available) **share your agent with a peer** via `finclaw share`. The hands-on section at the top needs only the `finclaw` binary and Python 3.
+## What is this for? (start here)
 
-Wire-level conventions (method names, error codes, hop headers) follow the public [A2A interop note](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md) when that repository is available to you; otherwise treat `finclaw a2a --help` and the examples below as the operator surface.
+finclaw can talk to **other agents**, not only to you in the chat window. That
+capability is called **A2A** (agent-to-agent).
+
+### Ask yourself
+
+**“I built a useful agent on my laptop. A teammate needs it this afternoon. Do I
+have to deploy it to a server first?”**
+
+Often no. Many people either don’t want the hassle of cloud hosting, don’t know
+how, don’t have a spare server, or only need **temporary** access. They want
+someone else to use the agent **that is already running on the desktop** — with
+its files, tools, skills, and memory.
+
+**“Can’t I just send them my agent template / config?”**
+
+That shares **how to set one up**. It does **not** share the **live instance**.
+Templates are great for reuse and onboarding. They don’t replace handing someone
+access to an agent that already has the data and capabilities for the job.
+
+**“So what do I do?”**
+
+- **Same office network / VPN, and you already have a reachable address:** run
+  inbound A2A over ordinary HTTP (configure peers, use `/ask`).
+- **Different networks, no public URL you want to run:** use **peer share**
+  (`finclaw share`) — you keep the agent local, send a short-lived **ticket**,
+  they redeem it and talk to **your** agent. The ticket can **expire**; when you
+  stop sharing, access stops. Both sides need to stay online while it lasts.
+
+Peer share is convenient **ad-hoc instance sharing**. It is not “put my agent on
+the internet forever,” and it is not “email me your SOUL.md.”
+
+The rest of this guide is the **how** (commands, config files, troubleshooting).
+You can skim [Share your agent with a peer](#share-your-agent-with-a-peer-finclaw-share)
+next if that is your situation, or follow the local quick start below to try A2A
+on one machine first.
+
+Wire-level conventions (method names, error codes, hop headers) follow the public
+[A2A interop note](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)
+when that repository is available to you; otherwise treat `finclaw a2a --help`
+and the examples below as the operator surface.
 
 ---
 
@@ -300,15 +339,15 @@ Callers must send `Authorization: Bearer <token>` on `POST /a2a/v1`. Optional `s
 
 ## Share your agent with a peer (`finclaw share`)
 
-Use this when another person should call **your** inbound agent without you
-opening a public port on the internet. You create a short-lived **ticket**; they
-redeem it and get a local URL that talks to your agent. Both sides must stay
-online while sharing.
+This is the **ad-hoc desktop sharing** path from [What is this for?](#what-is-this-for-start-here):
+someone else reaches **your running agent** without you putting it on a cloud
+server. You create a short-lived **ticket**; they redeem it and get a local URL
+that talks to your agent. Both sides must stay online while sharing. When the
+ticket expires or you stop offering, the share ends.
 
 ```text
-You (offer)                         Peer (redeem)
-finclaw serve (inbound)             finclaw share redeem --ticket …
-finclaw share offer  ── ticket ──►  local URL → use in a2a-agents.yaml / curl
+You (keep agent + offer a ticket)     Peer (redeem ticket)
+finclaw serve + share offer  ──ticket──►  their machine talks to your agent
 ```
 
 ### Mental model (why localhost?)

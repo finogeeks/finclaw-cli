@@ -2,9 +2,41 @@
 
 **English:** [a2a.md](a2a.md)
 
-本文说明如何用公开发布的 **finclaw** CLI 使用 **A2A（Agent2Agent）**：配置出站对等体、探活，在聊天中用 `/ask` / `/delegate` 引导模型，并在可用时用 **`finclaw share`** 与对端共享你的 Agent。文首动手实验只需 `finclaw` 二进制与 Python 3。
+## 这是干什么的？（先看这里）
 
-线路级约定（方法名、错误码、跳数头）见公开的 [A2A 互操作说明](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)（若你可访问该仓库）；否则以 `finclaw a2a --help` 与下文示例为准。
+finclaw 不只和你在聊天窗口对话，还可以和其他 **Agent** 互相对话。这种能力叫
+**A2A**（agent-to-agent，智能体互联）。
+
+### 先问问自己
+
+**「我在笔记本上养好了一个 Agent。同事今天下午要用。难道必须先部署到服务器？」**
+
+常常不必。很多人嫌上云麻烦、不会搭、没有多余机器，或者只需要**临时**访问。他们
+想让别人用的是**已经在桌面跑着的那个 Agent**——带着它的数据、工具、技能和记忆。
+
+**「把我的 Agent 模板 / 配置发给对方不行吗？」**
+
+那分享的是**怎么搭一个类似的**，不是分享**正在跑的实例**。模板适合复用与入门；
+替代不了「让对方直接用上已经具备数据与能力的那个 Agent」。
+
+**「那我该怎么做？」**
+
+- **已在同一办公网 / VPN，且有可达地址：** 用普通 HTTP 做入站 A2A（配置对端，
+  用 `/ask`）。
+- **不在同一网络，也不想挂公网地址：** 用 **对端共享**（`finclaw share`）——
+  Agent 仍在你电脑上，你发一张短期 **票据**，对方兑换后连到**你的** Agent。票据
+  可以**过期**；你停止共享后访问即止。共享期间双方需保持在线。
+
+对端共享方便的是**临时共享活实例**。它不是「把 Agent 永久放到公网」，也不是
+「把 SOUL.md 邮件发给我」。
+
+下文是**怎么做**（命令、配置、排错）。若正是上述场景，可先跳到
+[与对端共享你的 Agent](#与对端共享你的-agentfinclaw-share)；若想先在单机试 A2A，
+跟下面的快速上手即可。
+
+线路级约定（方法名、错误码、跳数头）见公开的
+[A2A 互操作说明](https://github.com/Geeksfino/finclaw-contract/blob/main/docs/a2a-interop.md)
+（若你可访问该仓库）；否则以 `finclaw a2a --help` 与下文示例为准。
 
 ---
 
@@ -300,14 +332,14 @@ peers:
 
 ## 与对端共享你的 Agent（`finclaw share`）
 
-当你希望别人调用**你的**入站 Agent、又不想在公网开端口时，可用共享：你生成一份
-短期 **ticket**，对方兑换后得到一个本机 URL，即可访问你的 Agent。共享期间双方都要
-保持在线。
+这就是上文 [这是干什么的？](#这是干什么的先看这里) 里的**临时桌面共享**：别人连到
+**你正在跑的 Agent**，而不必先把它放到云服务器上。你生成一张短期 **ticket**，对方
+兑换后得到本机 URL，即可访问你的 Agent。共享期间双方需在线。票据过期或你停止
+offer 后，共享结束。
 
 ```text
-你（offer）                          对端（redeem）
-finclaw serve（入站）                 finclaw share redeem --ticket …
-finclaw share offer  ── ticket ──►  本机 URL → 写入 a2a-agents.yaml / curl
+你（保持 Agent + 发票据）              对端（兑换票据）
+finclaw serve + share offer  ──票据──►  对方机器连到你的 Agent
 ```
 
 ### 心智模型（为什么是 localhost？）

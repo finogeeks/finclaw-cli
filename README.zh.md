@@ -9,11 +9,10 @@
 ![P2P](https://img.shields.io/badge/peer--to--peer-no%20server%20needed-0A7A3E)
 ![A2A](https://img.shields.io/badge/protocol-A2A-informational)
 
-在你的电脑和朋友的电脑上各装一份 `finclaw` —— 两个个人 Agent、两台 PC，
-**不需要云端 Agent 中转，也不必自己挂一个公网地址**。交换一张短暂的
-**共享票据（share ticket）**，双方 **点对点** 连通，对话仍走标准
-**[A2A](docs/a2a.zh.md)**（Agent Card + JSON-RPC）。若已在同一局域网，也可直接用
-HTTP 上的 A2A。
+在你的电脑上运行 `finclaw`。当同事需要用到**那一个已经在跑的 Agent**——而不是
+自己再配置一份克隆——你发给对方一张短暂的 **共享票据**。双方 **点对点** 连通，
+**不必**云端 Agent 中转，也**不必**自己挂公网地址。底层仍是标准
+**[A2A](docs/a2a.zh.md)**。若已在同一局域网，也可直接用 HTTP。
 
 同时：轻量 Rust CLI（约 20–30 MB）支持终端聊天、经
 **[ACP](https://agentclientprotocol.com/)** 接入 **[Zed](https://zed.dev/)**、
@@ -30,8 +29,8 @@ HTTP 上的 A2A。
 
 | 你想要… | finclaw 提供… |
 | --- | --- |
-| **电脑 A 上的 finclaw ↔ 电脑 B 上的 finclaw** | **点对点** `finclaw share` — 票据进、A2A 出；**无需自建服务器 / 公网端口** |
-| 同一局域网 / VPN | **A2A over HTTP** — `serve` + `a2a-agents.yaml`，`/ask` / `/delegate` |
+| **电脑 A 上的 finclaw ↔ 电脑 B 上的 finclaw** | **对端共享** — 让别人连到你桌面上正在跑的 Agent（活实例），不必先上云 |
+| 同一局域网 / VPN | **A2A over HTTP** — `serve` + 对端地址，`/ask` / `/delegate` |
 | 终端里可靠的编码 / 研究 Agent | 交互式 REPL、可选全屏 `--tui`、一次性 `chat`、配置档、技能、MCP |
 | 同一套 Agent 进编辑器 | **`finclaw acp`** — Agent Client Protocol，适配 Zed 等 ACP 客户端 |
 | 用得越久越懂你 | **回合后学习**（默认开启）：写入记忆事实 + Agent 自写技能 |
@@ -46,21 +45,39 @@ HTTP 上的 A2A。
 
 ### 不同电脑上的点对点 Agent（A2A）
 
-**差异化：** 两台机器上的 finclaw 可以直接互相委托，**不必先搭一套 Agent
-服务器**。协议仍是 **A2A**；没有公网 HTTP 时，用 `finclaw share` 解决可达性。
+**什么时候会用到？**
+
+不妨先问自己：
+
+- 是否希望别人直接用到**已经在你桌面跑着的那个 Agent**——带着它的数据、工具、
+  技能和记忆——而不是再发一份空白模板让对方从零配置？
+- 是否**不想**把 Agent 放到云端或公司服务器上——嫌麻烦、不会搭、没有机器可占，
+  或者只是开会 / 一下午的**临时**协作？
+- 「给你一份 Agent **模板** / 配置」是否不够用，因为真正有价值的是已经干活的
+  **实例**？
+
+若这些很耳熟，就该用 **对端共享**（`finclaw share`）：Agent 仍在你电脑上，你发
+一张短期 **票据（ticket）**，对方的 finclaw 就能连到**你正在跑的那个实例**。不必
+自己挂公网地址。共享可以**过期**（或你停止 offer）——适合临时协作，而不是永久
+敞开门。
+
+「教别人怎么搭一个像我这样的 Agent」和这件事不同。模板解决的是**配置可复用**；
+对端共享分享的是**正在工作的 Agent**（含数据、工具、技能），且双方在线才有效。
+
+协议仍是 **A2A**：若已在同一局域网 / VPN 且有可达地址，可跳过票据、直接用
+HTTP。没有这类网络条件时，再用对端共享。
 
 ```text
-电脑 A:  finclaw serve  +  finclaw share offer   ──票据──►  电脑 B:  finclaw share redeem
-                                                              └─► 本机 A2A ──► /ask
+你：保持 Agent 运行 + 发票据  ──►  对方：兑换票据 → 与你的 Agent 对话
 ```
 
-| 路径 | 何时 | 你怎么跑 |
+| 路径 | 适合何时 | 你做什么 |
 | --- | --- | --- |
-| **对端共享** | 不同 PC、无公网服务器 | `share offer` / `redeem` → 把 `local_a2a_base` 写入 `a2a-agents.yaml` |
-| **HTTP** | 同一局域网 / 已知 URL | `finclaw serve` + 在 `a2a-agents.yaml` 填对端 URL |
+| **对端共享** | 不同网络、不想自建服务器 | `share offer` / `redeem`，再用 `/ask` 聊天 |
+| **HTTP** | 同一局域网 / VPN / 已知 URL | `serve` + 在配置里填对端地址 |
 
 - 探活：`finclaw a2a list|card|probe` · 聊天：`/ask` / `/delegate`
-- 实验：[`examples/two-agent-a2a/`](examples/two-agent-a2a/) · 指南：**[docs/a2a.zh.md](docs/a2a.zh.md)**
+- 白话说明 + 操作：**[docs/a2a.zh.md](docs/a2a.zh.md)** · 实验：[`examples/two-agent-a2a/`](examples/two-agent-a2a/)
 
 ### 终端原生 Agent
 - 一次性或交互聊天：`finclaw chat` / `finclaw chat -m "…"`
@@ -141,15 +158,16 @@ finclaw learning disable           # 关闭学习闭环
 
 ## A2A 一瞥
 
-**不同电脑、不自建服务器：** 交换 share 票据。**同一局域网：** 直接 A2A HTTP。
+**场景：** 希望别人的 finclaw 连到**你桌面上的 Agent**，又不想先上云。
+**对端共享** = 发一张票据。**本来就在同一网络？** 用普通 A2A HTTP 即可。
 
 ```bash
-# 对端共享（A 端 offer，B 端 redeem）— 无需公网入站端口
+# 对端共享（你 offer，对方 redeem）— 不必自己开公网入站端口
 finclaw share status
 finclaw share doctor --upstream http://127.0.0.1:PORT
-# A:  finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
-# B:  finclaw share redeem --ticket '…' --json
-#     → 把 local_a2a_base + grant bearer 写入 a2a-agents.yaml（或 --write-agents-yaml）
+# 你:  finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
+# 对方: finclaw share redeem --ticket '…' --json
+#       → 把 local_a2a_base + grant bearer 写入 a2a-agents.yaml（或 --write-agents-yaml）
 
 # 已有可达 URL 时的 HTTP 对等体
 finclaw a2a list
@@ -157,7 +175,10 @@ finclaw a2a card <peer-id>
 finclaw a2a probe <peer-id>
 ```
 
-聊天里：`/ask <peer> <message>`。局域网 HTTP 与对端共享后工具面相同。详见 [docs/a2a.zh.md](docs/a2a.zh.md)、[`examples/two-agent-a2a/`](examples/two-agent-a2a/)、mock [`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py)。
+聊天里：`/ask <peer> <message>`。局域网 HTTP 与对端共享后能力相同。
+为何需要、怎么用（白话）：[docs/a2a.zh.md](docs/a2a.zh.md)。动手：
+[`examples/two-agent-a2a/`](examples/two-agent-a2a/)、mock
+[`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py)。
 
 ---
 
@@ -223,7 +244,7 @@ finclaw a2a probe <peer-id>
 ## 诚实默认值（请读）
 
 - **执行：** CLI 默认**不带内置 OS 沙箱**（“裸宿主”）。策略文件（exec / HTTP / 工具调用）与受监督审批仍然生效。见 [security-and-policies.zh.md](docs/security-and-policies.zh.md)。
-- **对端共享：** 自 **v0.11** 起正式版默认包含。**不必自建 Agent 服务器** — 两台 PC 交换票据即可点对点走 A2A。票据与 grant 是密钥；双方需保持在线；redeem 结束后本机对等 URL 会失效。
+- **对端共享：** 自 **v0.11** 起默认包含。用票据**临时共享桌面上正在跑的 Agent**，不必上云。票据当密钥；双方需在线；过期或 redeem 结束后访问即止。
 - **学习：** 默认开启，模式为 `promote`。需要更慢或更安静时用 `stage` / `observe` / `disable`。
 - **ACP：** 强 IDE 互操作；**不声称**完整 ACP v1 符合性（见 [acp.zh.md](docs/acp.zh.md)）。
 

@@ -9,11 +9,11 @@
 ![P2P](https://img.shields.io/badge/peer--to--peer-no%20server%20needed-0A7A3E)
 ![A2A](https://img.shields.io/badge/protocol-A2A-informational)
 
-Run `finclaw` on **your** machine and on a friend’s — two personal agents, two
-PCs, **no cloud agent broker and no public URL you have to host**. Hand them a
-short-lived **share ticket**; they connect **peer-to-peer** and keep speaking
-standard **[A2A](docs/a2a.md)** (Agent Card + JSON-RPC). Same protocol on a LAN
-over plain HTTP when you already share a network.
+Run `finclaw` on **your** machine. When a colleague should talk to **that** agent
+— not a clone they configure themselves — hand them a short-lived **share
+ticket**. They connect **peer-to-peer**; no cloud agent broker and no public URL
+you have to host. Under the hood they still speak standard
+**[A2A](docs/a2a.md)**. On a LAN you already share, plain HTTP works too.
 
 Also: a fast Rust CLI (~20–30 MB) for terminal chat, **[Zed](https://zed.dev/)**
 via **[ACP](https://agentclientprotocol.com/)**, skills, and a Hermes-style
@@ -30,8 +30,8 @@ learning loop — no Node or Python to run the tool itself.
 
 | You want… | finclaw gives you… |
 | --- | --- |
-| **finclaw on PC A ↔ finclaw on PC B** | **Peer-to-peer** `finclaw share` — ticket in, A2A out; **no server / no public port** you must run |
-| Same house / same VPN | **A2A over HTTP** — `serve` + `a2a-agents.yaml`, `/ask` / `/delegate` |
+| **finclaw on PC A ↔ finclaw on PC B** | **Peer share** — let someone reach the agent on your desktop (live instance), without putting it on a cloud server |
+| Same house / same VPN | **A2A over HTTP** — `serve` + peer URL, `/ask` / `/delegate` |
 | A serious coding / research agent in the terminal | Interactive REPL, optional full-screen `--tui`, one-shot `chat`, profiles, skills, MCP |
 | The same agent inside your editor | **`finclaw acp`** — Agent Client Protocol for Zed and other ACP clients |
 | An agent that improves over time | **Post-turn learning** (default on): memory facts + agent-authored skills |
@@ -46,23 +46,44 @@ This repository is the **official public home** for the `finclaw` binary: instal
 
 ### Peer-to-peer agents on different PCs (A2A)
 
-**The differentiator:** two finclaw installs can delegate to each other across
-machines **without standing up an agent server**. Protocol stays **A2A**;
-`finclaw share` is only how peers find each other when there is no public HTTP
-endpoint.
+**When would you use this?**
+
+Ask yourself:
+
+- Do you want someone else to talk to **the agent already running on your
+  desktop** — with its files, tools, skills, and memory — not a blank copy they
+  have to set up from scratch?
+- Do you **not** want to put that agent on a cloud or company server — because
+  it’s awkward, you don’t know how, you have no server to spare, or you only
+  need **ad-hoc** access for a meeting or an afternoon?
+- Is “here’s my agent **template** / config” not enough, because what matters is
+  the **live instance** that already knows your context?
+
+If those sound familiar, **peer share** (`finclaw share`) is for you: keep the
+agent on your PC, hand the other person a short-lived **ticket**, and their
+finclaw reaches **your running agent** over a peer-to-peer link. No public URL
+you must host. The share can **expire** (or you stop offering) when you’re done —
+good for temporary collaboration, not forever-open exposure.
+
+Sharing a recipe for “how to build an agent like mine” is different. Templates
+help **reuse setup**. Peer share shares the **working agent** — data, tools, and
+skills included — for as long as both sides stay online.
+
+Same protocol (**A2A**) either way: if you’re already on one LAN or VPN with a
+known URL, you can skip tickets and use plain HTTP. Peer share is the path when
+you don’t have that.
 
 ```text
-PC A:  finclaw serve  +  finclaw share offer   ──ticket──►  PC B:  finclaw share redeem
-                                                              └─► localhost A2A ──► /ask
+You: keep agent running + share a ticket  ──►  Them: redeem ticket → talk to your agent
 ```
 
-| Path | When | What you run |
+| Path | When it fits | What you do |
 | --- | --- | --- |
-| **Peer share** | Different PCs, no public server | `share offer` / `redeem` → put `local_a2a_base` in `a2a-agents.yaml` |
-| **HTTP** | Same LAN / known URL | `finclaw serve` + peer URL in `a2a-agents.yaml` |
+| **Peer share** | Different networks, no server you want to run | `share offer` / `redeem`, then chat with `/ask` |
+| **HTTP** | Same LAN / VPN / known URL | `serve` + peer URL in config |
 
-- Inspect: `finclaw a2a list|card|probe` · chat: `/ask` / `/delegate`
-- Lab: [`examples/two-agent-a2a/`](examples/two-agent-a2a/) · guide: **[docs/a2a.md](docs/a2a.md)**
+- Inspect peers: `finclaw a2a list|card|probe` · chat: `/ask` / `/delegate`
+- Plain-language + how-to: **[docs/a2a.md](docs/a2a.md)** · lab: [`examples/two-agent-a2a/`](examples/two-agent-a2a/)
 
 ### Terminal-native agent
 - One-shot or interactive chat: `finclaw chat` / `finclaw chat -m "…"`
@@ -143,15 +164,17 @@ finclaw learning disable           # turn the loop off
 
 ## Agent-to-agent in one glance
 
-**Different PCs, no server you host:** share a ticket. **Same LAN:** plain A2A HTTP.
+**Situation:** you want another person’s finclaw to reach **your** desktop agent
+without hosting it in the cloud. **Peer share** = send a ticket. **Same network
+already?** use plain A2A HTTP instead.
 
 ```bash
-# Peer share (PC A offers, PC B redeems) — no public inbound port
+# Peer share (you offer, they redeem) — no public inbound port you must open
 finclaw share status
 finclaw share doctor --upstream http://127.0.0.1:PORT
-# A:  finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
-# B:  finclaw share redeem --ticket '…' --json
-#     → put local_a2a_base + grant bearer in a2a-agents.yaml (or --write-agents-yaml)
+# You:  finclaw share offer --upstream http://127.0.0.1:PORT --bearer TOKEN --json
+# Them: finclaw share redeem --ticket '…' --json
+#       → put local_a2a_base + grant bearer in a2a-agents.yaml (or --write-agents-yaml)
 
 # HTTP peers when you already have a reachable URL
 finclaw a2a list
@@ -159,7 +182,10 @@ finclaw a2a card <peer-id>
 finclaw a2a probe <peer-id>
 ```
 
-In chat: `/ask <peer> <message>`. Same A2A tools on LAN HTTP or after peer share. Details: [docs/a2a.md](docs/a2a.md), [`examples/two-agent-a2a/`](examples/two-agent-a2a/), mock [`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py).
+In chat: `/ask <peer> <message>`. Same A2A tools on LAN HTTP or after peer share.
+Why this exists and how to set it up in plain language: [docs/a2a.md](docs/a2a.md).
+Hands-on: [`examples/two-agent-a2a/`](examples/two-agent-a2a/), mock
+[`examples/mock-a2a-peer.py`](examples/mock-a2a-peer.py).
 
 ---
 
@@ -225,7 +251,7 @@ Everything end users need lives **in this repository**. Index: **[docs/README.md
 ## Honest defaults (read this)
 
 - **Execution:** by default the CLI runs **without a built-in OS sandbox** (“naked” host). Policy files (exec / HTTP / tool-invocation) and supervised approvals still apply. See [security-and-policies.md](docs/security-and-policies.md).
-- **Peer share:** included in default release builds from **v0.11**. **No agent server you must host** — two PCs exchange a ticket and talk A2A peer-to-peer. Tickets/grants are secrets; both peers must stay online; after redeem stops, localhost peer URLs go stale.
+- **Peer share:** included from **v0.11**. Share a **live desktop agent** for a while via a ticket — no cloud host required. Tickets are secrets; both sides stay online; access ends when the share expires or redeem stops.
 - **Learning:** default **on** with `promote`. Use `stage` / `observe` / `disable` if you want a slower or quieter loop.
 - **ACP:** strong IDE interop; not a claim of full ACP v1 conformance (see [acp.md](docs/acp.md)).
 
