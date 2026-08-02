@@ -92,7 +92,7 @@ detect_triple() {
     Linux)
       case "$arch" in
         x86_64) echo "x86_64-unknown-linux-gnu" ;;
-        aarch64|arm64) die "this installer currently supports Linux x86_64 only (got $arch). Try manual download, or WSL/amd64, or a future aarch64 build." ;;
+        aarch64|arm64) echo "aarch64-unknown-linux-gnu" ;;
         *) die "unsupported Linux machine: $arch" ;;
       esac
       ;;

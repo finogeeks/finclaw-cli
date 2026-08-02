@@ -14,11 +14,17 @@ CALLEE_PORT="${CALLEE_PORT:-28702}"
 DEMO_TOKEN="${DEMO_TOKEN:-two-agent-a2a-demo-token-l2}"
 
 bash "$SCRIPT_DIR/10-system-start.sh"
+# shellcheck source=lib.sh
+source "$SCRIPT_DIR/lib.sh"
 BIN="$(bash "$SCRIPT_DIR/00-fetch-linux-finclaw.sh" | tail -1)"
 [[ -x "$BIN" ]] || {
   echo "error: linux finclaw missing at $BIN" >&2
   exit 1
 }
+
+# Match guest arch to the Linux binary (aarch64 native or amd64+Rosetta).
+mapfile -t ARCH_ARGS < <(apple_guest_arch_args "$BIN")
+echo "==> guest arch: ${ARCH_ARGS[*]}"
 
 rm -rf "$DEMO_ROOT"
 mkdir -p "$DEMO_ROOT/pids" "$DEMO_ROOT/logs"
@@ -49,8 +55,7 @@ apt_bootstrap='apt-get update -qq && apt-get install -y -qq curl python3 ca-cert
 echo "==> prepare homes (one-shot on net A)"
 container run --rm \
   --network "$NET_A" \
-  --arch amd64 \
-  --rosetta \
+  "${ARCH_ARGS[@]}" \
   --cpus 2 \
   --memory 2G \
   "${COMMON_MOUNTS[@]}" \
@@ -66,8 +71,7 @@ echo "==> start callee on $NET_A"
 container run -d --rm \
   --name "$CALLEE_NAME" \
   --network "$NET_A" \
-  --arch amd64 \
-  --rosetta \
+  "${ARCH_ARGS[@]}" \
   --cpus 2 \
   --memory 2G \
   "${COMMON_MOUNTS[@]}" \
@@ -96,8 +100,7 @@ echo "==> start caller on $NET_B (relay default)"
 container run -d --rm \
   --name "$CALLER_NAME" \
   --network "$NET_B" \
-  --arch amd64 \
-  --rosetta \
+  "${ARCH_ARGS[@]}" \
   --cpus 2 \
   --memory 2G \
   "${COMMON_MOUNTS[@]}" \

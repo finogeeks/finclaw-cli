@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Fetch Linux x86_64 finclaw from finogeeks/finclaw-cli GitHub Releases.
-# Used inside Apple Container (amd64 + Rosetta) — no aarch64 Linux artifact yet.
+# Fetch Linux finclaw from finogeeks/finclaw-cli GitHub Releases.
+# Default on Apple Silicon hosts: aarch64-unknown-linux-gnu (native Apple Container).
+# Override with FINCLAW_LINUX_TRIPLE=x86_64-unknown-linux-gnu for Rosetta/amd64 guests.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,6 +9,13 @@ EXAMPLE_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 CACHE_DIR="${FINCLAW_LINUX_CACHE:-$EXAMPLE_ROOT/.demo-homes/linux-bin}"
 REPO="${FINCLAW_CLI_REPO:-finogeeks/finclaw-cli}"
 VERSION="${FINCLAW_VERSION:-}"
+
+# Prefer native arm64 Linux for Apple Container on Apple Silicon.
+default_triple="aarch64-unknown-linux-gnu"
+case "$(uname -m)" in
+  x86_64) default_triple="x86_64-unknown-linux-gnu" ;;
+esac
+TRIPLE="${FINCLAW_LINUX_TRIPLE:-$default_triple}"
 
 mkdir -p "$CACHE_DIR"
 
@@ -20,16 +28,16 @@ if [[ -z "$VERSION" ]]; then
 fi
 VERSION="${VERSION#v}"
 TAG="v${VERSION}"
-TRIPLE="x86_64-unknown-linux-gnu"
 ARCHIVE="finclaw-${TAG}-${TRIPLE}.tar.gz"
-OUT_BIN="$CACHE_DIR/finclaw"
+OUT_BIN="$CACHE_DIR/finclaw-${TRIPLE}"
+stamp="$CACHE_DIR/VERSION-${TRIPLE}"
 
-# Do not exec the Linux binary on the macOS host (Exec format error).
-# Cache hit: matching version stamp file written at install time.
-stamp="$CACHE_DIR/VERSION"
+# Do not exec the Linux binary on the macOS host (wrong OS/arch).
 if [[ -x "$OUT_BIN" && -f "$stamp" && "$(cat "$stamp")" == "$VERSION" ]]; then
-  echo "OK cached Linux finclaw v${VERSION} → $OUT_BIN" >&2
-  echo "$OUT_BIN"
+  # Keep a stable path for volume mounts.
+  ln -sfn "$(basename "$OUT_BIN")" "$CACHE_DIR/finclaw"
+  echo "OK cached Linux finclaw v${VERSION} (${TRIPLE}) → $OUT_BIN" >&2
+  echo "$CACHE_DIR/finclaw"
   exit 0
 fi
 
@@ -39,14 +47,18 @@ url="https://github.com/${REPO}/releases/download/${TAG}/${ARCHIVE}"
 sums_url="https://github.com/${REPO}/releases/download/${TAG}/SHA256SUMS"
 
 echo "==> download $url" >&2
-curl -fsSL -o "$tmpdir/$ARCHIVE" "$url"
+if ! curl -fsSL -o "$tmpdir/$ARCHIVE" "$url"; then
+  echo "error: failed to download $ARCHIVE" >&2
+  echo "  If this release predates linux/aarch64, set FINCLAW_LINUX_TRIPLE=x86_64-unknown-linux-gnu" >&2
+  echo "  and run guests with --arch amd64 --rosetta." >&2
+  exit 1
+fi
 curl -fsSL -o "$tmpdir/SHA256SUMS" "$sums_url"
 (
   cd "$tmpdir"
   grep -F "$ARCHIVE" SHA256SUMS | shasum -a 256 -c -
 ) >&2
 tar -xzf "$tmpdir/$ARCHIVE" -C "$tmpdir"
-# Archive layout: finclaw-vX-triple/finclaw
 src="$(find "$tmpdir" -type f -name finclaw | head -1)"
 [[ -n "$src" ]] || {
   echo "error: finclaw binary not found in $ARCHIVE" >&2
@@ -54,5 +66,6 @@ src="$(find "$tmpdir" -type f -name finclaw | head -1)"
 }
 install -m 0755 "$src" "$OUT_BIN"
 printf '%s\n' "$VERSION" >"$stamp"
-echo "OK installed Linux finclaw v${VERSION} → $OUT_BIN" >&2
-echo "$OUT_BIN"
+ln -sfn "$(basename "$OUT_BIN")" "$CACHE_DIR/finclaw"
+echo "OK installed Linux finclaw v${VERSION} (${TRIPLE}) → $OUT_BIN" >&2
+echo "$CACHE_DIR/finclaw"

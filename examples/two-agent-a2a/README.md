@@ -54,8 +54,8 @@ Both sides must stay online while the share runs.
 
 ### Apple Container LAN / WAN-ish (one Mac)
 
-Mimic two hosts with Apple Container (Linux guests + Rosetta for the published
-`x86_64` binary from [finclaw-cli Releases](https://github.com/finogeeks/finclaw-cli/releases)):
+Mimic two hosts with Apple Container (Linux guests; prefer published
+`aarch64-unknown-linux-gnu`, with amd64+Rosetta fallback for older releases):
 
 ```bash
 bash scripts/apple-container/20-l1-lan.sh      # one network, --relay disabled

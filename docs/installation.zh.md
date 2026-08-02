@@ -5,7 +5,7 @@
 ## 支持平台
 
 - **macOS** — 提供 arm64 与 x86_64 等构建产物。
-- **Linux** — 常见为 `x86_64-unknown-linux-gnu`（glibc）；Windows 上的 WSL2 可使用同一 Linux 包。
+- **Linux** — 提供 `x86_64-unknown-linux-gnu` 与 `aarch64-unknown-linux-gnu`（glibc）；Windows 上的 WSL2 可使用对应的 Linux 包。
 - **Windows** — [Releases](https://github.com/finogeeks/finclaw-cli/releases) 提供原生 `x86_64-pc-windows-msvc` 压缩包（`.tar.gz` / `.tar.zst`）。一键 `install.sh` 覆盖 macOS / Linux；在 Windows 上请从 Releases 下载解压 `finclaw.exe` 并加入 `PATH`（或使用 WSL2 + Linux 包）。
 
 ## 一行安装（推荐）

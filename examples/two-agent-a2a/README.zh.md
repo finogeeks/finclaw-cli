@@ -49,8 +49,8 @@ bash scripts/04-p2p-redeem-smoke.sh
 
 ### Apple Container（本机模拟 LAN / WAN）
 
-用 Apple Container 把 caller / callee 放进两个 Linux 虚拟机（发布物目前只有
-`x86_64` Linux，需 `--arch amd64 --rosetta`）：
+用 Apple Container 把 caller / callee 放进两个 Linux 虚拟机（优先使用发布的
+`aarch64-unknown-linux-gnu`；旧版仅有 x86_64 时可用 amd64 + Rosetta）：
 
 ```bash
 bash scripts/apple-container/20-l1-lan.sh      # 同一网络，--relay disabled

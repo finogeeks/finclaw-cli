@@ -84,7 +84,7 @@ HTTP 上的 A2A。
 
 ## 快速安装
 
-**平台：** macOS（arm64 / x86_64）、Linux（x86_64 glibc）、Windows（Releases 提供 x86_64 MSVC 压缩包）。一键安装脚本覆盖 macOS / Linux；Windows 请从 Releases 下载，或使用 WSL2。
+**平台：** macOS（arm64 / x86_64）、Linux（x86_64 / aarch64 glibc）、Windows（Releases 提供 x86_64 MSVC 压缩包）。一键安装脚本覆盖 macOS / Linux；Windows 请从 Releases 下载，或使用 WSL2。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh

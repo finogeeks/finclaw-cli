@@ -13,7 +13,7 @@ Same-host `scripts/03`/`04` with `--relay disabled` is L0. These scripts put **c
 | `20-l1-lan.sh` | L1 LAN-ish | one (`finclaw-share-lan`) | `disabled` |
 | `30-l2-wan-relay.sh` | L2 WAN-ish | two (`…-wan-a`, `…-wan-b`) | `default` |
 
-Binary: **`x86_64-unknown-linux-gnu`** from [finogeeks/finclaw-cli Releases](https://github.com/finogeeks/finclaw-cli/releases) (no linux/aarch64 yet). Guests run with `--arch amd64 --rosetta`.
+Binary: Linux from [finogeeks/finclaw-cli Releases](https://github.com/finogeeks/finclaw-cli/releases). On Apple Silicon, defaults to **`aarch64-unknown-linux-gnu`** (native guest). Fallback: `FINCLAW_LINUX_TRIPLE=x86_64-unknown-linux-gnu` with amd64 + Rosetta (needed for releases before linux/aarch64 shipped).
 
 ## Prerequisites
 
@@ -63,6 +63,7 @@ rm -rf .demo-homes .demo-homes-l2
 | Var | Default |
 |-----|---------|
 | `FINCLAW_VERSION` | latest release tag |
+| `FINCLAW_LINUX_TRIPLE` | `aarch64-unknown-linux-gnu` on arm64 hosts; else `x86_64-unknown-linux-gnu` |
 | `FINCLAW_LINUX_CACHE` | `.demo-homes/linux-bin` |
 | `APPLE_CONTAINER_IMAGE` | `ubuntu:24.04` |
 | `TWO_AGENT_DEMO_ROOT` | `.demo-homes` (L1) / `.demo-homes-l2` (L2) |

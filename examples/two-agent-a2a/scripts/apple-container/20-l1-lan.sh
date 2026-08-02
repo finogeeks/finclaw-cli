@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # L1 LAN-ish: two Apple Containers on one vmnet, SHARE_RELAY=disabled.
-# Downloads linux/x86_64 finclaw from finogeeks/finclaw-cli; runs under Rosetta.
+# Downloads Linux finclaw (prefer aarch64) from finogeeks/finclaw-cli.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,11 +14,19 @@ CALLEE_PORT="${CALLEE_PORT:-28701}"
 DEMO_TOKEN="${DEMO_TOKEN:-two-agent-a2a-demo-token}"
 
 bash "$SCRIPT_DIR/10-system-start.sh"
+# shellcheck source=lib.sh
+source "$SCRIPT_DIR/lib.sh"
 BIN="$(bash "$SCRIPT_DIR/00-fetch-linux-finclaw.sh" | tail -1)"
 [[ -x "$BIN" ]] || {
   echo "error: linux finclaw missing at $BIN" >&2
   exit 1
 }
+
+# Match guest arch to the Linux binary (aarch64 native or amd64+Rosetta).
+# Word-split is intentional; apple_guest_arch_args emits safe flag tokens only.
+# shellcheck disable=SC2206
+ARCH_ARGS=($(apple_guest_arch_args "$BIN"))
+echo "==> guest arch: ${ARCH_ARGS[*]}"
 
 rm -rf "$DEMO_ROOT/callee" "$DEMO_ROOT/caller" "$DEMO_ROOT/pids" "$DEMO_ROOT/logs" "$DEMO_ROOT/ticket.txt" "$DEMO_ROOT/l1-ok" "$DEMO_ROOT/env.sh"
 mkdir -p "$DEMO_ROOT/pids" "$DEMO_ROOT/logs"
@@ -44,8 +52,7 @@ COMMON_MOUNTS=(
 
 guest_base=(
   container run --rm
-  --arch amd64
-  --rosetta
+  "${ARCH_ARGS[@]}"
   --cpus 2
   --memory 2G
   "${COMMON_MOUNTS[@]}"
@@ -67,8 +74,7 @@ echo "==> start callee container ($CALLEE_NAME)"
 container run -d --rm \
   --name "$CALLEE_NAME" \
   --network "$NET_NAME" \
-  --arch amd64 \
-  --rosetta \
+  "${ARCH_ARGS[@]}" \
   --cpus 2 \
   --memory 2G \
   "${COMMON_MOUNTS[@]}" \
@@ -100,8 +106,7 @@ echo "==> start caller container ($CALLER_NAME)"
 container run -d --rm \
   --name "$CALLER_NAME" \
   --network "$NET_NAME" \
-  --arch amd64 \
-  --rosetta \
+  "${ARCH_ARGS[@]}" \
   --cpus 2 \
   --memory 2G \
   "${COMMON_MOUNTS[@]}" \

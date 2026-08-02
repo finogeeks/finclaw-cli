@@ -86,7 +86,7 @@ Templates (`general`, `coder`, `researcher`), per-profile policies, identity, an
 
 ## Quick install
 
-**Platforms:** macOS (arm64 / x86_64), Linux (x86_64 glibc), Windows (x86_64 MSVC archives on Releases). The one-liner installer covers macOS and Linux; on Windows download from Releases or use WSL2.
+**Platforms:** macOS (arm64 / x86_64), Linux (x86_64 / aarch64 glibc), Windows (x86_64 MSVC archives on Releases). The one-liner installer covers macOS and Linux; on Windows download from Releases or use WSL2.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/finogeeks/finclaw-cli/main/install.sh | sh
