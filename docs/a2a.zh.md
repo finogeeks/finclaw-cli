@@ -441,6 +441,7 @@ finclaw a2a list --json
 ## 延伸阅读
 
 - [`examples/two-agent-a2a/`](../examples/two-agent-a2a/) — 双 Agent HTTP + 可选对端共享示例
+- [`.cursor/skills/finclaw-share-callee`](../.cursor/skills/finclaw-share-callee/SKILL.md) — 搭建 share callee 并产出 ticket 的 agent 清单
 - [chat-and-operations.zh.md](chat-and-operations.zh.md) — REPL、`finclaw serve`、slash 命令
 - [configuration.zh.md](configuration.zh.md) — profile 路径与环境变量
 - [reference-commands.zh.md](reference-commands.zh.md) — `finclaw a2a` / `finclaw share` 速查

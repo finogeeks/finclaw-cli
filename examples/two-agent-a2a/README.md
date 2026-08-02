@@ -52,6 +52,9 @@ Homes default to `examples/two-agent-a2a/.demo-homes/` (gitignored). Override wi
 
 Both sides must stay online while the share runs.
 
+**Agent skill:** [`.cursor/skills/finclaw-share-callee`](../../.cursor/skills/finclaw-share-callee/SKILL.md)
+walks through callee setup (example scripts or bare `serve` + `share offer`).
+
 ### Apple Container LAN / WAN-ish (one Mac)
 
 Mimic two hosts with Apple Container (Linux guests; prefer published

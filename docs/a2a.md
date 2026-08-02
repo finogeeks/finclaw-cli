@@ -449,6 +449,7 @@ finclaw a2a list --json
 ## See also
 
 - [`examples/two-agent-a2a/`](../examples/two-agent-a2a/) — two-agent HTTP + optional peer-share demo
+- [`.cursor/skills/finclaw-share-callee`](../.cursor/skills/finclaw-share-callee/SKILL.md) — agent checklist to set up a share callee and produce a ticket
 - [chat-and-operations.md](chat-and-operations.md) — REPL, `finclaw serve`, slash commands
 - [configuration.md](configuration.md) — profile paths and env
 - [reference-commands.md](reference-commands.md) — `finclaw a2a` / `finclaw share` cheat sheet

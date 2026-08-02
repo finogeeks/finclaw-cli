@@ -47,6 +47,9 @@ bash scripts/04-p2p-redeem-smoke.sh
 
 共享期间两端进程需保持在线。
 
+**Agent skill：** [`.cursor/skills/finclaw-share-callee`](../../.cursor/skills/finclaw-share-callee/SKILL.md)
+指导 callee 搭建（示例脚本或裸 `serve` + `share offer`）。
+
 ### Apple Container（本机模拟 LAN / WAN）
 
 用 Apple Container 把 caller / callee 放进两个 Linux 虚拟机（优先使用发布的
