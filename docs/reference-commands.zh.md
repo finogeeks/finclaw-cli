@@ -14,8 +14,8 @@
 | 用户数据根目录 | `finclaw --finclaw-home <dir>` · 环境变量 `FINCLAW_HOME` |
 | 对话（REPL、可选 TUI、或一次性） | `finclaw chat` · `finclaw chat --tui` · `finclaw chat -m "…"` |
 | **ACP / IDE（如 Zed）** | `finclaw acp` — 见 [acp.zh.md](acp.zh.md) |
-| 常驻进程 | `finclaw serve` |
-| 状态 / 停止 | `finclaw status` · `finclaw stop` |
+| 常驻进程 | `finclaw serve`（eager，启动当前 profile）· `finclaw serve --lazy`（监督 mux；见 [chat-and-operations.zh.md](chat-and-operations.zh.md#监督-mux)） |
+| 状态 / 停止 | `finclaw status` · `finclaw stop`（`--lazy` 时 `stop` 停 mux，而非单个 worker） |
 | 读写 `config.yaml` | `finclaw config`（含 `check`、`migrate`、`env-path` 等，见 `--help`） |
 | 引导式上手 | `finclaw setup` · `finclaw setup agent-profile`（profile 脚手架）· `finclaw setup llm` |
 | 对话历史 | `finclaw history`（`list` / `show` / `search` / `resume` / `prune` / `stats`） |

@@ -19,7 +19,7 @@ By default the CLI may **prefer a running `finclaw serve` daemon** when one is a
 - `finclaw chat --embedded` — do not use the long-lived daemon
 - `finclaw chat --daemon` — require daemon dispatch; fail if not running
 
-Use `finclaw chat --help` for the exact behaviour of your version.
+If a **lazy supervisor** (`finclaw serve --lazy`) is already up, `--daemon` talks to that mux (starts or reuses a profile worker) instead of requiring an eager `serve` for the same profile. Use `finclaw chat --help` for the exact behaviour of your version.
 
 ### Streaming and session hints
 
@@ -43,11 +43,31 @@ Published binaries run as a **naked** host process by default. Tighten what the 
 
 ## Long-lived daemon
 
+**As of v0.12.8**, `finclaw serve` without extra flags still boots the **active profile** (eager mode). Claw and the host shim listen as soon as the process is up.
+
 ```bash
 finclaw serve
 ```
 
-Commonly runs Claw and the host shim in the foreground; `--background` or related flags may detach—see `finclaw serve --help`. Pair with your OS service manager or `finclaw service` (if present) for boot-time start.
+Foreground is the default; `--background` (Unix) detaches. See `finclaw serve --help`. Pair with your OS service manager or `finclaw service` (if present) for boot-time start.
+
+### Supervisor mux
+
+`finclaw serve --lazy` starts a **profile-less supervisor** instead of booting Claw. It claims the home slot (`$FINCLAW_HOME/run/daemon.json` with `mode: lazy`, plus `$FINCLAW_HOME/run/finclaw.pid`). One home can run either a lazy mux **or** an eager profile daemon, not both.
+
+Workers start on demand:
+
+```bash
+finclaw serve --lazy
+# another terminal:
+finclaw --profile default chat --daemon -m "Hello"
+```
+
+`chat --daemon` (with `--profile` or the active profile) asks the mux to start or reuse `finclaw --profile <name> serve`. Infer runs on that worker. The mux itself does not answer chat (`POST /ai/infer` on the mux port returns 409). Hosts that speak HTTP can `POST /threads` with a JSON body containing `profile` on the mux listen port; the response includes the worker’s `claw_port`.
+
+When `daemon.json` is `mode: lazy`, `finclaw stop` signals the mux (which stops its workers) even if a worker wrote a profile pidfile. `finclaw status` reports the mux when the profile daemon is absent (`mode: lazy`, and a worker count when available).
+
+Confirm flags on your binary: `finclaw serve --help`.
 
 ## Status and stop
 
@@ -55,6 +75,8 @@ Commonly runs Claw and the host shim in the foreground; `--background` or relate
 finclaw status
 finclaw stop
 ```
+
+With a lazy mux, `stop` prefers the home pidfile so you shut down the supervisor (and its workers), not a single worker. See [troubleshooting.md](troubleshooting.md) if lazy boot fails because an eager daemon already holds the home.
 
 ## Diagnostics (run ledger)
 

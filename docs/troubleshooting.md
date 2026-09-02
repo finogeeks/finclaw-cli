@@ -17,6 +17,12 @@
 - **Upgrade changed config shape** — run `finclaw config migrate --dry-run`, then `finclaw config migrate` when you are ready to rewrite `config.yaml` in place (see `--help`).
 - **Legacy profiles missing scaffolding** — `finclaw doctor --fix` materializes safe files when advised (TTY vs non-interactive rules in `--help`).
 
+## Serve and lazy supervisor
+
+- **`serve --lazy` fails because an eager daemon already holds the home** — one `$FINCLAW_HOME` can run either a lazy mux **or** an eager `finclaw serve`, not both. `finclaw stop` the running daemon (or stop the leftover process) then retry `--lazy`. See [chat-and-operations.md](chat-and-operations.md#supervisor-mux).
+- **`chat --daemon` talks to the wrong process** — with `mode: lazy` in `$FINCLAW_HOME/run/daemon.json`, `--daemon` posts to the mux and infers on a **worker**. Infer on the mux listen port itself returns 409.
+- **`finclaw stop` did not stop a profile worker** — when the home is lazy, `stop` signals the mux, which then terminates workers. Confirm with `finclaw status`.
+
 ## Policy drift
 
 If `finclaw doctor` reports that **on-disk** policies disagree with the **live** runtime:

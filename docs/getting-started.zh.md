@@ -189,6 +189,8 @@ finclaw chat -m "你好，finclaw"
 finclaw serve
 ```
 
+这会启动当前 profile。若要用不绑定 profile 的监督进程、按需拉起 worker（`finclaw serve --lazy`），见 [chat-and-operations.zh.md](chat-and-operations.zh.md#监督-mux)。
+
 模型与 `finclaw model` 的说明见 `finclaw model --help`。交互式、无参的 `finclaw model` 与 `finclaw setup` 使用**同一套**编号选模型；需已在配置中设置 `llm.provider` 或加 `--provider`。只读列出内置目录：`finclaw model --list`（可加 `--json`）。
 
 **CLI 界面语言：** 任意命令加 `--locale en` 或 `--locale zh` 可在不依赖 Shell `LANG` 时固定帮助与共享提示语言。

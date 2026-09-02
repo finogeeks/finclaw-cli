@@ -121,7 +121,7 @@ finclaw [--profile <name>] [--finclaw-home <dir>] [--config <path>] acp \
 | `--user` | Attribution user id (same semantics as `finclaw chat`) |
 | `--capability` | Override loop capability for this connection (`general`, `coding`, `read_only`, …) |
 | `--embedded` | Force in-process Claw (do not prefer a running `serve` daemon) |
-| `--daemon` | Require daemon dispatch; fail if none |
+| `--daemon` | Require daemon dispatch; fail if none (works with a running eager `serve` or a lazy mux; see [chat-and-operations.md](chat-and-operations.md#supervisor-mux)) |
 
 There is **no** tool auto-approval flag on ACP: supervised tools always go through the client permission UI.
 

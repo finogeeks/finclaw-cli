@@ -181,6 +181,8 @@ CLI 命令 `finclaw a2a` 为**只读检查**（list / card / probe），本身�
 
 入站轮次以 capability `a2a_inbound`、租户 `a2a-peers`、合成用户 id `a2a:<peer-id>` 运行。远程消息内容视为**不可信输入**（与 MCP 工具输出同等对待）。
 
+**Lazy mux：** 入站 A2A HTTP 由 **profile worker** 提供（不加 `--lazy` 的 `finclaw serve`，或 mux 拉起的 worker）。`--lazy` 进程本身不暴露 Agent Card 或 `/a2a/v1` — 见 [chat-and-operations.zh.md](chat-and-operations.zh.md#监督-mux)。
+
 ### CLI 特有能力
 
 | 功能 | 作用 |

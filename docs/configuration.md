@@ -7,6 +7,8 @@
 | Location | Role |
 | --- | --- |
 | `~/.finclaw` or `$FINCLAW_HOME` | Default user data root |
+| `$FINCLAW_HOME/run/daemon.json` | Home-level serve discovery (`mode`: `eager` or `lazy`) |
+| `$FINCLAW_HOME/run/finclaw.pid` | Lazy supervisor pidfile (`finclaw serve --lazy`) |
 | `~/.finclaw/profiles/<name>/` | Per-profile directory (config, skills, policies, data) |
 | `--profile <name>` or `FINCLAW_PROFILE` | Select which profile to use (default profile name is `default`) |
 

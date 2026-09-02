@@ -20,7 +20,7 @@ Install the script using your shell’s plugin mechanism; see the comments at th
 
 ## Service units
 
-`finclaw service` can emit **systemd** or **launchd** unit snippets for `finclaw serve`. Use `finclaw service --help` and verify paths for your user.
+`finclaw service` can emit **systemd** or **launchd** unit snippets for `finclaw serve` (eager, boots the active profile). Use `finclaw service --help` and verify paths for your user. To run a supervisor mux instead, add `--lazy` to the generated unit’s start command — see [chat-and-operations.md](chat-and-operations.md#supervisor-mux).
 
 ## MCP over stdio
 
