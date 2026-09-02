@@ -191,6 +191,8 @@ finclaw chat -m "Hello from finclaw"
 finclaw serve
 ```
 
+That boots the active profile. For a profile-less supervisor that starts workers on demand (`finclaw serve --lazy`), see [chat-and-operations.md](chat-and-operations.md#supervisor-mux).
+
 Use `finclaw model` / `finclaw model <id>` to change the model id when your provider supports it. Interactive `finclaw model` (no id, TTY) uses the same catalog picker as `finclaw setup`; have `llm.provider` set in config or pass `--provider` for that flow. Print the bundled catalogue without mutating config: `finclaw model --list` (`--json`).
 
 **CLI language:** pass `--locale en` or `--locale zh` once on any command when you want help text or shared prompts in that language regardless of shell locale.

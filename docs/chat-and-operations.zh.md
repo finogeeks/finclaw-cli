@@ -19,7 +19,7 @@
 - `finclaw chat --embedded` — 不使用常驻进程
 - `finclaw chat --daemon` — 要求走守护进程；未运行则失败
 
-以 `finclaw chat --help` 为准。
+若本机已有 **lazy 监督进程**（`finclaw serve --lazy`），`--daemon` 会走该 mux（按需启动或复用 profile worker），而不要求同一 profile 上另有一份 eager `serve`。以 `finclaw chat --help` 为准。
 
 ### 流式与会话级参数
 
@@ -43,11 +43,31 @@ finclaw chat --capability read_only -m "用一段话说明本仓库目录结构�
 
 ## 常驻服务
 
+**自 v0.12.8 起**，不加额外参数的 `finclaw serve` 仍会启动**当前 profile**（eager 模式）。进程起来后 Claw 与 host shim 即可监听。
+
 ```bash
 finclaw serve
 ```
 
-常见为前台运行 Claw 与 shim；`--background` 等见 `finclaw serve --help`。可与系统 `service`/`launchd` 或 `finclaw service`（若提供）一起使用。
+默认为前台；Unix 上 `--background` 可脱离终端。见 `finclaw serve --help`。可与系统 `service`/`launchd` 或 `finclaw service`（若提供）一起使用。
+
+### 监督 mux
+
+`finclaw serve --lazy` 启动一个**不绑定 profile 的监督进程**，不会启动 Claw。它占用 home 槽位（`$FINCLAW_HOME/run/daemon.json` 中 `mode: lazy`，以及 `$FINCLAW_HOME/run/finclaw.pid`）。同一 home 只能跑 lazy mux **或** eager profile 守护进程，不能两者并存。
+
+Worker 按需启动：
+
+```bash
+finclaw serve --lazy
+# 另一个终端：
+finclaw --profile default chat --daemon -m "你好"
+```
+
+`chat --daemon`（加上 `--profile` 或当前活动 profile）会请求 mux 启动或复用 `finclaw --profile <name> serve`。推理走该 worker。mux 本身不回答对话（mux 端口上的 `POST /ai/infer` 返回 409）。会 HTTP 的宿主可向 mux 监听端口 `POST /threads`，JSON 体带 `profile`；响应里含 worker 的 `claw_port`。
+
+当 `daemon.json` 为 `mode: lazy` 时，`finclaw stop` 会向 mux 发信号（进而停止其 worker），即使某个 worker 已写入 profile pidfile。profile 守护进程不在时，`finclaw status` 会报告 mux（`mode: lazy`，并在可得时给出 worker 数量）。
+
+以本机 `finclaw serve --help` 为准。
 
 ## 状态与停止
 
@@ -55,6 +75,8 @@ finclaw serve
 finclaw status
 finclaw stop
 ```
+
+在 lazy mux 下，`stop` 优先使用 home pidfile，从而关掉监督进程及其 worker，而不是单个 worker。若 lazy 启动失败是因为 eager 守护进程已占用 home，见 [troubleshooting.zh.md](troubleshooting.zh.md)。
 
 ## 诊断（运行 ledger）
 

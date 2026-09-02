@@ -83,7 +83,7 @@ HTTP。没有这类网络条件时，再用对端共享。
 - 一次性或交互聊天：`finclaw chat` / `finclaw chat -m "…"`
 - 可选全屏 TUI：`finclaw chat --tui`（实验性；同一 Agent，ratatui 界面）
 - 斜杠命令：会话控制、切模型、技能、A2A 引导等
-- 可选常驻守护：`finclaw serve`
+- 可选常驻守护：`finclaw serve`（eager）或 `finclaw serve --lazy`（监督 mux）
 
 ### IDE：ACP（Zed）
 通过 stdio 使用 [Agent Client Protocol](https://agentclientprotocol.com/)。在 Zed 中把 `finclaw` 注册为自定义 Agent —— 提示词、工具权限 UI、取消、带历史的会话重开。详见 **[docs/acp.zh.md](docs/acp.zh.md)**。
@@ -230,7 +230,7 @@ finclaw a2a probe <peer-id>
 | 安全与策略 | [security-and-policies.md](docs/security-and-policies.md) | [security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | 技能 | [skills.md](docs/skills.md) | [skills.zh.md](docs/skills.zh.md) |
 | 回合后学习 | [learning.md](docs/learning.md) | [learning.zh.md](docs/learning.zh.md) |
-| 聊天与运维 | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
+| 聊天与运维（`serve` / `--lazy`） | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | **ACP / Zed** | [acp.md](docs/acp.md) | [acp.zh.md](docs/acp.zh.md) |
 | **A2A（HTTP + 对端共享）** | [a2a.md](docs/a2a.md) | [a2a.zh.md](docs/a2a.zh.md) |
 | 命令索引 | [reference-commands.md](docs/reference-commands.md) | [reference-commands.zh.md](docs/reference-commands.zh.md) |

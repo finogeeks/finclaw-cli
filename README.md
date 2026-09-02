@@ -89,7 +89,7 @@ You: keep agent running + share a ticket  ──►  Them: redeem ticket → tal
 - One-shot or interactive chat: `finclaw chat` / `finclaw chat -m "…"`
 - Optional full-screen TUI: `finclaw chat --tui` (experimental; same agent, ratatui UI)
 - Slash commands for session control, model switch, skills, A2A steers, and more
-- Optional long-lived daemon: `finclaw serve`
+- Optional long-lived daemon: `finclaw serve` (eager) or `finclaw serve --lazy` (supervisor mux)
 
 ### IDE via ACP (Zed)
 Speak [Agent Client Protocol](https://agentclientprotocol.com/) over stdio. Register `finclaw` as a custom agent in Zed — prompts, tool permission UI, cancel, and session reopen with history. See **[docs/acp.md](docs/acp.md)**.
@@ -237,7 +237,7 @@ Everything end users need lives **in this repository**. Index: **[docs/README.md
 | Security & policies | [security-and-policies.md](docs/security-and-policies.md) | [security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | Skills | [skills.md](docs/skills.md) | [skills.zh.md](docs/skills.zh.md) |
 | Post-turn learning | [learning.md](docs/learning.md) | [learning.zh.md](docs/learning.zh.md) |
-| Chat & operations | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
+| Chat & operations (`serve` / `--lazy`) | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | **ACP / Zed** | [acp.md](docs/acp.md) | [acp.zh.md](docs/acp.zh.md) |
 | **A2A (HTTP + peer share)** | [a2a.md](docs/a2a.md) | [a2a.zh.md](docs/a2a.zh.md) |
 | Command index | [reference-commands.md](docs/reference-commands.md) | [reference-commands.zh.md](docs/reference-commands.zh.md) |

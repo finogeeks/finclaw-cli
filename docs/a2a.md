@@ -188,6 +188,8 @@ When `a2a-inbound.yaml` has `enabled: true` and at least one peer with a bearer 
 
 Inbound turns run with capability `a2a_inbound`, tenant `a2a-peers`, and synthetic user id `a2a:<peer-id>`. Remote message content is treated as **untrusted** (same posture as MCP tool output).
 
+**Lazy mux:** inbound A2A HTTP is served by a **profile worker** (`finclaw serve` without `--lazy`, or a worker the mux spawned). The `--lazy` process itself does not expose the agent-card or `/a2a/v1` surface — see [chat-and-operations.md](chat-and-operations.md#supervisor-mux).
+
 ### CLI-only affordances
 
 | Feature | Role |

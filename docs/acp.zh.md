@@ -121,7 +121,7 @@ finclaw [--profile <name>] [--finclaw-home <dir>] [--config <path>] acp \
 | `--user` | 归因用户 id（与 `finclaw chat` 相同） |
 | `--capability` | 本次连接覆盖循环能力（`general`、`coding`、`read_only` 等） |
 | `--embedded` | 强制进程内 Claw（不优先使用正在运行的 `serve` 守护进程） |
-| `--daemon` | 要求守护进程分发；没有则失败 |
+| `--daemon` | 要求守护进程分发；没有则失败（可用于正在运行的 eager `serve` 或 lazy mux；见 [chat-and-operations.zh.md](chat-and-operations.zh.md#监督-mux)） |
 
 ACP **没有**工具自动批准开关：受监督工具一律走客户端权限 UI。
 

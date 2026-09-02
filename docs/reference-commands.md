@@ -14,8 +14,8 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | User-data root | `finclaw --finclaw-home <dir>` · env `FINCLAW_HOME` |
 | Chat (REPL, optional TUI, or one-shot) | `finclaw chat` · `finclaw chat --tui` · `finclaw chat -m "…"` |
 | **ACP / IDE (e.g. Zed)** | `finclaw acp` — see [acp.md](acp.md) |
-| Long-lived process | `finclaw serve` |
-| Runtime status / stop | `finclaw status` · `finclaw stop` |
+| Long-lived process | `finclaw serve` (eager, boots the active profile) · `finclaw serve --lazy` (supervisor mux; see [chat-and-operations.md](chat-and-operations.md#supervisor-mux)) |
+| Runtime status / stop | `finclaw status` · `finclaw stop` (with `--lazy`, `stop` signals the mux, not a single worker) |
 | Read/write `config.yaml` | `finclaw config` (includes `check`, `migrate`, `env-path` — see `--help`) |
 | Guided onboarding | `finclaw setup` · `finclaw setup agent-profile` (profile scaffold) · `finclaw setup llm` |
 | Conversation history | `finclaw history` (`list`, `show`, `search`, `resume`, `prune`, `stats`) |

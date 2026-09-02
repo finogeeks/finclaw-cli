@@ -20,7 +20,7 @@ finclaw completion powershell
 
 ## 系统服务单元
 
-`finclaw service` 可输出 **systemd** 或 **launchd** 用的单元片段，用于 `finclaw serve`。以 `finclaw service --help` 为准并核对本机路径与用户。
+`finclaw service` 可输出 **systemd** 或 **launchd** 用的单元片段，用于 `finclaw serve`（eager，启动当前 profile）。以 `finclaw service --help` 为准并核对本机路径与用户。若要跑监督 mux，在生成单元的启动命令中加上 `--lazy` — 见 [chat-and-operations.zh.md](chat-and-operations.zh.md#监督-mux)。
 
 ## 通过 stdio 的 MCP
 

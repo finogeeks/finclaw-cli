@@ -17,6 +17,12 @@
 - **升级后配置文件结构不匹配** — 先 `finclaw config migrate --dry-run`，确认后再 `finclaw config migrate` 原地改写 `config.yaml`（详见 `--help`）。
 - **旧 profile 缺脚手架文件** — 在 `doctor` 提示下可试 `finclaw doctor --fix`（TTY/非交互细则见 `--help`）。
 
+## Serve 与 lazy 监督进程
+
+- **`serve --lazy` 因 eager 守护进程已占用 home 而失败** — 同一 `$FINCLAW_HOME` 只能跑 lazy mux **或** eager `finclaw serve`，不能并存。先 `finclaw stop`（或结束残留进程）再重试 `--lazy`。见 [chat-and-operations.zh.md](chat-and-operations.zh.md#监督-mux)。
+- **`chat --daemon` 连错进程** — `$FINCLAW_HOME/run/daemon.json` 为 `mode: lazy` 时，`--daemon` 向 mux 发请求，推理走 **worker**。直接打 mux 监听端口的 infer 会返回 409。
+- **`finclaw stop` 没有停掉某个 profile worker** — home 为 lazy 时，`stop` 向 mux 发信号，再由 mux 结束 worker。用 `finclaw status` 确认。
+
 ## 策略漂移
 
 `doctor` 若提示磁盘策略与**运行中**实例不一致：

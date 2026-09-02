@@ -7,6 +7,8 @@
 | 路径 | 作用 |
 | --- | --- |
 | `~/.finclaw` 或 `$FINCLAW_HOME` | 用户数据根目录（默认） |
+| `$FINCLAW_HOME/run/daemon.json` | home 级 serve 发现（`mode`：`eager` 或 `lazy`） |
+| `$FINCLAW_HOME/run/finclaw.pid` | lazy 监督进程 pidfile（`finclaw serve --lazy`） |
 | `~/.finclaw/profiles/<name>/` | 每个 profile 的隔离目录（配置、技能、策略、数据等） |
 | `--profile <name>` 或 `FINCLAW_PROFILE` | 选择使用的 profile（默认可为 `default`） |
 
