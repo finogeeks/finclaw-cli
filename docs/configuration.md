@@ -81,6 +81,18 @@ finclaw doctor --fix
 
 For HTTP/API integration details, rely on documentation for **your** Claw deployment and runtime build. CLI flags remain authoritative for what **your** `finclaw` binary supports (`finclaw --help`).
 
+## Official hook catalog URL
+
+Override the default index (rolling `hooks` release) with:
+
+```yaml
+extra:
+  hooks:
+    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json"
+```
+
+See [hooks.md](hooks.md). This does not change `finclaw update`.
+
 ## Post-turn learning
 
 Learning is **on by default** with `mode: promote`. Toggle with `finclaw learning enable|disable|set-mode`, `finclaw config set learning.*`, or `AI_INFRA_RS_LEARNING_*`. There is no `finclaw chat --learning` flag.

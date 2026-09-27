@@ -43,6 +43,11 @@ flowchart TB
 | **F. Identity / 人设** | 系统提示中如何描述智能体与用户责任边界（认知层） | `finclaw identity …`，Markdown 各层可用 `finclaw agent edit …` |
 | **G. 交互式审批（supervised）** | 策略要求确认时，运行时**暂停**直至有人批准：行式 CLI 可提示；**ACP** 走编辑器权限 UI；全屏 `--tui` 可能自动拒绝并告警 | 详见下文 **交互式审批** |
 
+### 命令钩子（可选）
+
+打包的钩子**不是**宿主沙箱开关，也**不会**随 `finclaw update` 生效。
+请从官方目录安装，再用 `finclaw hooks trust` 核对哈希。见 [hooks.zh.md](hooks.zh.md)。
+
 **维度之间如何分工（简述）：**
 
 - **裸宿主（A）不能替代**磁盘策略（B–D）。即使没有 OS 沙箱，`ask_for_writes` 与 deny 列表仍然重要。

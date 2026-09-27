@@ -236,6 +236,7 @@ Everything end users need lives **in this repository**. Index: **[docs/README.md
 | Profiles & backup | [profiles.md](docs/profiles.md) | [profiles.zh.md](docs/profiles.zh.md) |
 | Security & policies | [security-and-policies.md](docs/security-and-policies.md) | [security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | Skills | [skills.md](docs/skills.md) | [skills.zh.md](docs/skills.zh.md) |
+| Command hooks (opt-in recipes) | [hooks.md](docs/hooks.md) | [hooks.zh.md](docs/hooks.zh.md) |
 | Post-turn learning | [learning.md](docs/learning.md) | [learning.zh.md](docs/learning.zh.md) |
 | Chat & operations (`serve` / `--lazy`) | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | **ACP / Zed** | [acp.md](docs/acp.md) | [acp.zh.md](docs/acp.zh.md) |

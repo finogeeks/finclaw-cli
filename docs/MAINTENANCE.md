@@ -25,6 +25,13 @@ These notes are for people who edit documentation in the **finclaw-cli** public 
 8. **Chat TUI (`--tui`)** — if the experimental full-screen REPL changes, update [chat-and-operations.md](chat-and-operations.md) / `.zh.md`, [getting-started.md](getting-started.md) / `.zh.md`, [reference-commands.md](reference-commands.md) / `.zh.md`, and the terminal-agent bullets in [README.md](../README.md) / [README.zh.md](../README.zh.md). Keep the supervised-approval caveat aligned with [security-and-policies.md](security-and-policies.md).
 9. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
 10. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
+11. **Command hooks / official recipes** — if `finclaw hooks` subcommands,
+    the rolling `hooks` release, or `hooks/recipes/` layout change, update
+    [hooks.md](hooks.md) / [hooks.zh.md](hooks.zh.md) and the index rows in
+    [README.md](../README.md), [README.zh.md](../README.zh.md), and
+    [docs/README.md](README.md). Do not document unpublished private
+    runtime paths. Do not brand recipes after third-party tutorials or
+    judgment engines. Reserved first official id: `tool-gate`.
 
 ## Bilingual files
 
