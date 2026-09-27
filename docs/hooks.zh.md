@@ -11,18 +11,44 @@
 ## 安装的是什么
 
 官方**钩子配方**是本仓库滚动 Release 标签 `hooks` 上的版本化包。源码在
-[`hooks/recipes/`](../hooks/recipes/)。目录可以为空。
+[`hooks/recipes/`](../hooks/recipes/)。
 
-首个预留官方配方 id 是 **`tool-gate`**（针对会改系统的工具的 PreToolUse
-门闸）。在该配方单独落地之前不会发布。配方就是普通脚本，不绑定特定判断引擎。
+已发布的目录包含三个官方配方：
+
+| Id | 事件 | 说明 |
+| --- | --- | --- |
+| `tool-gate` | `PreToolUse` | 对会改系统的工具做允许/拒绝/询问 |
+| `turn-router` | `UserPromptSubmit` | 为安全用户轮次选择已配置的模型通道 |
+| `turn-review` | `Stop` | 拒绝空答案或与工具结果不符的答案 |
+
+配方是普通脚本，不绑定特定判断引擎，仅取决于本机配置。
+
+### 要求与限制
+
+- 需要 finclaw CLI `--version` ≥ `0.13.0`。
+- 需要 `node` 在 `PATH` 上（含 Windows）。
+- 可选环境变量 `FINCLAW_HOOK_JUDGE_TOKEN` 用于在 `tool-gate` 与
+  `turn-router` 中启用远程判断，并用于启用 `turn-review`。未设置时，
+  `turn-router` 与 `turn-review` 不生效（不改路由、不做审查）。
+- `turn-router` 只能在**同一提供商**的已配置模型间切换，不能改提供商、
+  基础 URL 或凭证。
+- `turn-review` 不能启动第二次推理；拒绝 Stop 时返回固定模板原因，**不是**
+  注入新的助手消息。
+- `tool-gate` 使用 `failurePolicy: deny`：钩子进程失败或超时时，对应工具
+  请求被拒绝。
+- 每次检查在**新进程**中运行，处理程序不在事件之间共享内存。
 
 ## 使用流程
 
 ```bash
 finclaw hooks catalog
-finclaw hooks install tool-gate     # 仅当该配方已发布
+finclaw hooks install tool-gate
+finclaw hooks install turn-router
+finclaw hooks install turn-review
 finclaw hooks list
 finclaw hooks trust --recipe tool-gate
+finclaw hooks trust --recipe turn-router
+finclaw hooks trust --recipe turn-review
 finclaw hooks remove tool-gate
 ```
 
