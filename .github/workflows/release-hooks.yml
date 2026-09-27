@@ -1,0 +1,81 @@
+name: Publish hooks catalog
+
+# Rolling `hooks` prerelease. Not a CLI version bump. Must never become
+# GitHub latest (finclaw update reads release.json from latest).
+
+on:
+  workflow_dispatch:
+    inputs:
+      recipe:
+        description: "Recipe id to publish, or all"
+        required: false
+        type: string
+        default: all
+
+concurrency:
+  group: release-hooks
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: publish hooks catalog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pack recipes
+        shell: bash
+        run: |
+          set -euo pipefail
+          recipe_input="${{ inputs.recipe || 'all' }}"
+          mkdir -p dist
+          python3 scripts/hooks_pack.py \
+            --recipes-dir hooks/recipes \
+            --out-dir dist \
+            --asset-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/hooks" \
+            --only "${recipe_input}"
+          ls -la dist
+          cat dist/hooks-index.json
+
+      - name: Publish hooks prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh release view hooks --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
+            gh release create hooks \
+              --repo "${GITHUB_REPOSITORY}" \
+              --prerelease \
+              --latest=false \
+              --title "hooks catalog" \
+              --notes "Rolling official hook-recipe catalog. Prerelease; must never become GitHub latest."
+          fi
+          gh release edit hooks \
+            --repo "${GITHUB_REPOSITORY}" \
+            --prerelease \
+            --latest=false
+          mapfile -t assets < <(find dist -maxdepth 1 -type f \( -name 'hooks-index.json' -o -name 'SHA256SUMS' -o -name 'hooks-*.tar.zst' \) | sort)
+          gh release upload hooks "${assets[@]}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber
+
+      - name: Guard releases/latest still points at a v* CLI tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          headers="$(mktemp)"
+          curl -sI "https://github.com/${GITHUB_REPOSITORY}/releases/latest" > "${headers}"
+          location="$(awk 'tolower($1)=="location:" {print $2; exit}' "${headers}" | tr -d '\r')"
+          if [[ -z "${location}" ]]; then
+            echo "::error::releases/latest did not return a Location header" >&2
+            cat "${headers}" >&2
+            exit 1
+          fi
+          status="$(curl -s -o /dev/null -w '%{http_code}' \
+            "https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/release.json")"
+          LATEST_HTML_URL="${location}" RELEASE_JSON_STATUS="${status}" \
+            bash scripts/hooks-latest-guard.sh
