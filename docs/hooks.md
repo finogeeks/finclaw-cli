@@ -13,7 +13,7 @@ page.
 ## What you install
 
 Official **hook recipes** are versioned packs on this repository’s
-rolling GitHub Release tag `hooks`. Git sources live in
+`hook-catalog` GitHub Release (prerelease, never `latest`). Git sources live in
 [`hooks/recipes/`](../hooks/recipes/).
 
 The published catalog includes three official recipes:
@@ -74,7 +74,7 @@ until you trust the hashes.
 ## Default catalog URL
 
 ```text
-https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json
+https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json
 ```
 
 Override in the active profile `config.yaml`:
@@ -82,7 +82,7 @@ Override in the active profile `config.yaml`:
 ```yaml
 extra:
   hooks:
-    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json"
+    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
 ## Trust

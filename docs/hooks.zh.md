@@ -10,7 +10,7 @@
 
 ## 安装的是什么
 
-官方**钩子配方**是本仓库滚动 Release 标签 `hooks` 上的版本化包。源码在
+官方**钩子配方**是本仓库 `hook-catalog` Release（prerelease，绝非 `latest`）上的版本化包。源码在
 [`hooks/recipes/`](../hooks/recipes/)。
 
 已发布的目录包含三个官方配方：
@@ -65,7 +65,7 @@ finclaw hooks remove tool-gate
 ## 默认目录 URL
 
 ```text
-https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json
+https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json
 ```
 
 可在当前配置档的 `config.yaml` 覆盖：
@@ -73,7 +73,7 @@ https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.jso
 ```yaml
 extra:
   hooks:
-    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json"
+    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
 ## 信任
