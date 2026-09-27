@@ -1,1 +1,3 @@
 .worktrees/
+hooks/dist/
+hooks/node_modules/
