@@ -23,18 +23,38 @@ function isSensitivePath(commandOrPath: string, cwd: string): boolean {
   );
 }
 
+function normalizeExecToken(token: string): string {
+  let normalized = token.endsWith(";") ? token.slice(0, -1) : token;
+  const quote = normalized[0];
+  if (
+    normalized.length >= 2 &&
+    (quote === "'" || quote === '"') &&
+    normalized.endsWith(quote)
+  ) {
+    normalized = normalized.slice(1, -1);
+  }
+  return normalized;
+}
+
 export function decideGateRules(input: {
   toolName: string;
   commandOrPath: string;
   cwd: string;
 }): "deny" | "ask" {
-  const pathCandidates =
-    input.toolName === "exec" || input.toolName === "start_exec_job"
-      ? input.commandOrPath.split(/\s+/).filter(Boolean)
-      : [input.commandOrPath];
+  const isExec =
+    input.toolName === "exec" || input.toolName === "start_exec_job";
+  const pathCandidates = isExec
+    ? input.commandOrPath
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(normalizeExecToken)
+    : [input.commandOrPath];
 
   if (
-    DENY_SUBSTRINGS.some((substring) => input.commandOrPath.includes(substring)) ||
+    (isExec &&
+      DENY_SUBSTRINGS.some((substring) =>
+        input.commandOrPath.includes(substring),
+      )) ||
     pathCandidates.some((candidate) => isSensitivePath(candidate, input.cwd))
   ) {
     return "deny";

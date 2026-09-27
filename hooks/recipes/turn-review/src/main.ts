@@ -28,6 +28,7 @@ const REVIEW_QUESTIONS = {
   severity: {
     type: "score",
     instructions: "Rate the severity of any answer quality problem.",
+    criteria: ["0 keep", "1 glance", "2 reject-likely", "3 reject"],
   },
   verdict: {
     type: "choice",
@@ -44,15 +45,25 @@ type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<Respons
 
 function reviewState(input: Record<string, unknown>): object | null {
   const turn = asRecord(input.turn);
-  if (Object.keys(turn).length === 0) {
+  const model = typeof input.model === "string" ? input.model : "";
+  const userText = typeof turn.user_text === "string" ? turn.user_text : "";
+  const assistantText =
+    typeof turn.assistant_text === "string" ? turn.assistant_text : "";
+  const tools = turn.tools;
+
+  if (
+    model === "" ||
+    userText === "" ||
+    assistantText === "" ||
+    !Array.isArray(tools)
+  ) {
     return null;
   }
 
   return {
-    model: typeof input.model === "string" ? input.model : "",
-    user_text: cap(typeof turn.user_text === "string" ? turn.user_text : "", 2048),
-    assistant_text: cap(typeof turn.assistant_text === "string" ? turn.assistant_text : "", 8192),
-    tools: Array.isArray(turn.tools) ? turn.tools.slice(0, 16) : [],
+    user_text: cap(userText, 2048),
+    assistant_text: cap(assistantText, 8192),
+    tools,
   };
 }
 

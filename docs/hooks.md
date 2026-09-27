@@ -37,13 +37,17 @@ engine beyond what you configure locally.
   `turn-router` and `turn-review` do nothing (no route change, no review).
 - `turn-router` only switches among models on the **same provider** as the
   active session; it cannot change provider, base URL, or credentials.
+  It cannot see the provider's live model allow list, so the host ignores a
+  configured model id that is not allowed.
 - `turn-review` cannot start a second inference; when it rejects a Stop
   event, the reason is a fixed template and is **not** an injected
-  assistant message.
+  assistant message. Tools that already ran stay run.
 - `tool-gate` uses `failurePolicy: deny`: if the hook process fails or
   times out, the matching tool request is denied.
 - Each hook check runs in a **new process**; handlers do not share memory
   across events.
+- On Unix, the host starts command hooks through `$SHELL -lc`; a heavy login
+  shell can make hook startup slow.
 
 ## Recipient flow
 

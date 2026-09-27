@@ -31,6 +31,7 @@ const ROUTER_QUESTIONS = {
   difficulty: {
     type: "score",
     instructions: "Rate the turn difficulty from simple to complex.",
+    criteria: ["trivial", "moderate", "hard", "extreme"],
   },
 };
 
@@ -51,20 +52,25 @@ function routes(): Routes {
   return { cheap: lane("cheap"), strong: lane("strong") };
 }
 
-function routerState(input: Record<string, unknown>): object | null {
+function routerState(
+  input: Record<string, unknown>,
+  configuredRoutes: Routes,
+): object | null {
   const prompt = typeof input.prompt === "string" ? input.prompt : "";
   const model = typeof input.model === "string" ? input.model : "";
   const turn = asRecord(input.turn);
   const userText = typeof turn.user_text === "string" ? turn.user_text : "";
+  const userAsk = prompt || userText;
 
-  if (prompt === "" || model === "" || userText === "") {
+  if (userAsk === "" || model === "") {
     return null;
   }
 
   return {
-    prompt: cap(prompt, 2048),
-    model,
-    user_text: cap(userText, 2048),
+    user_ask: cap(userAsk, 2048),
+    current_model: model,
+    cheap: configuredRoutes.cheap,
+    strong: configuredRoutes.strong,
   };
 }
 
@@ -79,7 +85,8 @@ export async function handle(
   }
 
   const input = asRecord(stdin);
-  const state = routerState(input);
+  const configuredRoutes = routes();
+  const state = routerState(input, configuredRoutes);
   if (!state) {
     return { stdout: "" };
   }
@@ -95,7 +102,7 @@ export async function handle(
         fetchFn: fetchFn as typeof fetch,
         timeoutMs: 8000,
       }),
-      routes(),
+      configuredRoutes,
       input.model as string,
     );
     return model ? { stdout: `${JSON.stringify(routeUpdatedModel(model))}\n` } : { stdout: "" };

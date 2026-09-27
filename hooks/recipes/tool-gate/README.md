@@ -11,6 +11,11 @@
 The recipe requires `node` on `PATH`, including on Windows. It requires
 finclaw CLI version `0.13.0` or newer.
 
+## Hook wiring
+
+- Command: `node scripts/main.js`
+- Matcher: `exec|start_exec_job|write_file|edit_file|apply_patch`
+
 ## Decisions
 
 Without configuration, the gate denies destructive or sensitive requests and

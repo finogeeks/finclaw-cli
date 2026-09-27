@@ -46,6 +46,38 @@ describe("mapGateAnswers", () => {
       "deny",
     );
   });
+
+  it("asks when the action choice is unknown", () => {
+    assert.equal(
+      mapGateAnswers({
+        is_destructive: { noul: 0.1 },
+        touches_credentials: { noul: 0.1 },
+        scope_matches: { noul: 0.9 },
+        severity: { score: 0 },
+        action: { choice: "approve", confidence: 0.9 },
+      }),
+      "ask",
+    );
+  });
+
+  it("asks when a noul or score is out of range", () => {
+    const base = {
+      is_destructive: { noul: 0.1 },
+      touches_credentials: { noul: 0.1 },
+      scope_matches: { noul: 0.9 },
+      severity: { score: 0 },
+      action: { choice: "allow", confidence: 0.9 },
+    };
+
+    assert.equal(
+      mapGateAnswers({ ...base, is_destructive: { noul: -0.1 } }),
+      "ask",
+    );
+    assert.equal(
+      mapGateAnswers({ ...base, severity: { score: 4 } }),
+      "ask",
+    );
+  });
 });
 
 describe("mapRouterAnswers", () => {

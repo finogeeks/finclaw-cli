@@ -67,6 +67,62 @@ describe("turn-review", () => {
     assert.equal(stdout, "");
   });
 
+  it("emits nothing when assistant text is missing", async () => {
+    let judgeCalled = false;
+    const { stdout } = await handle(
+      { turn: { user_text: "q", tools: [] }, model: "m" },
+      { FINCLAW_HOOK_JUDGE_TOKEN: "t" },
+      async () => {
+        judgeCalled = true;
+        return new Response("unexpected", { status: 500 });
+      },
+    );
+    assert.equal(stdout, "");
+    assert.equal(judgeCalled, false);
+  });
+
+  it("passes all wire-capped tools and ordered score criteria", async () => {
+    const tools = Array.from({ length: 32 }, (_, index) => ({
+      name: `tool-${index}`,
+      input_summary: `input-${index}`,
+      result_summary: `result-${index}`,
+    }));
+    let requestBody: Record<string, unknown> = {};
+
+    await handle(
+      { turn: { user_text: "q", assistant_text: "a", tools }, model: "m" },
+      { FINCLAW_HOOK_JUDGE_TOKEN: "t" },
+      async (_url, init) => {
+        requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>;
+        return new Response(
+          JSON.stringify({
+            answers: {
+              cites_missing_evidence: { noul: 0.1 },
+              contradicts_tools: { noul: 0.1 },
+              empty_or_placeholder: { noul: 0.1 },
+              severity: { score: 0 },
+              verdict: { choice: "keep", confidence: 0.9 },
+            },
+          }),
+          { status: 200 },
+        );
+      },
+    );
+
+    const state = requestBody.state as { tools: unknown[] };
+    assert.deepEqual(state.tools, tools);
+    const questions = requestBody.questions as Record<
+      string,
+      { type: string; criteria?: string[] }
+    >;
+    assert.deepEqual(questions.severity.criteria, [
+      "0 keep",
+      "1 glance",
+      "2 reject-likely",
+      "3 reject",
+    ]);
+  });
+
   it("emits nothing when the judge fails", async () => {
     let judgeCalled = false;
     const { stdout } = await handle(

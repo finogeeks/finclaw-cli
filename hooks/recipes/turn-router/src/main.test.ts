@@ -53,6 +53,78 @@ describe("turn-router", () => {
     );
   });
 
+  it("sends the exact router state and ordered score criteria", async () => {
+    let requestBody: Record<string, unknown> = {};
+    await handle(
+      {
+        prompt: "what is 2+2",
+        model: "gpt-4.1",
+        turn: { user_text: "fallback text" },
+      },
+      { FINCLAW_HOOK_JUDGE_TOKEN: "t" },
+      async (_url, init) => {
+        requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>;
+        return new Response(
+          JSON.stringify({
+            answers: {
+              lane: { choice: "keep", confidence: 0.9 },
+              simple_lookup: { noul: 0.8 },
+              unsafe_or_irreversible: { noul: 0.1 },
+              difficulty: { score: 0 },
+            },
+          }),
+          { status: 200 },
+        );
+      },
+    );
+
+    assert.deepEqual(requestBody.state, {
+      user_ask: "what is 2+2",
+      current_model: "gpt-4.1",
+      cheap: ["gpt-4.1-mini", "gpt-4o-mini"],
+      strong: ["gpt-4.1", "gpt-4o"],
+    });
+    const questions = requestBody.questions as Record<
+      string,
+      { type: string; criteria?: string[] }
+    >;
+    assert.deepEqual(questions.difficulty.criteria, [
+      "trivial",
+      "moderate",
+      "hard",
+      "extreme",
+    ]);
+  });
+
+  it("uses turn user text when prompt is missing", async () => {
+    let userAsk = "";
+    await handle(
+      {
+        model: "gpt-4.1",
+        turn: { user_text: "fallback text" },
+      },
+      { FINCLAW_HOOK_JUDGE_TOKEN: "t" },
+      async (_url, init) => {
+        const body = JSON.parse(String(init?.body)) as {
+          state: { user_ask: string };
+        };
+        userAsk = body.state.user_ask;
+        return new Response(
+          JSON.stringify({
+            answers: {
+              lane: { choice: "keep", confidence: 0.9 },
+              simple_lookup: { noul: 0.8 },
+              unsafe_or_irreversible: { noul: 0.1 },
+              difficulty: { score: 0 },
+            },
+          }),
+          { status: 200 },
+        );
+      },
+    );
+    assert.equal(userAsk, "fallback text");
+  });
+
   it("emits nothing when stdin fields are missing", async () => {
     const { stdout } = await handle({}, { FINCLAW_HOOK_JUDGE_TOKEN: "t" });
     assert.equal(stdout, "");

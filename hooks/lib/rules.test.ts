@@ -58,6 +58,39 @@ describe("decideGateRules", () => {
     );
   });
 
+  it("denies a quoted sensitive exec path", () => {
+    assert.equal(
+      decideGateRules({
+        toolName: "exec",
+        commandOrPath: "cat '.env'",
+        cwd: "/ws",
+      }),
+      "deny",
+    );
+  });
+
+  it("denies a sensitive exec path before a command separator", () => {
+    assert.equal(
+      decideGateRules({
+        toolName: "exec",
+        commandOrPath: "cat .env;",
+        cwd: "/ws",
+      }),
+      "deny",
+    );
+  });
+
+  it("does not apply command deny words to write paths", () => {
+    assert.equal(
+      decideGateRules({
+        toolName: "write_file",
+        commandOrPath: "/ws/reboot-notes.md",
+        cwd: "/ws",
+      }),
+      "ask",
+    );
+  });
+
   it("asks on plain echo", () => {
     assert.equal(
       decideGateRules({

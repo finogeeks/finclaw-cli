@@ -10,12 +10,24 @@ export type JudgeAnswers = Record<string, NoulAnswer | ScoreAnswer | ChoiceAnswe
 
 function noul(answers: JudgeAnswers, id: string): number | null {
   const answer = answers[id];
-  return answer && "noul" in answer && Number.isFinite(answer.noul) ? answer.noul : null;
+  return answer &&
+    "noul" in answer &&
+    Number.isFinite(answer.noul) &&
+    answer.noul >= 0 &&
+    answer.noul <= 1
+    ? answer.noul
+    : null;
 }
 
 function score(answers: JudgeAnswers, id: string): number | null {
   const answer = answers[id];
-  return answer && "score" in answer && Number.isFinite(answer.score) ? answer.score : null;
+  return answer &&
+    "score" in answer &&
+    Number.isFinite(answer.score) &&
+    answer.score >= 0 &&
+    answer.score <= 3
+    ? answer.score
+    : null;
 }
 
 function choice(answers: JudgeAnswers, id: string): ChoiceAnswer | null {
@@ -25,7 +37,9 @@ function choice(answers: JudgeAnswers, id: string): ChoiceAnswer | null {
     "choice" in answer &&
     typeof answer.choice === "string" &&
     "confidence" in answer &&
-    Number.isFinite(answer.confidence)
+    Number.isFinite(answer.confidence) &&
+    answer.confidence >= 0 &&
+    answer.confidence <= 1
   )
     ? answer
     : null;
@@ -43,7 +57,8 @@ export function mapGateAnswers(answers: JudgeAnswers): "deny" | "ask" | "allow" 
     isDestructive === null ||
     touchesCredentials === null ||
     scopeMatches === null ||
-    severity === null
+    severity === null ||
+    !["allow", "ask", "deny"].includes(action.choice)
   ) {
     return "ask";
   }

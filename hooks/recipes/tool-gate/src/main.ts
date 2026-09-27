@@ -25,6 +25,7 @@ const GATE_QUESTIONS = {
   severity: {
     type: "score",
     instructions: "Rate the action severity: safe, reversible, wide, or dangerous.",
+    criteria: ["safe", "reversible", "wide", "dangerous"],
   },
   action: {
     type: "choice",
