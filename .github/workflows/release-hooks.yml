@@ -61,22 +61,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if ! gh release view hooks --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
-            gh release create hooks \
-              --repo "${GITHUB_REPOSITORY}" \
-              --prerelease \
-              --latest=false \
-              --title "hooks catalog" \
-              --notes "Rolling official hook-recipe catalog. Prerelease; must never become GitHub latest."
+          # This repo publishes immutable releases. Create-then-upload
+          # (or --clobber) returns HTTP 422. Recreate the rolling tag
+          # with assets in one create so the catalog can roll.
+          mapfile -t assets < <(find dist -maxdepth 1 -type f \( -name 'hooks-index.json' -o -name 'SHA256SUMS' -o -name 'hooks-*.tar.zst' \) | sort)
+          if [[ "${#assets[@]}" -eq 0 ]]; then
+            echo "::error::no hook assets in dist" >&2
+            exit 1
           fi
-          gh release edit hooks \
+          if gh release view hooks --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
+            gh release delete hooks --repo "${GITHUB_REPOSITORY}" --yes --cleanup-tag
+          fi
+          gh release create hooks "${assets[@]}" \
             --repo "${GITHUB_REPOSITORY}" \
             --prerelease \
-            --latest=false
-          mapfile -t assets < <(find dist -maxdepth 1 -type f \( -name 'hooks-index.json' -o -name 'SHA256SUMS' -o -name 'hooks-*.tar.zst' \) | sort)
-          gh release upload hooks "${assets[@]}" \
-            --repo "${GITHUB_REPOSITORY}" \
-            --clobber
+            --latest=false \
+            --title "hooks catalog" \
+            --notes "Rolling official hook-recipe catalog. Prerelease; must never become GitHub latest."
 
       - name: Guard releases/latest still points at a v* CLI tag
         shell: bash
