@@ -26,6 +26,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: hooks/package-lock.json
+
+      - name: Assemble recipe trees
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --prefix hooks
+          python3 scripts/hooks_assemble.py \
+            --hooks-dir hooks \
+            --out-dir assembled-recipes
+
       - name: Pack recipes
         shell: bash
         run: |
@@ -33,7 +48,7 @@ jobs:
           recipe_input="${{ inputs.recipe || 'all' }}"
           mkdir -p dist
           python3 scripts/hooks_pack.py \
-            --recipes-dir hooks/recipes \
+            --recipes-dir assembled-recipes \
             --out-dir dist \
             --asset-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/hooks" \
             --only "${recipe_input}"
