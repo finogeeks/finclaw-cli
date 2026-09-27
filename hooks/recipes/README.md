@@ -1,7 +1,7 @@
 # Official hook recipes
 
-This directory is the **git source** for recipes published to the rolling
-`hooks` prerelease on this repository.
+This directory is the **git source** for recipes published to the
+`hook-catalog` prerelease on this repository.
 
 The installed `finclaw` binary does not contain these files. Recipients
 run `finclaw hooks catalog` / `install` / `trust` / `remove`.

@@ -83,12 +83,12 @@ For HTTP/API integration details, rely on documentation for **your** Claw deploy
 
 ## Official hook catalog URL
 
-Override the default index (rolling `hooks` release) with:
+Override the default index (`hook-catalog` prerelease) with:
 
 ```yaml
 extra:
   hooks:
-    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json"
+    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
 See [hooks.md](hooks.md). This does not change `finclaw update`.

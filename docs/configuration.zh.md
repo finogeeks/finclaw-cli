@@ -83,12 +83,12 @@ finclaw doctor --fix
 
 ## 官方钩子目录 URL
 
-覆盖默认索引（滚动 `hooks` Release）：
+覆盖默认索引（`hook-catalog` prerelease）：
 
 ```yaml
 extra:
   hooks:
-    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json"
+    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
 见 [hooks.zh.md](hooks.zh.md)。这不改变 `finclaw update` 的行为。

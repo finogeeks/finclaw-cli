@@ -1,7 +1,8 @@
 name: Publish hooks catalog
 
-# Rolling `hooks` prerelease. Not a CLI version bump. Must never become
-# GitHub latest (finclaw update reads release.json from latest).
+# Immutable `hook-catalog` prerelease. Not a CLI version bump. Must
+# never become GitHub latest (finclaw update reads release.json from
+# latest). Tag `hooks` is retired and must not be recreated.
 
 on:
   workflow_dispatch:
@@ -50,7 +51,7 @@ jobs:
           python3 scripts/hooks_pack.py \
             --recipes-dir assembled-recipes \
             --out-dir dist \
-            --asset-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/hooks" \
+            --asset-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/hook-catalog" \
             --only "${recipe_input}"
           ls -la dist
           cat dist/hooks-index.json
@@ -61,23 +62,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # This repo publishes immutable releases. Create-then-upload
-          # (or --clobber) returns HTTP 422. Recreate the rolling tag
-          # with assets in one create so the catalog can roll.
+          # This repo publishes immutable releases. Tag `hooks` was
+          # burned by an empty create. Do not delete or reuse a
+          # published catalog tag. Create hook-catalog with assets in
+          # one call; if it already exists, fail (bump the tag name
+          # and DEFAULT_INDEX_URL together).
           mapfile -t assets < <(find dist -maxdepth 1 -type f \( -name 'hooks-index.json' -o -name 'SHA256SUMS' -o -name 'hooks-*.tar.zst' \) | sort)
           if [[ "${#assets[@]}" -eq 0 ]]; then
             echo "::error::no hook assets in dist" >&2
             exit 1
           fi
-          if gh release view hooks --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
-            gh release delete hooks --repo "${GITHUB_REPOSITORY}" --yes --cleanup-tag
+          if gh release view hook-catalog --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
+            echo "::error::hook-catalog already exists (immutable). Bump the catalog tag in this workflow and the CLI DEFAULT_INDEX_URL." >&2
+            exit 1
           fi
-          gh release create hooks "${assets[@]}" \
+          gh release create hook-catalog "${assets[@]}" \
             --repo "${GITHUB_REPOSITORY}" \
             --prerelease \
             --latest=false \
-            --title "hooks catalog" \
-            --notes "Rolling official hook-recipe catalog. Prerelease; must never become GitHub latest."
+            --title "hook catalog" \
+            --notes "Official hook-recipe catalog. Prerelease; must never become GitHub latest."
 
       - name: Guard releases/latest still points at a v* CLI tag
         shell: bash
