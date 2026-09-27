@@ -43,8 +43,7 @@ export function mapGateAnswers(answers: JudgeAnswers): "deny" | "ask" | "allow" 
     isDestructive === null ||
     touchesCredentials === null ||
     scopeMatches === null ||
-    severity === null ||
-    action.confidence < 0.45
+    severity === null
   ) {
     return "ask";
   }
@@ -56,6 +55,9 @@ export function mapGateAnswers(answers: JudgeAnswers): "deny" | "ask" | "allow" 
     severity >= 2.8
   ) {
     return "deny";
+  }
+  if (action.confidence < 0.45) {
+    return "ask";
   }
   if (action.choice === "ask" || severity >= 2) {
     return "ask";

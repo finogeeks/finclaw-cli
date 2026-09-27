@@ -33,6 +33,19 @@ describe("mapGateAnswers", () => {
       "ask",
     );
   });
+
+  it("denies destructive work despite low action confidence", () => {
+    assert.equal(
+      mapGateAnswers({
+        is_destructive: { noul: 0.8 },
+        touches_credentials: { noul: 0.1 },
+        scope_matches: { noul: 0.9 },
+        severity: { score: 0 },
+        action: { choice: "allow", confidence: 0.2 },
+      }),
+      "deny",
+    );
+  });
 });
 
 describe("mapRouterAnswers", () => {

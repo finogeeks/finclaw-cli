@@ -28,9 +28,14 @@ export function decideGateRules(input: {
   commandOrPath: string;
   cwd: string;
 }): "deny" | "ask" {
+  const pathCandidates =
+    input.toolName === "exec" || input.toolName === "start_exec_job"
+      ? input.commandOrPath.split(/\s+/).filter(Boolean)
+      : [input.commandOrPath];
+
   if (
     DENY_SUBSTRINGS.some((substring) => input.commandOrPath.includes(substring)) ||
-    isSensitivePath(input.commandOrPath, input.cwd)
+    pathCandidates.some((candidate) => isSensitivePath(candidate, input.cwd))
   ) {
     return "deny";
   }

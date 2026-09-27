@@ -25,6 +25,39 @@ describe("decideGateRules", () => {
     );
   });
 
+  it("denies an exec command that references .env", () => {
+    assert.equal(
+      decideGateRules({
+        toolName: "exec",
+        commandOrPath: "cat .env",
+        cwd: "/ws",
+      }),
+      "deny",
+    );
+  });
+
+  it("denies an exec command that references an SSH key", () => {
+    assert.equal(
+      decideGateRules({
+        toolName: "exec",
+        commandOrPath: "cat ~/.ssh/id_rsa",
+        cwd: "/ws",
+      }),
+      "deny",
+    );
+  });
+
+  it("denies a background exec command that references .env", () => {
+    assert.equal(
+      decideGateRules({
+        toolName: "start_exec_job",
+        commandOrPath: "cat .env.production",
+        cwd: "/ws",
+      }),
+      "deny",
+    );
+  });
+
   it("asks on plain echo", () => {
     assert.equal(
       decideGateRules({
