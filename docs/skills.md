@@ -10,6 +10,9 @@ Finclaw loads skills from the **active profile** and from additional scan roots 
 
 **Authoritative:** `finclaw skills --help` and subcommand help for your build.
 
+Official **command-hook recipes** are a different surface — see [hooks.md](hooks.md).
+`finclaw update` does not install them.
+
 ## Why `skills check` matters
 
 The CLI validates skill directories and **duplicate skill ids** can prevent the embedded runtime from starting. After installing or moving packs, run:

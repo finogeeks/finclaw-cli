@@ -41,6 +41,12 @@ flowchart TB
 | **F. Identity / persona** | What the model is told about itself (system prompt surface) | `finclaw identity …`, `finclaw agent edit …` for Markdown layers |
 | **G. Interactive approval (supervised tools)** | When policy requires it, the runtime **pauses** until a human approves: line-based CLI can prompt; **ACP** uses the editor permission UI; full-screen `--tui` may auto-reject with a warning | See *Interactive tool approvals* below |
 
+### Command hooks (optional)
+
+Packaged hooks are **not** a host-sandbox switch and are **not** applied
+by `finclaw update`. Install from the official catalog, then review
+hashes with `finclaw hooks trust`. See [hooks.md](hooks.md).
+
 **How dimensions interact (short):**
 
 - **Naked host (A)** does **not** replace policy files (B–D). Even without an OS sandbox, `ask_for_writes` and deny lists still matter.

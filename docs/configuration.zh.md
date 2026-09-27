@@ -81,6 +81,18 @@ finclaw doctor --fix
 
 协议与集成细节以你所部署的 Claw 运行时及厂商/运维文档为准。子命令与参数以本机 `finclaw --help` 为准。
 
+## 官方钩子目录 URL
+
+覆盖默认索引（滚动 `hooks` Release）：
+
+```yaml
+extra:
+  hooks:
+    index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hooks/hooks-index.json"
+```
+
+见 [hooks.zh.md](hooks.zh.md)。这不改变 `finclaw update` 的行为。
+
 ## 回合后学习
 
 **默认开启**（`mode: promote`）。可用 `finclaw learning enable|disable|set-mode`、`finclaw config set learning.*` 或 `AI_INFRA_RS_LEARNING_*` 调整。无 `finclaw chat --learning` 参数。

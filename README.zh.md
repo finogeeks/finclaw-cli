@@ -229,6 +229,7 @@ finclaw a2a probe <peer-id>
 | 配置档与备份 | [profiles.md](docs/profiles.md) | [profiles.zh.md](docs/profiles.zh.md) |
 | 安全与策略 | [security-and-policies.md](docs/security-and-policies.md) | [security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | 技能 | [skills.md](docs/skills.md) | [skills.zh.md](docs/skills.zh.md) |
+| 命令钩子（可选配方） | [hooks.md](docs/hooks.md) | [hooks.zh.md](docs/hooks.zh.md) |
 | 回合后学习 | [learning.md](docs/learning.md) | [learning.zh.md](docs/learning.zh.md) |
 | 聊天与运维（`serve` / `--lazy`） | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | **ACP / Zed** | [acp.md](docs/acp.md) | [acp.zh.md](docs/acp.zh.md) |

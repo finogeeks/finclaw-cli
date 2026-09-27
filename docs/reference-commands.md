@@ -23,6 +23,7 @@ This is a **road map**, not a full flag list. Always run `finclaw --help` and `f
 | Tokens / LLM host credentials / cron auth | `finclaw auth` |
 | Scheduled jobs | `finclaw cron` |
 | Skills (hubs, ClawHub, install) | `finclaw skills` |
+| Command hooks / official recipes | `finclaw hooks` — see [hooks.md](hooks.md) |
 | Post-turn learning (memory/skills review) | `finclaw learning` — see [learning.md](learning.md) |
 | Tool registry listing | `finclaw tools` |
 | Contract conformance run | `finclaw conformance` |

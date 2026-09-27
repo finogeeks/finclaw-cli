@@ -12,6 +12,7 @@ User guides for the `finclaw` CLI (release binaries and install scripts in this 
 | Profiles, templates, backup and import | [profiles.md](profiles.md) | [profiles.zh.md](profiles.zh.md) |
 | Security: policies, presets, identity, capability, supervised approvals | [security-and-policies.md](security-and-policies.md) | [security-and-policies.zh.md](security-and-policies.zh.md) |
 | Skills: hubs, ClawHub, install and check | [skills.md](skills.md) | [skills.zh.md](skills.zh.md) |
+| Command hooks (opt-in recipes) | [hooks.md](hooks.md) | [hooks.zh.md](hooks.zh.md) |
 | Post-turn learning (memory, skills, promote) | [learning.md](learning.md) | [learning.zh.md](learning.zh.md) |
 | Chat, REPL, optional `--tui`, daemon (`serve` / `--lazy`), logs, operations | [chat-and-operations.md](chat-and-operations.md) | [chat-and-operations.zh.md](chat-and-operations.zh.md) |
 | **ACP / Zed** (Agent Client Protocol) | [acp.md](acp.md) | [acp.zh.md](acp.zh.md) |
