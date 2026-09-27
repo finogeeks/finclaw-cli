@@ -1,0 +1,4 @@
+{
+  "cheap": ["gpt-4.1-mini", "gpt-4o-mini"],
+  "strong": ["gpt-4.1", "gpt-4o"]
+}

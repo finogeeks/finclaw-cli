@@ -1,0 +1,21 @@
+{
+  "schema": "hooks.recipe.v1",
+  "id": "turn-router",
+  "version": "0.1.0",
+  "min_cli": "0.13.0",
+  "summary": "Route safe user turns to configured model lanes.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "id": "route-turn",
+            "type": "command",
+            "command": "node scripts/main.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
