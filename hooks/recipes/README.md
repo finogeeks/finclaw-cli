@@ -17,7 +17,8 @@ run `finclaw hooks catalog` / `install` / `trust` / `remove`.
 Each recipe requires finclaw CLI `--version` ≥ `0.13.0` and `node` on `PATH`
 (including on Windows). Set optional `FINCLAW_HOOK_JUDGE_TOKEN` to enable
 remote judgment in `tool-gate` and `turn-router`, and to enable
-`turn-review`. Without that token, `turn-router` and `turn-review` emit no
+`turn-review`. Without that token, `tool-gate` still asks or denies matching
+tool requests by its built-in rules; `turn-router` and `turn-review` emit no
 output and do not change routing or review.
 
 Do not name new recipes after external product or assistant brands.

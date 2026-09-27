@@ -29,6 +29,7 @@
 - 需要 `node` 在 `PATH` 上（含 Windows）。
 - 可选环境变量 `FINCLAW_HOOK_JUDGE_TOKEN` 用于在 `tool-gate` 与
   `turn-router` 中启用远程判断，并用于启用 `turn-review`。未设置时，
+  `tool-gate` 仍按内置规则对匹配工具请求进行询问或拒绝；
   `turn-router` 与 `turn-review` 不生效（不改路由、不做审查）。
 - `turn-router` 只能在**同一提供商**的已配置模型间切换，不能改提供商、
   基础 URL 或凭证。

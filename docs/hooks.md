@@ -33,8 +33,8 @@ engine beyond what you configure locally.
 - Requires `node` on `PATH` (including on Windows).
 - Optional `FINCLAW_HOOK_JUDGE_TOKEN` enables remote judgment in
   `tool-gate` and `turn-router`, and enables `turn-review`. Without the
-  token, `turn-router` and `turn-review` do nothing (no route change, no
-  review).
+  token, `tool-gate` still asks or denies by its built-in rules;
+  `turn-router` and `turn-review` do nothing (no route change, no review).
 - `turn-router` only switches among models on the **same provider** as the
   active session; it cannot change provider, base URL, or credentials.
 - `turn-review` cannot start a second inference; when it rejects a Stop
