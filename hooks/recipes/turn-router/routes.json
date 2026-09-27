@@ -1,4 +1,30 @@
 {
-  "cheap": ["gpt-4.1-mini", "gpt-4o-mini"],
-  "strong": ["gpt-4.1", "gpt-4o"]
+  "openai": {
+    "cheap": ["gpt-4.1-mini", "gpt-4o-mini", "gpt-5-mini", "o4-mini"],
+    "strong": ["gpt-4.1", "gpt-4o", "gpt-5.1", "gpt-5"]
+  },
+  "anthropic": {
+    "cheap": ["claude-3-7-sonnet"],
+    "strong": ["claude-4.6-sonnet"]
+  },
+  "deepseek": {
+    "cheap": ["deepseek-v4-flash", "deepseek-chat"],
+    "strong": ["deepseek-v4-pro", "deepseek-reasoner"]
+  },
+  "kimi": {
+    "cheap": ["kimi-k2-turbo-preview", "kimi-latest"],
+    "strong": ["kimi-k2-0905-preview"]
+  },
+  "qwen": {
+    "cheap": ["qwen-plus-latest", "qwen3-coder-plus"],
+    "strong": ["qwen-max-latest"]
+  },
+  "minimax": {
+    "cheap": ["MiniMax-M2"],
+    "strong": ["MiniMax-M2.5"]
+  },
+  "glm": {
+    "cheap": ["glm-4.5", "glm-4-plus"],
+    "strong": ["glm-4.6"]
+  }
 }

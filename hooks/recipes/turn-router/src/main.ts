@@ -39,17 +39,51 @@ type HandleResult = { stdout: string };
 type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 type Routes = { cheap: string[]; strong: string[] };
 
-function routes(): Routes {
-  const parsed = asRecord(
-    JSON.parse(fs.readFileSync(path.join(__dirname, "..", "routes.json"), "utf8")),
-  );
+function lanePair(value: unknown): Routes | null {
+  const parsed = asRecord(value);
   const lane = (name: "cheap" | "strong") => {
     const ids = parsed[name];
     return Array.isArray(ids)
       ? ids.filter((id): id is string => typeof id === "string" && id !== "").slice(0, 8)
       : [];
   };
-  return { cheap: lane("cheap"), strong: lane("strong") };
+  const cheap = lane("cheap");
+  const strong = lane("strong");
+  if (cheap.length === 0 && strong.length === 0) {
+    return null;
+  }
+  return { cheap, strong };
+}
+
+function collectLaneGroups(raw: unknown): Routes[] {
+  const parsed = asRecord(raw);
+  const groups: Routes[] = [];
+  const flat = lanePair(raw);
+  if (flat && (Array.isArray(parsed.cheap) || Array.isArray(parsed.strong))) {
+    groups.push(flat);
+  }
+  for (const [key, value] of Object.entries(parsed)) {
+    if (key === "cheap" || key === "strong") {
+      continue;
+    }
+    const group = lanePair(value);
+    if (group) {
+      groups.push(group);
+    }
+  }
+  return groups;
+}
+
+function routesForModel(currentModel: string): Routes {
+  const raw = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "..", "routes.json"), "utf8"),
+  );
+  return (
+    collectLaneGroups(raw).find(
+      (group) =>
+        group.cheap.includes(currentModel) || group.strong.includes(currentModel),
+    ) ?? { cheap: [], strong: [] }
+  );
 }
 
 function routerState(
@@ -85,7 +119,11 @@ export async function handle(
   }
 
   const input = asRecord(stdin);
-  const configuredRoutes = routes();
+  const currentModel = typeof input.model === "string" ? input.model : "";
+  const configuredRoutes = routesForModel(currentModel);
+  if (configuredRoutes.cheap.length === 0 && configuredRoutes.strong.length === 0) {
+    return { stdout: "" };
+  }
   const state = routerState(input, configuredRoutes);
   if (!state) {
     return { stdout: "" };

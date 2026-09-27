@@ -15,7 +15,13 @@ endpoint and model.
 
 ## Configure routes
 
-Edit `routes.json` to set the `cheap` and `strong` model ids. Each lane uses at
-most its first eight ids. Re-trust the recipe after editing `routes.json`.
-The router cannot see the active provider's live model allow list; configure
-only model ids that the current provider allows.
+`routes.json` lists cheap/strong ids per provider. The router picks the group
+that contains the current `model` from stdin and emits only an id from that
+group. A current model that is not in any group produces no route.
+
+Each lane uses at most its first eight ids. Re-trust the recipe after editing
+`routes.json`. The shipped groups follow the bundled `finclaw model` catalog
+plus common aliases; add a group or id if your profile uses something else.
+
+A legacy file with top-level `cheap` / `strong` arrays is still valid and is
+treated as a single group.
