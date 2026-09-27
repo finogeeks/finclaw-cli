@@ -14,20 +14,52 @@ page.
 
 Official **hook recipes** are versioned packs on this repository’s
 rolling GitHub Release tag `hooks`. Git sources live in
-[`hooks/recipes/`](../hooks/recipes/). The catalog may be empty.
+[`hooks/recipes/`](../hooks/recipes/).
 
-The first reserved official recipe id is **`tool-gate`** (a PreToolUse
-gate for mutating tools). It is not published until its own recipe
-lands. Recipes are ordinary scripts. They do not require a particular
-judgment engine.
+The published catalog includes three official recipes:
+
+| Id | Event | Summary |
+| --- | --- | --- |
+| `tool-gate` | `PreToolUse` | Gate mutating tools (exec, writes, patches) |
+| `turn-router` | `UserPromptSubmit` | Route safe turns to a configured model lane |
+| `turn-review` | `Stop` | Reject answers that are empty or unsupported by tool results |
+
+Recipes are ordinary scripts. They do not require a particular judgment
+engine beyond what you configure locally.
+
+### Requirements and limits
+
+- Requires finclaw CLI `--version` ≥ `0.13.0`.
+- Requires `node` on `PATH` (including on Windows).
+- Optional `FINCLAW_HOOK_JUDGE_TOKEN` enables remote judgment in
+  `tool-gate` and `turn-router`, and enables `turn-review`. Without the
+  token, `tool-gate` still asks or denies by its built-in rules;
+  `turn-router` and `turn-review` do nothing (no route change, no review).
+- `turn-router` only switches among models on the **same provider** as the
+  active session; it cannot change provider, base URL, or credentials.
+  It cannot see the provider's live model allow list, so the host ignores a
+  configured model id that is not allowed.
+- `turn-review` cannot start a second inference; when it rejects a Stop
+  event, the reason is a fixed template and is **not** an injected
+  assistant message. Tools that already ran stay run.
+- `tool-gate` uses `failurePolicy: deny`: if the hook process fails or
+  times out, the matching tool request is denied.
+- Each hook check runs in a **new process**; handlers do not share memory
+  across events.
+- On Unix, the host starts command hooks through `$SHELL -lc`; a heavy login
+  shell can make hook startup slow.
 
 ## Recipient flow
 
 ```bash
 finclaw hooks catalog
-finclaw hooks install tool-gate     # only once that recipe exists
+finclaw hooks install tool-gate
+finclaw hooks install turn-router
+finclaw hooks install turn-review
 finclaw hooks list
 finclaw hooks trust --recipe tool-gate
+finclaw hooks trust --recipe turn-router
+finclaw hooks trust --recipe turn-review
 finclaw hooks remove tool-gate
 ```
 

@@ -6,29 +6,38 @@ This directory is the **git source** for recipes published to the rolling
 The installed `finclaw` binary does not contain these files. Recipients
 run `finclaw hooks catalog` / `install` / `trust` / `remove`.
 
-**Empty catalog.** There is no `recipe.json` here yet, so the published
-index may list zero recipes. That is expected.
+## Official recipes
 
-## Reserved id
+| Id | Event | Role |
+| --- | --- | --- |
+| `tool-gate` | `PreToolUse` | Allow, deny, or ask before mutating tools |
+| `turn-router` | `UserPromptSubmit` | Pick a configured model lane for safe turns |
+| `turn-review` | `Stop` | Reject unsupported or empty assistant answers |
 
-`tool-gate` is reserved for the first official recipe: a PreToolUse
-allow/block gate for mutating tools. Do not create
-`hooks/recipes/tool-gate/recipe.json` until that recipe’s own plan
-lands. The runner does not require Jev or any other judgment engine.
+Each recipe requires finclaw CLI `--version` ≥ `0.13.0` and `node` on `PATH`
+(including on Windows). Set optional `FINCLAW_HOOK_JUDGE_TOKEN` to enable
+remote judgment in `tool-gate` and `turn-router`, and to enable
+`turn-review`. Without that token, `tool-gate` still asks or denies matching
+tool requests by its built-in rules; `turn-router` and `turn-review` emit no
+output and do not change routing or review.
 
-Do not name recipes after DAIR, Pi, or Jev.
+Do not name new recipes after external product or assistant brands.
 
-## Layout (when a recipe is added)
+## Layout
 
 ```text
 hooks/recipes/<id>/
   recipe.json
   README.md
-  scripts/…
+  src/…              # TypeScript sources and tests
+  routes.json        # turn-router only
 ```
 
+Published tarballs are produced by `scripts/hooks_assemble.py`, which
+compiles `src/` into `scripts/main.js` plus shared `scripts/lib/` for each
+recipe. `recipe.json` uses schema `hooks.recipe.v1`.
+
 `id` is `[a-z0-9]+(?:-[a-z0-9]+)*`, max 64, and must not start with `.`.
-`recipe.json` uses schema `hooks.recipe.v1`.
 
 ## What does not live here
 

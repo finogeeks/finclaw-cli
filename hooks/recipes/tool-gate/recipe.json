@@ -1,0 +1,23 @@
+{
+  "schema": "hooks.recipe.v1",
+  "id": "tool-gate",
+  "version": "0.1.0",
+  "min_cli": "0.13.0",
+  "summary": "Require approval or deny mutating tool requests.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "exec|start_exec_job|write_file|edit_file|apply_patch",
+        "hooks": [
+          {
+            "id": "gate-mutating",
+            "type": "command",
+            "command": "node scripts/main.js",
+            "timeout": 10,
+            "failurePolicy": "deny"
+          }
+        ]
+      }
+    ]
+  }
+}

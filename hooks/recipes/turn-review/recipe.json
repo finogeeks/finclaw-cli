@@ -1,0 +1,21 @@
+{
+  "schema": "hooks.recipe.v1",
+  "id": "turn-review",
+  "version": "0.1.0",
+  "min_cli": "0.13.0",
+  "summary": "Reject unsupported or placeholder assistant answers.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "id": "review-stop",
+            "type": "command",
+            "command": "node scripts/main.js",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
