@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -112,6 +113,18 @@ def collect_recipe_jsons(recipes_dir: Path) -> list[Path]:
     return [p for p in found if p.is_file()]
 
 
+def validate_recipe_tree(recipe_dir: Path) -> None:
+    root_mode = recipe_dir.lstat().st_mode
+    if stat.S_ISLNK(root_mode) or not stat.S_ISDIR(root_mode):
+        raise PackError(f"{recipe_dir}: recipe root must be a real directory")
+    for path in recipe_dir.rglob("*"):
+        mode = path.lstat().st_mode
+        if stat.S_ISLNK(mode):
+            raise PackError(f"{path}: symlinks are not allowed in recipe packages")
+        if not stat.S_ISDIR(mode) and not stat.S_ISREG(mode):
+            raise PackError(f"{path}: recipe packages contain only regular files")
+
+
 def _sha256_file(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as fh:
@@ -134,20 +147,30 @@ def _compress_tar_zst(src_dir: Path, top_name: str, dest: Path) -> None:
         tmp_tar.unlink(missing_ok=True)
 
 
-def pack_one(recipe_dir: Path, out_dir: Path, asset_base_url: str) -> dict:
+def pack_one(
+    recipe_dir: Path,
+    out_dir: Path,
+    asset_base_url: str,
+    *,
+    write_archive: bool = True,
+) -> dict:
+    validate_recipe_tree(recipe_dir)
     raw = load_recipe(recipe_dir / "recipe.json")
     recipe_id = raw["id"]
     version = raw["version"]
     top = f"{recipe_id}-{version}"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    archive_name = f"hooks-{recipe_id}-{version}.tar.zst"
     with tempfile.TemporaryDirectory() as tmp:
         staged = Path(tmp) / top
         shutil.copytree(recipe_dir, staged)
-        archive = out_dir / f"hooks-{recipe_id}-{version}.tar.zst"
-        _compress_tar_zst(Path(tmp), top, archive)
-    digest = _sha256_file(archive)
+        packed_archive = Path(tmp) / archive_name
+        _compress_tar_zst(Path(tmp), top, packed_archive)
+        digest = _sha256_file(packed_archive)
+        if write_archive:
+            out_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(packed_archive, out_dir / archive_name)
     base = asset_base_url.rstrip("/")
-    url = f"{base}/hooks-{recipe_id}-{version}.tar.zst"
+    url = f"{base}/{archive_name}"
     return {
         "id": recipe_id,
         "name": raw.get("name") or recipe_id,
@@ -198,21 +221,29 @@ def main(argv: list[str] | None = None) -> int:
     if not recipes_dir.is_dir():
         raise PackError(f"recipes dir missing: {recipes_dir}")
     jsons = collect_recipe_jsons(recipes_dir)
+    selected_ids = {p.parent.name for p in jsons}
     if args.only != "all":
-        jsons = [p for p in jsons if p.parent.name == args.only]
-        if not jsons:
+        selected_ids = {args.only}
+        if args.only not in {p.parent.name for p in jsons}:
             raise PackError(f"recipe {args.only!r} has no recipe.json")
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    packed: list[dict] = []
+    catalog: list[dict] = []
     archives: list[Path] = []
     for recipe_json in jsons:
-        rec = pack_one(recipe_json.parent, args.out_dir, args.asset_base_url)
-        packed.append(rec)
-        archives.append(
-            args.out_dir / f"hooks-{rec['id']}-{rec['latest']}.tar.zst"
+        write_archive = recipe_json.parent.name in selected_ids
+        rec = pack_one(
+            recipe_json.parent,
+            args.out_dir,
+            args.asset_base_url,
+            write_archive=write_archive,
         )
+        catalog.append(rec)
+        if write_archive:
+            archives.append(
+                args.out_dir / f"hooks-{rec['id']}-{rec['latest']}.tar.zst"
+            )
     index_path = args.out_dir / "hooks-index.json"
-    write_index(packed, index_path, args.updated_at)
+    write_index(catalog, index_path, args.updated_at)
     write_sha256sums(archives + [index_path], args.out_dir / "SHA256SUMS")
     return 0
 

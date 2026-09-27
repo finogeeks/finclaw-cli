@@ -75,7 +75,7 @@ jobs:
             cat "${headers}" >&2
             exit 1
           fi
-          status="$(curl -s -o /dev/null -w '%{http_code}' \
+          status="$(bash scripts/hooks-latest-release-json-status.sh \
             "https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/release.json")"
           LATEST_HTML_URL="${location}" RELEASE_JSON_STATUS="${status}" \
             bash scripts/hooks-latest-guard.sh

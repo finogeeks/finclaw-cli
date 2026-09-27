@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -112,6 +113,17 @@ class LoadRecipeTests(unittest.TestCase):
             with self.assertRaises(pack.PackError):
                 pack.load_recipe(d / "recipe.json")
 
+    def test_pack_one_rejects_symlink_before_staging(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            d = _write_recipe(Path(tmp))
+            os.symlink("/etc/hosts", d / "scripts" / "escaped-hosts")
+            with self.assertRaises(pack.PackError):
+                pack.pack_one(
+                    d,
+                    Path(tmp) / "dist",
+                    "https://example.test/hooks",
+                )
+
     def test_rejects_id_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             d = _write_recipe(Path(tmp), recipe_id="sample-gate", id="other-id")
@@ -145,8 +157,8 @@ class EmptyAndPackTests(unittest.TestCase):
             self.assertEqual(list(out.glob("hooks-*.tar.zst")), [])
 
     def test_pack_one_recipe_when_zstd_available(self) -> None:
-        if shutil.which("zstd") is None and shutil.which("tar") is None:
-            self.skipTest("need tar and/or zstd")
+        if shutil.which("zstd") is None:
+            self.skipTest("need zstd")
         with tempfile.TemporaryDirectory() as tmp:
             recipes = Path(tmp) / "recipes"
             _write_recipe(recipes, "sample-gate")
@@ -176,6 +188,39 @@ class EmptyAndPackTests(unittest.TestCase):
                 "https://example.test/hooks/hooks-sample-gate-0.1.0.tar.zst",
             )
             self.assertEqual(len(rec["versions"][0]["sha256"]), 64)
+
+    def test_only_writes_selected_archive_but_indexes_all_recipes(self) -> None:
+        if shutil.which("zstd") is None:
+            self.skipTest("need zstd")
+        with tempfile.TemporaryDirectory() as tmp:
+            recipes = Path(tmp) / "recipes"
+            _write_recipe(recipes, "alpha-gate")
+            _write_recipe(recipes, "beta-gate")
+            out = Path(tmp) / "dist"
+            rc = pack.main(
+                [
+                    "--recipes-dir",
+                    str(recipes),
+                    "--out-dir",
+                    str(out),
+                    "--asset-base-url",
+                    "https://example.test/hooks",
+                    "--updated-at",
+                    "2026-09-26T00:00:00Z",
+                    "--only",
+                    "alpha-gate",
+                ]
+            )
+            self.assertEqual(rc, 0)
+            self.assertEqual(
+                [p.name for p in out.glob("hooks-*.tar.zst")],
+                ["hooks-alpha-gate-0.1.0.tar.zst"],
+            )
+            index = json.loads((out / "hooks-index.json").read_text(encoding="utf-8"))
+            self.assertEqual(
+                [recipe["id"] for recipe in index["recipes"]],
+                ["alpha-gate", "beta-gate"],
+            )
 
 
 if __name__ == "__main__":
