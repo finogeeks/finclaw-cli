@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "tsx --test lib/*.test.ts"
+    "test": "tsx --test lib/*.test.ts recipes/*/src/*.test.ts"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",

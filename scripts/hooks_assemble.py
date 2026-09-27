@@ -9,7 +9,7 @@ from pathlib import Path
 
 from hooks_pack import load_recipe
 
-REQUIRE_REWRITE = 'require("../../lib/'
+REQUIRE_REWRITE = 'require("../../../lib/'
 REQUIRE_LOCAL = 'require("./lib/'
 
 

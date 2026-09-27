@@ -40,7 +40,7 @@ fs.mkdirSync("dist/recipes/sample-node/src", { recursive: true });
 fs.mkdirSync("dist/lib", { recursive: true });
 fs.writeFileSync(
   "dist/recipes/sample-node/src/main.js",
-  'const honour = require("../../lib/honour");\\nvoid honour;\\n',
+  'const honour = require("../../../lib/honour");\\nvoid honour;\\n',
 );
 fs.writeFileSync("dist/lib/honour.js", "module.exports = {};\\n");
 fs.writeFileSync("dist/lib/honour.test.js", "throw new Error('not shipped');\\n");
@@ -48,7 +48,7 @@ fs.writeFileSync("dist/lib/honour.test.js", "throw new Error('not shipped');\\n"
         encoding="utf-8",
     )
     (recipe / "src" / "main.ts").write_text(
-        'import "../../lib/honour";\n', encoding="utf-8"
+        'import "../../../lib/honour";\n', encoding="utf-8"
     )
     (recipe / "README.md").write_text("Fixture recipe.\n", encoding="utf-8")
     (recipe / "routes.json").write_text("{}\n", encoding="utf-8")
@@ -101,7 +101,7 @@ class AssembleTests(unittest.TestCase):
             self.assertFalse((recipe / "scripts" / "lib" / "honour.test.js").exists())
             text = main.read_text(encoding="utf-8")
             self.assertIn('require("./lib/', text)
-            self.assertNotIn('require("../../lib/', text)
+            self.assertNotIn('require("../../../lib/', text)
             hooks_pack.load_recipe(recipe / "recipe.json")
 
     @unittest.skipUnless(shutil.which("zstd"), "need zstd")
