@@ -91,8 +91,9 @@ extra:
     index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
-See [hooks.md](hooks.md) for the official trio and
-[hooks-develop.md](hooks-develop.md) to write a hook. This does not
+See [hooks.md](hooks.md) for the official trio (including TypeSafe /
+Jev via `FINCLAW_HOOK_JUDGE_TOKEN`, not `TYPESAFE_API_KEY` in the child)
+and [hooks-develop.md](hooks-develop.md) to write a hook. This does not
 change `finclaw update`.
 
 ## Post-turn learning

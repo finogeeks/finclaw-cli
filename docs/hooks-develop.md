@@ -16,7 +16,9 @@ Two ways to ship a hook:
    JS, `recipe.json`. Recipients install from a catalog URL, or you copy
    the tree into a profile and merge `hooks.json` yourself.
 
-Do not name recipes after third-party assistants or judgment products.
+Recipe **ids** must not be named after TypeSafe, Jev, or other judgment
+products. The official trio still documents those products as the
+configured backend (see [hooks.md](hooks.md#typesafe--jev)).
 
 ## Hand-written `hooks.json`
 
@@ -136,8 +138,19 @@ Caps: `user_text` / `assistant_text` 8192 UTF-8 bytes; at most 32
 Working directory is the session workspace. Environment is the parent
 minus stripped secret names (`*_API_KEY`, configured LLM key names,
 internal tokens, `FINSAFE_LICENSE*`). The runner adds `FINCLAW_HOOK_EVENT`
-and `FINCLAW_PROFILE`. A judgment client must use a name that is **not**
-stripped, for example `FINCLAW_HOOK_JUDGE_TOKEN`. There is no `pass_env`.
+and `FINCLAW_PROFILE`. There is no `pass_env`.
+
+`TYPESAFE_API_KEY` is stripped with every other `*_API_KEY`. Official
+recipes therefore read `FINCLAW_HOOK_JUDGE_TOKEN` and call TypeSafe
+System One (`https://api.typesafe.ai/v1/systemone`, model `jev-latest`).
+If you already have a TypeSafe or `mcp_jev` key, copy it:
+
+```bash
+export FINCLAW_HOOK_JUDGE_TOKEN="$TYPESAFE_API_KEY"
+```
+
+Do not spawn `mcp_jev` from a hook command unless you are writing a
+different recipe. There is no `pass_env` to re-admit `TYPESAFE_API_KEY`.
 
 ### Stdout and exit codes
 

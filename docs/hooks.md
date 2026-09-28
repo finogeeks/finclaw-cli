@@ -46,8 +46,9 @@ finclaw hooks catalog
 ```
 
 There is no `finclaw hooks install suite`. Install and trust each id you
-want. Recipes are ordinary scripts. They do not require a particular
-judgment engine unless you set one locally.
+want. The official trio can run without a judge token (`tool-gate` still
+uses built-in rules). Remote judgment uses **TypeSafe System One**
+(default model **Jev**) — see [TypeSafe / Jev](#typesafe--jev).
 
 ### Requirements
 
@@ -57,10 +58,11 @@ judgment engine unless you set one locally.
   0.13.0 the recipes still install; `tool-gate` can still hard-deny;
   `ask` / `updatedModel` / Stop `reject` are ignored.
 - Published `min_cli` on the catalog is still `0.13.0` (install).
-- Optional `FINCLAW_HOOK_JUDGE_TOKEN` enables remote judgment in
-  `tool-gate` and `turn-router`, and enables `turn-review`. Without it,
-  `tool-gate` still asks or denies by built-in rules; the other two emit
-  no decision.
+- Optional `FINCLAW_HOOK_JUDGE_TOKEN` (a TypeSafe API key, **not**
+  `TYPESAFE_API_KEY` in the child — see [TypeSafe / Jev](#typesafe--jev))
+  enables remote judgment in `tool-gate` and `turn-router`, and enables
+  `turn-review`. Without it, `tool-gate` still asks or denies by
+  built-in rules; the other two emit no decision.
 - `0.13.0` binaries default to a retired catalog tag. Point them at
   `hook-catalog` (see [Default catalog URL](#default-catalog-url)) or
   upgrade to 0.13.1+, which uses that URL by default.
@@ -102,17 +104,42 @@ before anything is spawned.
 
 Revoke with `finclaw hooks revoke` (handler id or `--recipe <id>`).
 
-### Optional remote judgment
+### TypeSafe / Jev
 
-Set a dedicated token in the parent environment (not `*_API_KEY`, which
-hook children do not inherit):
+The official recipes call [TypeSafe System One](https://docs.typesafe.ai)
+over HTTP (`POST /v1/systemone`). The default model id is `jev-latest`
+(**Jev**). They do **not** start `mcp_jev` or any other MCP server.
+
+TypeSafe (and `mcp_jev`, if you already use it) store the key as
+`TYPESAFE_API_KEY`. FinClaw **strips every `*_API_KEY`** from hook
+children, so that name never reaches the recipe. Copy the same secret
+into a name that is not stripped:
 
 ```bash
-export FINCLAW_HOOK_JUDGE_TOKEN="…"
-# optional
-export FINCLAW_HOOK_JUDGE_BASE_URL="https://…"
-export FINCLAW_HOOK_JUDGE_MODEL="…"
+# POSIX — same value as TYPESAFE_API_KEY / ~/.mcp_jev/.env
+export FINCLAW_HOOK_JUDGE_TOKEN="$TYPESAFE_API_KEY"
 ```
+
+```powershell
+# Windows PowerShell
+$env:FINCLAW_HOOK_JUDGE_TOKEN = $env:TYPESAFE_API_KEY
+```
+
+If `TYPESAFE_API_KEY` is only in `~/.mcp_jev/.env` and not in the
+current shell, set `FINCLAW_HOOK_JUDGE_TOKEN` from that file yourself.
+Do not put the key in `hooks.json`, `config.yaml`, or a git-tracked
+file.
+
+| Variable | Role | Default |
+| --- | --- | --- |
+| `FINCLAW_HOOK_JUDGE_TOKEN` | Bearer token for TypeSafe | unset (no remote judgment) |
+| `FINCLAW_HOOK_JUDGE_BASE_URL` | API origin | `https://api.typesafe.ai` |
+| `FINCLAW_HOOK_JUDGE_MODEL` | System One model | `jev-latest` |
+
+Without the token: `tool-gate` still asks or denies by its built-in
+rules; `turn-router` does not change the model; `turn-review` lets the
+answer through. If the TypeSafe call fails or times out, `tool-gate`
+falls back to those rules; the other two emit no decision.
 
 ### Router lanes
 

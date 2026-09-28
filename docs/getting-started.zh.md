@@ -209,7 +209,7 @@ finclaw serve
 
 **技能包（Skill packs）：** 使用 `finclaw skills` 子命令可配置远程 hub、校验安装、从索引安装/更新/卸载，也可手动放入 `~/.finclaw/profiles/<name>/skills/<id>/`。完整参数以 `finclaw skills --help` 为准。
 
-**命令钩子：** 可选的本地命令，在工具与会话事件上运行。官方配方为 `tool-gate`、`turn-router`、`turn-review`（`finclaw hooks catalog` / `install` / `trust`）。`finclaw update` 不会安装它们。见 [hooks.zh.md](hooks.zh.md)。编写钩子见 [hooks-develop.zh.md](hooks-develop.zh.md)。
+**命令钩子：** 可选的本地命令，在工具与会话事件上运行。官方配方为 `tool-gate`、`turn-router`、`turn-review`（`finclaw hooks catalog` / `install` / `trust`）。`finclaw update` 不会安装它们。远程判断为 TypeSafe / Jev，用 `FINCLAW_HOOK_JUDGE_TOKEN`（子进程里不要指望 `TYPESAFE_API_KEY`）。见 [hooks.zh.md](hooks.zh.md#typesafe--jev)。编写钩子见 [hooks-develop.zh.md](hooks-develop.zh.md)。
 
 ---
 
