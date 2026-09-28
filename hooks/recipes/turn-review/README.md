@@ -2,8 +2,9 @@
 
 `turn-review` is a Stop hook that can reject an assistant answer when the
 answer is unsupported by the turn's tool results or is empty or a placeholder.
-It requires `node` on `PATH`, including on Windows, and finclaw CLI version
-`0.13.0` or newer.
+It requires `node` on `PATH`, including on Windows. Install needs CLI
+`0.13.0` or newer. Stop `reject` needs CLI **0.13.1**. See
+[docs/hooks.md](../../../docs/hooks.md).
 
 ## Hook wiring
 

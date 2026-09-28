@@ -2,54 +2,86 @@
 
 **Chinese:** [hooks.zh.md](hooks.zh.md)
 
-Command hooks are **opt-in** shell commands FinClaw can run at lifecycle
-events (for example `PreToolUse`). They are **not** installed by
-`finclaw update` and they are **not** on by default.
+**Write or pack a hook:** [hooks-develop.md](hooks-develop.md)
+
+Command hooks are **opt-in** local shell commands FinClaw can run at
+lifecycle events (for example before a tool runs, or when you send a
+prompt). They are **off by default**. `finclaw update` only replaces the
+CLI binary; it does **not** install recipes.
 
 **Authoritative flags:** `finclaw hooks --help` on your installed build.
-If your binary has no `hooks` subcommand, upgrade before following this
-page.
+If your binary has no `hooks` subcommand, upgrade first.
 
-## What you install
+## What the mechanism is
+
+FinClaw reads `<profile>/hooks.json` and `<workspace>/.finclaw/hooks.json`.
+Each handler is a command. After you **trust** its hash, the host copies
+that handler into the running agent. The agent never reads `hooks.json`
+itself.
+
+Nothing is spawned until you trust. Interactive `finclaw chat` asks when
+a handler is new or its hash changed. `finclaw chat -m …`, no TTY, and
+daemons skip untrusted handlers.
+
+Hook children run with the same privileges as the FinClaw process. Trust
+is a review gate, not an OS sandbox. Policies (`finclaw policy`) stay a
+separate layer — see [security-and-policies.md](security-and-policies.md).
+
+## What is available (official catalog)
 
 Official **hook recipes** are versioned packs on this repository’s
-`hook-catalog` GitHub Release (prerelease, never `latest`). Git sources live in
-[`hooks/recipes/`](../hooks/recipes/).
+`hook-catalog` GitHub Release (prerelease, never GitHub `latest`).
+Sources live in [`hooks/recipes/`](../hooks/recipes/).
 
-The published catalog includes three official recipes:
+| Id | Event | What it does | Per-recipe notes |
+| --- | --- | --- | --- |
+| `tool-gate` | `PreToolUse` | Allow, **ask**, or **deny** mutating tools (`exec`, jobs, writes, patches) | [tool-gate/README.md](../hooks/recipes/tool-gate/README.md) |
+| `turn-router` | `UserPromptSubmit` | Route a safe turn to a **same-provider** cheap/strong model | [turn-router/README.md](../hooks/recipes/turn-router/README.md) |
+| `turn-review` | `Stop` | **Reject** an empty, placeholder, or unsupported assistant answer | [turn-review/README.md](../hooks/recipes/turn-review/README.md) |
 
-| Id | Event | Summary |
-| --- | --- | --- |
-| `tool-gate` | `PreToolUse` | Gate mutating tools (exec, writes, patches) |
-| `turn-router` | `UserPromptSubmit` | Route safe turns to a configured model lane |
-| `turn-review` | `Stop` | Reject answers that are empty or unsupported by tool results |
+List what the public index currently advertises:
 
-Recipes are ordinary scripts. They do not require a particular judgment
-engine beyond what you configure locally.
+```bash
+finclaw hooks catalog
+```
 
-### Requirements and limits
+There is no `finclaw hooks install suite`. Install and trust each id you
+want. Recipes are ordinary scripts. They do not require a particular
+judgment engine unless you set one locally.
 
-- Requires finclaw CLI `--version` ≥ `0.13.0`.
-- Requires `node` on `PATH` (including on Windows).
+### Requirements
+
+- **Install / trust / hard deny:** CLI `--version` ≥ `0.13.0` and `node`
+  on `PATH` (including Windows).
+- **Ask, model route, and Stop reject:** CLI **0.13.1** or newer. On
+  0.13.0 the recipes still install; `tool-gate` can still hard-deny;
+  `ask` / `updatedModel` / Stop `reject` are ignored.
+- Published `min_cli` on the catalog is still `0.13.0` (install).
 - Optional `FINCLAW_HOOK_JUDGE_TOKEN` enables remote judgment in
-  `tool-gate` and `turn-router`, and enables `turn-review`. Without the
-  token, `tool-gate` still asks or denies by its built-in rules;
-  `turn-router` and `turn-review` do nothing (no route change, no review).
-- `turn-router` only switches among models on the **same provider** as the
-  active session; it cannot change provider, base URL, or credentials.
-  It cannot see the provider's live model allow list, so the host ignores a
-  configured model id that is not allowed.
-- `turn-review` cannot start a second inference; when it rejects a Stop
-  event, the reason is a fixed template and is **not** an injected
-  assistant message. Tools that already ran stay run.
-- `tool-gate` uses `failurePolicy: deny`: if the hook process fails or
-  times out, the matching tool request is denied.
-- Each hook check runs in a **new process**; handlers do not share memory
-  across events.
-- On Unix, the host starts command hooks through `$SHELL -lc`; a heavy login
-  shell can make hook startup slow.
+  `tool-gate` and `turn-router`, and enables `turn-review`. Without it,
+  `tool-gate` still asks or denies by built-in rules; the other two emit
+  no decision.
+- `0.13.0` binaries default to a retired catalog tag. Point them at
+  `hook-catalog` (see [Default catalog URL](#default-catalog-url)) or
+  upgrade to 0.13.1+, which uses that URL by default.
 
-## Recipient flow
+### Honest limits
+
+- `turn-router` cannot change provider, base URL, or credentials, and
+  cannot see the live allow list. The host ignores a model id that is
+  not allowed for the active provider.
+- `turn-review` cannot start a second inference. A reject reason is a
+  fixed template, not an injected assistant message. Tools that already
+  ran stay run.
+- `tool-gate` uses `failurePolicy: deny`: if that hook process fails or
+  times out, the matching tool request is denied.
+- Each check is a **new process**. Handlers do not share memory.
+- On Unix the host starts commands with `$SHELL -lc`. A heavy login
+  shell (for example some `fish` configs) can make startup slow or fail
+  to expand `${FINCLAW_PROFILE_ROOT}`. Use a POSIX `SHELL` if that
+  happens.
+
+## Configure and install
 
 ```bash
 finclaw hooks catalog
@@ -63,15 +95,33 @@ finclaw hooks trust --recipe turn-review
 finclaw hooks remove tool-gate
 ```
 
-`install` writes files into the **active profile**
-(`<profile>/hooks/<id>/` plus entries in `<profile>/hooks.json`).
-It never writes `$FINCLAW_HOME/hooks-trust.json`. Nothing is spawned
-until you trust the hashes.
+`install` writes the **active profile** only (`<profile>/hooks/<id>/`
+plus entries in `<profile>/hooks.json`). It never writes
+`$FINCLAW_HOME/hooks-trust.json`. Review hashes with `hooks trust`
+before anything is spawned.
 
-`finclaw update` only replaces the CLI binary. It does not read
-`hooks-index.json`.
+Revoke with `finclaw hooks revoke` (handler id or `--recipe <id>`).
 
-## Default catalog URL
+### Optional remote judgment
+
+Set a dedicated token in the parent environment (not `*_API_KEY`, which
+hook children do not inherit):
+
+```bash
+export FINCLAW_HOOK_JUDGE_TOKEN="…"
+# optional
+export FINCLAW_HOOK_JUDGE_BASE_URL="https://…"
+export FINCLAW_HOOK_JUDGE_MODEL="…"
+```
+
+### Router lanes
+
+After install, edit
+`<profile>/hooks/turn-router/routes.json` (cheap/strong ids per
+provider). Re-trust the recipe after that edit. See the
+[turn-router README](../hooks/recipes/turn-router/README.md).
+
+### Default catalog URL
 
 ```text
 https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json
@@ -85,12 +135,15 @@ extra:
     index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
-## Trust
+`finclaw update` does not read `hooks-index.json`.
 
-Interactive `finclaw chat` prompts when a handler is untrusted or its
-hash changed. Non-interactive chat and daemons skip untrusted handlers.
+## Hand-written hooks
 
-Revoke with `finclaw hooks revoke` (handler id or `--recipe <id>`).
+You can skip the catalog and put commands in
+`<profile>/hooks.json` or `<workspace>/.finclaw/hooks.json`. Then
+`finclaw hooks list` and `finclaw hooks trust`. How to write those
+files, stdin/stdout shapes, and how official recipes are built:
+[hooks-develop.md](hooks-develop.md).
 
 ## Not skills and not MCP
 
@@ -99,6 +152,7 @@ A recipe must not bundle those.
 
 ## Related
 
-- [security-and-policies.md](security-and-policies.md) — exec / HTTP / tool-invocation policies (separate from hooks)
+- [hooks-develop.md](hooks-develop.md) — author `hooks.json` or a recipe
+- [security-and-policies.md](security-and-policies.md) — exec / HTTP / tool-invocation policies
 - [skills.md](skills.md) — skill hubs
 - [reference-commands.md](reference-commands.md) — command index

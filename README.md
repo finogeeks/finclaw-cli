@@ -100,6 +100,13 @@ After enough turns, a background review can write **facts to memory** and **proc
 ### Skills & markets
 Install packs from hubs and public sources; curate agent-authored skills. Guide: **[docs/skills.md](docs/skills.md)**.
 
+### Command hooks (opt-in)
+Local commands at tool and session events. Official recipes `tool-gate`,
+`turn-router`, and `turn-review` install from the `hook-catalog` release.
+Off by default; `finclaw update` does not install them. Guide:
+**[docs/hooks.md](docs/hooks.md)**. Author a hook:
+**[docs/hooks-develop.md](docs/hooks-develop.md)**.
+
 ### Profiles & policy
 Templates (`general`, `coder`, `researcher`), per-profile policies, identity, and capability. Guides: **[docs/profiles.md](docs/profiles.md)**, **[docs/security-and-policies.md](docs/security-and-policies.md)**.
 
@@ -237,6 +244,7 @@ Everything end users need lives **in this repository**. Index: **[docs/README.md
 | Security & policies | [security-and-policies.md](docs/security-and-policies.md) | [security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | Skills | [skills.md](docs/skills.md) | [skills.zh.md](docs/skills.zh.md) |
 | Command hooks (opt-in recipes) | [hooks.md](docs/hooks.md) | [hooks.zh.md](docs/hooks.zh.md) |
+| Write command hooks | [hooks-develop.md](docs/hooks-develop.md) | [hooks-develop.zh.md](docs/hooks-develop.zh.md) |
 | Post-turn learning | [learning.md](docs/learning.md) | [learning.zh.md](docs/learning.zh.md) |
 | Chat & operations (`serve` / `--lazy`) | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | **ACP / Zed** | [acp.md](docs/acp.md) | [acp.zh.md](docs/acp.zh.md) |

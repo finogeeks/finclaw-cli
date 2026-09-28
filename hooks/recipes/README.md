@@ -4,7 +4,9 @@ This directory is the **git source** for recipes published to the
 `hook-catalog` prerelease on this repository.
 
 The installed `finclaw` binary does not contain these files. Recipients
-run `finclaw hooks catalog` / `install` / `trust` / `remove`.
+run `finclaw hooks catalog` / `install` / `trust` / `remove`. User guide:
+[docs/hooks.md](../../docs/hooks.md). How to write a hook or pack a
+recipe: [docs/hooks-develop.md](../../docs/hooks-develop.md).
 
 ## Official recipes
 
@@ -43,4 +45,4 @@ recipe. `recipe.json` uses schema `hooks.recipe.v1`.
 
 - CLI test fixtures (`echo-deny`) never belong in this tree.
 - `$FINCLAW_HOME/hooks-trust.json` is per-machine trust, not a recipe.
-- Do not commit `.tar.zst` archives; the `hooks` release is the fetch surface.
+- Do not commit `.tar.zst` archives; the `hook-catalog` release is the fetch surface.

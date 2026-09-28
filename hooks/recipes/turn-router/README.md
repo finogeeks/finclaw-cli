@@ -1,8 +1,9 @@
 # turn-router
 
 `turn-router` is a UserPromptSubmit hook that selects a configured model lane
-for safe user turns. It requires `node` on `PATH`, including on Windows, and
-finclaw CLI version `0.13.0` or newer.
+for safe user turns. It requires `node` on `PATH`, including on Windows.
+Install needs CLI `0.13.0` or newer. Honouring `updatedModel` needs CLI
+**0.13.1**. See [docs/hooks.md](../../../docs/hooks.md).
 
 ## Hook wiring
 

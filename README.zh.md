@@ -94,6 +94,12 @@ HTTP。没有这类网络条件时，再用对端共享。
 ### 技能与市场
 从市场与公开源安装技能包，管理 Agent 自写技能。指南：**[docs/skills.zh.md](docs/skills.zh.md)**。
 
+### 命令钩子（可选）
+在工具与会话事件上运行本地命令。官方配方 `tool-gate`、`turn-router`、
+`turn-review` 从 `hook-catalog` Release 安装。默认关闭；`finclaw update`
+不会安装它们。指南：**[docs/hooks.zh.md](docs/hooks.zh.md)**。编写钩子：
+**[docs/hooks-develop.zh.md](docs/hooks-develop.zh.md)**。
+
 ### 配置档与策略
 模板（`general` / `coder` / `researcher`）、按档策略、身份与能力。指南：**[docs/profiles.zh.md](docs/profiles.zh.md)**、**[docs/security-and-policies.zh.md](docs/security-and-policies.zh.md)**。
 
@@ -230,6 +236,7 @@ finclaw a2a probe <peer-id>
 | 安全与策略 | [security-and-policies.md](docs/security-and-policies.md) | [security-and-policies.zh.md](docs/security-and-policies.zh.md) |
 | 技能 | [skills.md](docs/skills.md) | [skills.zh.md](docs/skills.zh.md) |
 | 命令钩子（可选配方） | [hooks.md](docs/hooks.md) | [hooks.zh.md](docs/hooks.zh.md) |
+| 编写命令钩子 | [hooks-develop.md](docs/hooks-develop.md) | [hooks-develop.zh.md](docs/hooks-develop.zh.md) |
 | 回合后学习 | [learning.md](docs/learning.md) | [learning.zh.md](docs/learning.zh.md) |
 | 聊天与运维（`serve` / `--lazy`） | [chat-and-operations.md](docs/chat-and-operations.md) | [chat-and-operations.zh.md](docs/chat-and-operations.zh.md) |
 | **ACP / Zed** | [acp.md](docs/acp.md) | [acp.zh.md](docs/acp.zh.md) |

@@ -10,7 +10,8 @@ Finclaw loads skills from the **active profile** and from additional scan roots 
 
 **Authoritative:** `finclaw skills --help` and subcommand help for your build.
 
-Official **command-hook recipes** are a different surface — see [hooks.md](hooks.md).
+Official **command-hook recipes** are a different surface — see [hooks.md](hooks.md)
+(install) and [hooks-develop.md](hooks-develop.md) (write one).
 `finclaw update` does not install them.
 
 ## Why `skills check` matters

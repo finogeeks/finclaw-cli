@@ -8,8 +8,9 @@
 - `edit_file`
 - `apply_patch`
 
-The recipe requires `node` on `PATH`, including on Windows. It requires
-finclaw CLI version `0.13.0` or newer.
+The recipe requires `node` on `PATH`, including on Windows. Install needs
+finclaw CLI `0.13.0` or newer. `permissionDecision: "ask"` needs CLI
+**0.13.1**. See [docs/hooks.md](../../../docs/hooks.md).
 
 ## Hook wiring
 
