@@ -91,7 +91,9 @@ extra:
     index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
-See [hooks.md](hooks.md). This does not change `finclaw update`.
+See [hooks.md](hooks.md) for the official trio and
+[hooks-develop.md](hooks-develop.md) to write a hook. This does not
+change `finclaw update`.
 
 ## Post-turn learning
 

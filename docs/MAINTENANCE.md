@@ -26,12 +26,14 @@ These notes are for people who edit documentation in the **finclaw-cli** public 
 9. Add a short “as of / behavior note” in the doc if a release introduces a breaking or notable change.
 10. Run through `finclaw --help` and the relevant `finclaw <cmd> --help` to avoid documenting removed flags.
 11. **Command hooks / official recipes** — if `finclaw hooks` subcommands,
-    the rolling `hooks` release, or `hooks/recipes/` layout change, update
-    [hooks.md](hooks.md) / [hooks.zh.md](hooks.zh.md) and the index rows in
-    [README.md](../README.md), [README.zh.md](../README.zh.md), and
-    [docs/README.md](README.md). Do not document unpublished private
-    runtime paths. Do not brand recipes after third-party tutorials or
-    judgment engines. Reserved first official id: `tool-gate`.
+    the `hook-catalog` release, honour behaviour, or `hooks/recipes/`
+    layout change, update [hooks.md](hooks.md) / [hooks.zh.md](hooks.zh.md),
+    [hooks-develop.md](hooks-develop.md) / [hooks-develop.zh.md](hooks-develop.zh.md),
+    and the index rows in [README.md](../README.md),
+    [README.zh.md](../README.zh.md), and [docs/README.md](README.md). Do
+    not document unpublished private runtime paths. Do not brand recipes
+    after third-party tutorials or judgment engines. Official ids:
+    `tool-gate`, `turn-router`, `turn-review`.
 
 ## Bilingual files
 

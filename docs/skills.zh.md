@@ -10,7 +10,8 @@ Finclaw 从**活动 profile** 以及该 profile 配置的额外扫描根目录�
 
 **以本机 `finclaw skills --help` 及各子命令 `--help` 为准。**
 
-官方**命令钩子配方**是另一套能力 — 见 [hooks.zh.md](hooks.zh.md)。
+官方**命令钩子配方**是另一套能力 — 见 [hooks.zh.md](hooks.zh.md)
+（安装）与 [hooks-develop.zh.md](hooks-develop.zh.md)（编写）。
 `finclaw update` 不会安装它们。
 
 ## 为何需要 `skills check`

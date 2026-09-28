@@ -91,7 +91,9 @@ extra:
     index_url: "https://github.com/finogeeks/finclaw-cli/releases/download/hook-catalog/hooks-index.json"
 ```
 
-见 [hooks.zh.md](hooks.zh.md)。这不改变 `finclaw update` 的行为。
+见 [hooks.zh.md](hooks.zh.md)（官方三件套）与
+[hooks-develop.zh.md](hooks-develop.zh.md)（编写钩子）。这不改变
+`finclaw update` 的行为。
 
 ## 回合后学习
 

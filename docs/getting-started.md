@@ -211,6 +211,8 @@ Use `finclaw profile --help` for copy/backup flows.
 
 **Skills:** configure hubs with `finclaw skills list` / `check` / `hubs` / `install`, or drop packs into `~/.finclaw/profiles/<name>/skills/<id>/`. Use `finclaw skills --help` for all flags.
 
+**Command hooks:** opt-in local commands at tool and session events. Official recipes are `tool-gate`, `turn-router`, and `turn-review` (`finclaw hooks catalog` / `install` / `trust`). They are not installed by `finclaw update`. See [hooks.md](hooks.md). To write a hook, see [hooks-develop.md](hooks-develop.md).
+
 ---
 
 ## 6. What to explore next
@@ -221,6 +223,7 @@ Use `finclaw profile --help` for copy/backup flows.
 | Let the agent **learn** memory & skills after turns | [learning.md](learning.md) · `finclaw learning status` |
 | Talk to other agents (**A2A**) | [a2a.md](a2a.md) |
 | Tighten policies / approvals | [security-and-policies.md](security-and-policies.md) |
+| Opt-in **command hooks** (gate / route / review recipes) | [hooks.md](hooks.md) · [hooks-develop.md](hooks-develop.md) |
 
 ---
 

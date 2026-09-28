@@ -209,6 +209,8 @@ finclaw serve
 
 **技能包（Skill packs）：** 使用 `finclaw skills` 子命令可配置远程 hub、校验安装、从索引安装/更新/卸载，也可手动放入 `~/.finclaw/profiles/<name>/skills/<id>/`。完整参数以 `finclaw skills --help` 为准。
 
+**命令钩子：** 可选的本地命令，在工具与会话事件上运行。官方配方为 `tool-gate`、`turn-router`、`turn-review`（`finclaw hooks catalog` / `install` / `trust`）。`finclaw update` 不会安装它们。见 [hooks.zh.md](hooks.zh.md)。编写钩子见 [hooks-develop.zh.md](hooks-develop.zh.md)。
+
 ---
 
 ## 6. 接下来可以探索
@@ -219,6 +221,7 @@ finclaw serve
 | 让 Agent 在回合后**学习**记忆与技能 | [learning.zh.md](learning.zh.md) · `finclaw learning status` |
 | 与其他 Agent 协作（**A2A**） | [a2a.zh.md](a2a.zh.md) |
 | 收紧策略 / 审批 | [security-and-policies.zh.md](security-and-policies.zh.md) |
+| 可选**命令钩子**（门禁 / 路由 / 审查配方） | [hooks.zh.md](hooks.zh.md) · [hooks-develop.zh.md](hooks-develop.zh.md) |
 
 ---
 

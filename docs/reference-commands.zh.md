@@ -23,7 +23,7 @@
 | 凭据、令牌等 | `finclaw auth` |
 | 定时任务 | `finclaw cron` |
 | 技能（hub、ClawHub、安装） | `finclaw skills` |
-| 命令钩子 / 官方配方 | `finclaw hooks` — 见 [hooks.zh.md](hooks.zh.md) |
+| 命令钩子 / 官方配方 | `finclaw hooks` — 见 [hooks.zh.md](hooks.zh.md) · 编写：[hooks-develop.zh.md](hooks-develop.zh.md) |
 | 回合后学习（记忆/技能审阅） | `finclaw learning` — 见 [learning.zh.md](learning.zh.md) |
 | 工具注册表 | `finclaw tools` |
 | 合同/一致性检查 | `finclaw conformance` |
