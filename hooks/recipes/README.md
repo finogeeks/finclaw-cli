@@ -17,13 +17,16 @@ recipe: [docs/hooks-develop.md](../../docs/hooks-develop.md).
 | `turn-review` | `Stop` | Reject unsupported or empty assistant answers |
 
 Each recipe requires finclaw CLI `--version` ≥ `0.13.0` and `node` on `PATH`
-(including on Windows). Set optional `FINCLAW_HOOK_JUDGE_TOKEN` to enable
-remote judgment in `tool-gate` and `turn-router`, and to enable
-`turn-review`. Without that token, `tool-gate` still asks or denies matching
+(including on Windows). Remote judgment is TypeSafe System One (default
+model `jev-latest`, Jev). Copy `TYPESAFE_API_KEY` into
+`FINCLAW_HOOK_JUDGE_TOKEN` — the host strips `*_API_KEY` from hook
+children. Without that token, `tool-gate` still asks or denies matching
 tool requests by its built-in rules; `turn-router` and `turn-review` emit no
-output and do not change routing or review.
+output and do not change routing or review. See
+[docs/hooks.md](../../docs/hooks.md#typesafe--jev).
 
-Do not name new recipes after external product or assistant brands.
+Recipe **ids** must not be named after TypeSafe, Jev, or other judgment
+products. Documenting those products as the configured backend is fine.
 
 ## Layout
 

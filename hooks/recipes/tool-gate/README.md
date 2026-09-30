@@ -23,9 +23,13 @@ Without configuration, the gate denies destructive or sensitive requests and
 asks for approval for every other matching request. It never silently allows a
 request in this deterministic mode.
 
-Set `FINCLAW_HOOK_JUDGE_TOKEN` to enable the optional remote judgment step.
-`FINCLAW_HOOK_JUDGE_BASE_URL` and `FINCLAW_HOOK_JUDGE_MODEL` can override its
-endpoint and model.
+Remote judgment uses TypeSafe System One (default model `jev-latest`,
+Jev). Copy your TypeSafe key — the same secret as `TYPESAFE_API_KEY` /
+`~/.mcp_jev/.env` — into `FINCLAW_HOOK_JUDGE_TOKEN`. FinClaw strips
+`*_API_KEY` from hook children, so `TYPESAFE_API_KEY` alone does nothing
+here. Optional: `FINCLAW_HOOK_JUDGE_BASE_URL` (default
+`https://api.typesafe.ai`) and `FINCLAW_HOOK_JUDGE_MODEL`. Full setup:
+[docs/hooks.md](../../../docs/hooks.md#typesafe--jev).
 
 The handler uses `failurePolicy: deny`: if the hook process cannot run or
 times out, the matching tool request is denied.

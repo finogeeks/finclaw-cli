@@ -10,9 +10,14 @@ Install needs CLI `0.13.0` or newer. Honouring `updatedModel` needs CLI
 - Command: `node scripts/main.js`
 - Matcher: `*` (the recipe omits the field, which matches every event)
 
-Set `FINCLAW_HOOK_JUDGE_TOKEN` to enable the optional remote judgment step.
-`FINCLAW_HOOK_JUDGE_BASE_URL` and `FINCLAW_HOOK_JUDGE_MODEL` can override its
-endpoint and model.
+Remote judgment uses TypeSafe System One (default model `jev-latest`,
+Jev). Copy your TypeSafe key — the same secret as `TYPESAFE_API_KEY` /
+`~/.mcp_jev/.env` — into `FINCLAW_HOOK_JUDGE_TOKEN`. FinClaw strips
+`*_API_KEY` from hook children, so `TYPESAFE_API_KEY` alone does nothing
+here. Without that token the router emits no decision. Optional:
+`FINCLAW_HOOK_JUDGE_BASE_URL` (default `https://api.typesafe.ai`) and
+`FINCLAW_HOOK_JUDGE_MODEL`. Full setup:
+[docs/hooks.md](../../../docs/hooks.md#typesafe--jev).
 
 ## Configure routes
 

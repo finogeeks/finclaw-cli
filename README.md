@@ -103,8 +103,9 @@ Install packs from hubs and public sources; curate agent-authored skills. Guide:
 ### Command hooks (opt-in)
 Local commands at tool and session events. Official recipes `tool-gate`,
 `turn-router`, and `turn-review` install from the `hook-catalog` release.
-Off by default; `finclaw update` does not install them. Guide:
-**[docs/hooks.md](docs/hooks.md)**. Author a hook:
+Off by default; `finclaw update` does not install them. TypeSafe / Jev
+setup (copy `TYPESAFE_API_KEY` into `FINCLAW_HOOK_JUDGE_TOKEN`):
+**[docs/hooks.md](docs/hooks.md#typesafe--jev)**. Author a hook:
 **[docs/hooks-develop.md](docs/hooks-develop.md)**.
 
 ### Profiles & policy

@@ -14,7 +14,8 @@
    TypeScript 源码、组装后的 JS、`recipe.json`。接收方从目录 URL 安装，
    或你把目录拷进配置档并自行合并 `hooks.json`。
 
-不要用第三方助手或判断产品来给配方命名。
+配方 **id** 不要用 TypeSafe、Jev 或其他判断产品命名。官方三件套仍会把
+这些产品写成已配置的后端（见 [hooks.zh.md](hooks.zh.md#typesafe--jev)）。
 
 ## 手写 `hooks.json`
 
@@ -128,8 +129,19 @@ FinClaw 工具名（`exec`、`write_file`、MCP 名等）。省略或 `*` 匹配
 
 工作目录是会话工作区。环境继承自父进程，但会去掉密钥名（`*_API_KEY`、
 已配置的 LLM 密钥名、内部令牌、`FINSAFE_LICENSE*`）。运行器会加入
-`FINCLAW_HOOK_EVENT` 与 `FINCLAW_PROFILE`。判断客户端必须使用**不会被去掉**
-的名字，例如 `FINCLAW_HOOK_JUDGE_TOKEN`。没有 `pass_env`。
+`FINCLAW_HOOK_EVENT` 与 `FINCLAW_PROFILE`。没有 `pass_env`。
+
+`TYPESAFE_API_KEY` 会随其他 `*_API_KEY` 一起被去掉。因此官方配方读取
+`FINCLAW_HOOK_JUDGE_TOKEN`，并调用 TypeSafe System One
+（`https://api.typesafe.ai/v1/systemone`，模型 `jev-latest`）。若你已有
+TypeSafe 或 `mcp_jev` 密钥，请复制：
+
+```bash
+export FINCLAW_HOOK_JUDGE_TOKEN="$TYPESAFE_API_KEY"
+```
+
+除非你在写另一种配方，否则不要从钩子命令启动 `mcp_jev`。没有
+`pass_env` 可以把 `TYPESAFE_API_KEY` 重新放进子进程。
 
 ### 标准输出与退出码
 

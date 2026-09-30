@@ -211,7 +211,7 @@ Use `finclaw profile --help` for copy/backup flows.
 
 **Skills:** configure hubs with `finclaw skills list` / `check` / `hubs` / `install`, or drop packs into `~/.finclaw/profiles/<name>/skills/<id>/`. Use `finclaw skills --help` for all flags.
 
-**Command hooks:** opt-in local commands at tool and session events. Official recipes are `tool-gate`, `turn-router`, and `turn-review` (`finclaw hooks catalog` / `install` / `trust`). They are not installed by `finclaw update`. See [hooks.md](hooks.md). To write a hook, see [hooks-develop.md](hooks-develop.md).
+**Command hooks:** opt-in local commands at tool and session events. Official recipes are `tool-gate`, `turn-router`, and `turn-review` (`finclaw hooks catalog` / `install` / `trust`). They are not installed by `finclaw update`. Remote judgment is TypeSafe / Jev via `FINCLAW_HOOK_JUDGE_TOKEN` (not `TYPESAFE_API_KEY` in the child). See [hooks.md](hooks.md#typesafe--jev). To write a hook, see [hooks-develop.md](hooks-develop.md).
 
 ---
 

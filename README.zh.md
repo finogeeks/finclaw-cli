@@ -97,7 +97,9 @@ HTTP。没有这类网络条件时，再用对端共享。
 ### 命令钩子（可选）
 在工具与会话事件上运行本地命令。官方配方 `tool-gate`、`turn-router`、
 `turn-review` 从 `hook-catalog` Release 安装。默认关闭；`finclaw update`
-不会安装它们。指南：**[docs/hooks.zh.md](docs/hooks.zh.md)**。编写钩子：
+不会安装它们。TypeSafe / Jev 配置（把 `TYPESAFE_API_KEY` 复制到
+`FINCLAW_HOOK_JUDGE_TOKEN`）：
+**[docs/hooks.zh.md](docs/hooks.zh.md#typesafe--jev)**。编写钩子：
 **[docs/hooks-develop.zh.md](docs/hooks-develop.zh.md)**。
 
 ### 配置档与策略

@@ -42,8 +42,10 @@ GitHub `latest`）上的版本化包。源码在
 finclaw hooks catalog
 ```
 
-没有 `finclaw hooks install suite`。按需安装并信任各个 id。配方是普通
-脚本；除非你在本机配置，否则不绑定特定判断引擎。
+没有 `finclaw hooks install suite`。按需安装并信任各个 id。官方三件套
+可以不设判断令牌运行（`tool-gate` 仍走内置规则）。远程判断走
+**TypeSafe System One**（默认模型 **Jev**）— 见
+[TypeSafe / Jev](#typesafe--jev)。
 
 ### 要求
 
@@ -53,9 +55,10 @@ finclaw hooks catalog
   上配方仍可安装；`tool-gate` 仍可硬拒绝；`ask` / `updatedModel` /
   Stop `reject` 会被忽略。
 - 目录上的 `min_cli` 仍为 `0.13.0`（安装门槛）。
-- 可选 `FINCLAW_HOOK_JUDGE_TOKEN` 为 `tool-gate`、`turn-router` 启用远程
-  判断，并为 `turn-review` 启用审查。未设置时，`tool-gate` 仍按内置规则
-  询问或拒绝；另外两个不产出决策。
+- 可选 `FINCLAW_HOOK_JUDGE_TOKEN`（TypeSafe API 密钥；子进程里**不是**
+  `TYPESAFE_API_KEY` — 见 [TypeSafe / Jev](#typesafe--jev)）为
+  `tool-gate`、`turn-router` 启用远程判断，并为 `turn-review` 启用审查。
+  未设置时，`tool-gate` 仍按内置规则询问或拒绝；另外两个不产出决策。
 - `0.13.0` 二进制默认指向已退役的目录标签。请改到 `hook-catalog`（见
   [默认目录 URL](#默认目录-url)），或升级到默认使用该 URL 的 0.13.1+。
 
@@ -92,16 +95,39 @@ finclaw hooks remove tool-gate
 
 用 `finclaw hooks revoke`（处理程序 id 或 `--recipe <id>`）撤销。
 
-### 可选远程判断
+### TypeSafe / Jev
 
-在父进程环境中设置专用令牌（不要用 `*_API_KEY`，钩子子进程不会继承）：
+官方配方通过 HTTP 调用 [TypeSafe System One](https://docs.typesafe.ai)
+（`POST /v1/systemone`）。默认模型 id 为 `jev-latest`（**Jev**）。它们
+**不会**启动 `mcp_jev` 或其他 MCP 服务。
+
+TypeSafe（以及你若已安装的 `mcp_jev`）把密钥存为 `TYPESAFE_API_KEY`。
+FinClaw 会从钩子子进程**去掉所有 `*_API_KEY`**，因此该名字到不了配方。
+请把同一密钥复制到不会被去掉的名字：
 
 ```bash
-export FINCLAW_HOOK_JUDGE_TOKEN="…"
-# 可选
-export FINCLAW_HOOK_JUDGE_BASE_URL="https://…"
-export FINCLAW_HOOK_JUDGE_MODEL="…"
+# POSIX — 与 TYPESAFE_API_KEY / ~/.mcp_jev/.env 同一值
+export FINCLAW_HOOK_JUDGE_TOKEN="$TYPESAFE_API_KEY"
 ```
+
+```powershell
+# Windows PowerShell
+$env:FINCLAW_HOOK_JUDGE_TOKEN = $env:TYPESAFE_API_KEY
+```
+
+若 `TYPESAFE_API_KEY` 只在 `~/.mcp_jev/.env` 而不在当前 shell，请自行从
+该文件设置 `FINCLAW_HOOK_JUDGE_TOKEN`。不要把密钥写进 `hooks.json`、
+`config.yaml` 或纳入版本库的文件。
+
+| 变量 | 作用 | 默认 |
+| --- | --- | --- |
+| `FINCLAW_HOOK_JUDGE_TOKEN` | TypeSafe Bearer | 未设置（无远程判断） |
+| `FINCLAW_HOOK_JUDGE_BASE_URL` | API 源 | `https://api.typesafe.ai` |
+| `FINCLAW_HOOK_JUDGE_MODEL` | System One 模型 | `jev-latest` |
+
+未设令牌时：`tool-gate` 仍按内置规则询问或拒绝；`turn-router` 不改模型；
+`turn-review` 放行答案。TypeSafe 调用失败或超时时，`tool-gate` 回退到
+内置规则；另外两个不产出决策。
 
 ### 路由通道
 
