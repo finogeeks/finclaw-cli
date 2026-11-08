@@ -23,6 +23,8 @@
 | **English** | [README.md](README.md) |
 | **中文** | *当前页* |
 
+产品页：[FinClaw（finaios.ai）](https://finaios.ai/zh-hans/products/finclaw/)。
+
 ---
 
 ## 为什么选 finclaw？
