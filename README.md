@@ -24,6 +24,8 @@ learning loop — no Node or Python to run the tool itself.
 | **English** | *You are here* |
 | **中文** | [README.zh.md](README.zh.md) |
 
+Product page: [FinClaw on finaios.ai](https://finaios.ai/en/products/finclaw/).
+
 ---
 
 ## Why finclaw?
